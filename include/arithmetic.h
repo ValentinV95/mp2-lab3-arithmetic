@@ -1,4 +1,4 @@
-#ifndef _ARITHMETIC_H_
+﻿#ifndef _ARITHMETIC_H_
 #define _ARITHMETIC_H_
 #include <string>
 #include <vector>
@@ -29,7 +29,7 @@ public:
 };
 
 double Solver(const vector<TLexeme>& s);
-double �onverting_number(const string& s, int index, int sign);
+double Сonverting_number(const string& s, int index, int sign);
 TLexeme Check_number(const string &s, int &i, const set<char>& num, int sign);
 vector<TLexeme> Create_lexeme_array(const string& s);
 string New_line_without_spaces(const string &s);

@@ -1,4 +1,4 @@
-#include "arithmetic.h"
+ï»¿#include "arithmetic.h"
 #include "stack.h"
 #include <vector>
 #include <string>
@@ -116,7 +116,7 @@ double Solver(const vector<TLexeme> &v)
 	return s.pop().GetValue().elem;
 }
 
-double Ñonverting_number(const string& s, int index, int sign)
+double Ð¡onverting_number(const string& s, int index, int sign)
 {
 	double ans;
 	if (s[0] == '.')
@@ -150,7 +150,7 @@ TLexeme Check_number(const string &s, int &i, const set<char>& num, int sign)
 		k++;
 	}
 	i = k - 1;
-	TLexeme p(Ñonverting_number(temp, pos, sign));
+	TLexeme p(Ð¡onverting_number(temp, pos, sign));
 	return p;
 }
 

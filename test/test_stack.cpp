@@ -1,4 +1,4 @@
-#include "stack.h"
+﻿#include "stack.h"
 #include <gtest.h>
 
 TEST(TStack, can_create_empty_stack_with_positive_length)

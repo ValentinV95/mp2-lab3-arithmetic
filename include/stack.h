@@ -1,4 +1,4 @@
-#ifndef _STACK_H_
+п»ї#ifndef _STACK_H_
 #define _STACK_H_
 
 #include <vector>
@@ -15,13 +15,13 @@ private:
 public:
 	TStack(int n = size0);
 	virtual ~TStack() {};
-	bool isFull() const;                 // Проверка на полноту
-	bool isEmpty() const;                // Проверка на пустоту
-	void push(ValType elem);             // Вставка элемента
-	int CurrentSize() const;             // Получение количества элементов в стеке
-	ValType front() const;               // Просмотр верхнего элемента (без удаления)
-	ValType pop();                       // Извлечение элемента
-	void AllClear();                     // Очистка стека
+	bool isFull() const;                 // РџСЂРѕРІРµСЂРєР° РЅР° РїРѕР»РЅРѕС‚Сѓ
+	bool isEmpty() const;                // РџСЂРѕРІРµСЂРєР° РЅР° РїСѓСЃС‚РѕС‚Сѓ
+	void push(ValType elem);             // Р’СЃС‚Р°РІРєР° СЌР»РµРјРµРЅС‚Р°
+	int CurrentSize() const;             // РџРѕР»СѓС‡РµРЅРёРµ РєРѕР»РёС‡РµСЃС‚РІР° СЌР»РµРјРµРЅС‚РѕРІ РІ СЃС‚РµРєРµ
+	ValType front() const;               // РџСЂРѕСЃРјРѕС‚СЂ РІРµСЂС…РЅРµРіРѕ СЌР»РµРјРµРЅС‚Р° (Р±РµР· СѓРґР°Р»РµРЅРёСЏ)
+	ValType pop();                       // РР·РІР»РµС‡РµРЅРёРµ СЌР»РµРјРµРЅС‚Р°
+	void AllClear();                     // РћС‡РёСЃС‚РєР° СЃС‚РµРєР°
 };
 
 template <class ValType>
