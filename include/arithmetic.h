@@ -30,10 +30,11 @@ public:
 		return ((op == '+') || (op == '-') || (op == '*') || (op == '/'));
 	}
 };
-
 void priority_creation();
 bool Is_Digit(char n);
-void from_string_to_vector(string s, vector<Lexem>& str);
+void from_string_to_vector(string s, vector<Lexem>& str, bool& check_er);
 double calc(vector<Lexem> str);
-void do_op(Stack<double>&a, char s);
+void do_op(Stack<double>&a, char s, bool& check_er);
+bool check(Lexem last, Lexem cur, int& flag);
+string error_message(int i);
 #endif
