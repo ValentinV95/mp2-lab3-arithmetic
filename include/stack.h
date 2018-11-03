@@ -1,5 +1,9 @@
+#ifndef stack
+#define stack
+
 #include "iostream"
 #include "vector"
+
 using namespace std;
 
 template <class val>
@@ -81,3 +85,4 @@ val Stack<val>::front()
 	}
 	return p[top];
 }
+#endif 
