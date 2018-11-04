@@ -4,7 +4,9 @@
 #include <vector>
 #include <set>
 using namespace std;
+
 enum type { number, binary_operation, unary_operation, op_bracket, cl_bracket, no_type };
+enum sign { positive, negative };
 
 union elem_or_oper
 {
@@ -33,5 +35,6 @@ double Сonverting_number(const string& s, int index, int sign);
 TLexeme Check_number(const string &s, int &i, const set<char>& num, int sign);
 vector<TLexeme> Create_lexeme_array(const string& s);
 string New_line_without_spaces(const string &s);
+vector<TLexeme> Create_RPN_array(const vector<TLexeme>& v);
 
 #endif _ARITHMETIC_H_

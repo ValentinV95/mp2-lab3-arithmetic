@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <set>
+#include <map>
 using namespace std;
 
 TLexeme::TLexeme()
@@ -132,7 +133,7 @@ double Сonverting_number(const string& s, int index, int sign)
 	else
 	{
 		ans = atof(s.c_str());
-		if (sign == 1)
+		if (sign == negative)
 		{
 			ans = -ans;
 		}
@@ -180,7 +181,7 @@ vector<TLexeme> Create_lexeme_array(const string& str)
 	{
 		if (!(num.find(s[i]) == num.end()) || s[i] == '.')
 		{
-			TLexeme p = Check_number(s, i, num, 0);
+			TLexeme p = Check_number(s, i, num, positive);
 			v.push_back(p);
 		}
 		else if (i == 0 && s[i] == '-' && i + 1 < s.size())
@@ -188,7 +189,7 @@ vector<TLexeme> Create_lexeme_array(const string& str)
 			if (!(num.find(s[i + 1]) == num.end()))
 			{
 				i++;
-				TLexeme p = Check_number(s, i, num, 1);
+				TLexeme p = Check_number(s, i, num, negative);
 				v.push_back(p);
 			}
 			else if (s[i + 1] == '(')
@@ -200,7 +201,7 @@ vector<TLexeme> Create_lexeme_array(const string& str)
 		else if (i != 0 && s[i - 1] == '(' && s[i] == '-' && i + 1 < s.size() && !(num.find(s[i + 1]) == num.end()))
 		{
 			i++;
-			TLexeme p = Check_number(s, i, num, 1);
+			TLexeme p = Check_number(s, i, num, negative);
 			v.push_back(p);
 		}
 		else if (s[i] == '-' && i + 1 < s.size() && s[i + 1] == '(')
@@ -220,4 +221,57 @@ vector<TLexeme> Create_lexeme_array(const string& str)
 		}
 	}
 	return v;
+}
+
+vector<TLexeme> Create_RPN_array(const vector<TLexeme>& v)
+{
+	map<pair<char, int>, int> m;
+	m[make_pair('-', unary_operation)] = 3;
+	m[make_pair('*', binary_operation)] = 2;
+	m[make_pair('/', binary_operation)] = 2;
+	m[make_pair('+', binary_operation)] = 1;
+	m[make_pair('-', binary_operation)] = 1;
+	m[make_pair('(', op_bracket)] = 0;
+	TStack<TLexeme> s;
+	vector<TLexeme> ans;
+	for (int i = 0; i < v.size(); i++)
+	{
+		if (v[i].GetType() == number)
+		{
+			ans.push_back(v[i]);
+		}
+		else if (v[i].GetValue().oper == '*' || v[i].GetValue().oper == '/' || v[i].GetValue().oper == '+' || v[i].GetValue().oper == '-')
+		{
+			int priority = m[make_pair(v[i].GetValue().oper, v[i].GetType())];
+			if (s.isEmpty() || m[make_pair(s.front().GetValue().oper, s.front().GetType())] < priority)
+			{
+				s.push(v[i]);
+			}
+			else
+			{
+				while (!s.isEmpty() && m[make_pair(s.front().GetValue().oper, s.front().GetType())] >= priority)
+				{
+					ans.push_back(s.pop());
+				}
+				s.push(v[i]);
+			}
+		}
+		else if (v[i].GetType() == op_bracket)
+		{
+			s.push(v[i]);
+		}
+		else if (v[i].GetType() == cl_bracket)
+		{
+			while (!s.isEmpty() && s.front().GetType() != op_bracket)
+			{
+				ans.push_back(s.pop());
+			}
+			s.pop();
+		}
+	}
+	while (!s.isEmpty())
+	{
+		ans.push_back(s.pop());
+	}
+	return ans;
 }
