@@ -1,20 +1,6 @@
 #include "arithmetic.h"
-map <string, int> priority;
-void priority_creation()
-{
-	priority["("] = 0;
-	priority[")"] = 0;
-	priority["+"] = 1;
-	priority["-"] = 1;
-	priority["*"] = 2;
-    priority["/"] = 2;
-    priority["--"] = 3;
-    priority["ln"] = 3;
-    priority["exp"] = 3;
-    priority["cos"] = 3;
-    priority["sin"] = 3;
-    priority["sqrt"] = 3;
-}
+
+
 string error_message(int i)
 {
 	switch (i)
@@ -33,6 +19,7 @@ string error_message(int i)
 		default: return "Unknown_exception";
 	}
 }
+
 bool Is_Digit(char n)
 {
 	return (n >= '0') && (n <= '9');
@@ -41,7 +28,73 @@ bool Is_Letter(char n)
 {
     return (n >= 'a') && (n <= 'z');
 }
-bool check(Lexem last, Lexem& cur, int& flag)
+
+map <string, int> priority;
+void priority_creation()
+{
+	priority["("] = 0;
+	priority[")"] = 0;
+	priority["+"] = 1;
+	priority["-"] = 1;
+	priority["*"] = 2;
+    priority["/"] = 2;
+    priority["--"] = 3;
+    priority["ln"] = 3;
+    priority["exp"] = 3;
+    priority["cos"] = 3;
+    priority["sin"] = 3;
+    priority["sqrt"] = 3;
+}
+
+vector<vector<int>> parameter(26);
+bool check_parameters()
+{
+    for(int i = 0; i < 26; i++)
+    {
+        if(!parameter[i].empty())
+        {
+            return true;
+        }
+    }
+    return false;
+}
+void clear_parameters()
+{
+    for(int i = 0; i < parameter.size(); i++)
+    {
+        if(!parameter[i].empty()) {parameter[i].clear();}
+    }
+}
+vector<double> enter_parameters()
+{
+    vector<double> par;
+    cout << "Please, enter parameter's value:" << endl;
+    for(int i = 0; i < parameter.size(); i++)
+    {
+        if(!parameter[i].empty())
+        {
+            double val;
+            cout << (char)(i + 97) << " = ";
+            cin >> val;
+            par.push_back(val);
+        }
+    }
+	return par;
+}
+void set_parameters(vector<Lexem>& str, vector<double> par)
+{
+    int k = -1;
+    for(int i = 0; i < parameter.size(); i++)
+    {
+        for(int j = 0; j < parameter[i].size(); j++)
+        {
+            if(j == 0) {k++;}
+            str[parameter[i][j]].Set_Param(par[k]);
+        }
+    }
+}
+
+bool check(Lexem last, Lexem& cur, int& flag) 
 {
     //catch unary minus
     if((last.Get_Op() == "(") && cur.Get_Op() == "-")
@@ -83,12 +136,13 @@ bool check(Lexem last, Lexem& cur, int& flag)
     }
     return true;
 }
+
 void from_string_to_vector(string s, vector<Lexem>& str)
 {
     Stack<char> bkt; //Checking the bracket sequence
     double integer = 0.0; //The integer part of number
     double fract = 0.0; //Fractional part of the number
-    string math_f = ""; //name of mathematical function
+    string math_f = ""; //Name of mathematical function
 	if (!Is_Digit(s[0]) && s[0] != '(' && s[0] != '-' && !Is_Letter(s[0])) //Ckeck the first element
 	{
         throw(6);
@@ -100,7 +154,7 @@ void from_string_to_vector(string s, vector<Lexem>& str)
 		bkt.push('(');
         k++;
     }
-    else if(s[0] == '-')//catch unary minus
+    else if(s[0] == '-')//Catch unary minus
     {
         string un_sub = "--";
         str.push_back(un_sub);
@@ -110,8 +164,8 @@ void from_string_to_vector(string s, vector<Lexem>& str)
     {
         int f = i; //Flag for reading number
 		Lexem cur(s[i]); //The current lexem 
-		int flag; //Flag to check the correct sequence of operands and operations
-        while(Is_Digit(s[i])) //read integer part of number
+		int flag; //Flag to determine the type of error
+        while(Is_Digit(s[i])) //Read integer part of number
         {
             integer = integer * 10.0 + double(s[i] - 48);
             i++;
@@ -124,7 +178,7 @@ void from_string_to_vector(string s, vector<Lexem>& str)
             }
             ++i;
             int f1 = i;
-            while(Is_Digit(s[i])) //read fractional part of number
+            while(Is_Digit(s[i])) //Read fractional part of number
             {
                 fract = fract * 10.0 + double(s[i] - 48);
                 i++;
@@ -139,7 +193,7 @@ void from_string_to_vector(string s, vector<Lexem>& str)
         if(f != i) //Check whether the number was read
         {
             Lexem curnum(integer + fract);
-            if(!str.empty() && !check(str.back(),curnum,flag)) //Wrong order operation and operands
+            if(!str.empty() && !check(str.back(),curnum,flag)) //Wrong order of operation and operands
             {
                 throw(make_pair(4 + flag,i + 1));
             }
@@ -149,20 +203,33 @@ void from_string_to_vector(string s, vector<Lexem>& str)
             fract = 0.0;
             continue;
         }
-        while(Is_Letter(s[i])) //read mathematical function
+        while(Is_Letter(s[i])) //Read mathematical function
         {
             math_f += s[i];
             i++;
         }
+        if(f == i - 1)//Check whether the parameter was read
+        {
+            Lexem curnum(42.42);
+            if(!str.empty() && !check(str.back(),curnum,flag)) //Wrong order of operations and parameters
+            {
+                throw(make_pair(4 + flag,i + 1));
+            }
+            --i;
+            parameter[int(s[i] - 97)].push_back(str.size());
+            str.push_back(curnum);
+            math_f = ""; 
+            continue;
+        }
         if(f != i)//Check whether the math function was read
         {
-            i--;
+            --i;
             Lexem temp(math_f);
-            if(!temp.Is_Un_Op()) //math function input validation
+            if(!temp.Is_Un_Op()) //Math function input validation
             {
                 throw(make_pair(7,math_f));            
             }
-            if(!str.empty() && !check(str.back(),temp,flag)) //Wrong order operation and operands
+            if(!str.empty() && !check(str.back(),temp,flag)) //Wrong order of operations and operands
             {
                 throw(make_pair(4 + flag,i + 1));
             }
@@ -192,7 +259,7 @@ void from_string_to_vector(string s, vector<Lexem>& str)
                 throw(make_pair(3,i + 1));
             }
         }
-        if(!check(str.back(),cur,flag)) //Wrong order operation and operands
+        if(!check(str.back(),cur,flag)) //Wrong order of operations and operands
         {
             throw(make_pair(4 + flag,i + 1));
         }
@@ -209,16 +276,15 @@ void from_string_to_vector(string s, vector<Lexem>& str)
         {
             throw(8);
         }
-        if(!check(str[str.size() - 2],str.back(),flag)) //Wrong order operation and operands
+        if(!check(str[str.size() - 2],str.back(),flag)) //Wrong order of operations and operands
         {
             throw(make_pair(4 + flag, str.size() + 1));
         }
     }
-
 }
 void do_op(Stack<double>&a, string s)
 {
-	double num2 = a.front(), num1;
+	double num2 = a.front();
 	a.pop();
     Lexem t(s);
     if(t.Is_Un_Op())
@@ -245,7 +311,7 @@ void do_op(Stack<double>&a, string s)
         else {a.push(-(num2));}
     }
     else{
-        num1 = a.front();
+        double num1 = a.front();
         a.pop();
         if(s == "+") a.push(num1 + num2);
         else if(s == "-") a.push(num1 - num2);

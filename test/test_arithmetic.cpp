@@ -202,6 +202,12 @@ TEST(Lexem, find_error_when_incorrect_last_symbol_2)
     vector<Lexem> t;
     ASSERT_ANY_THROW(from_string_to_vector(s, t));
 }
+TEST(Lexem, find_error_when_incorrect_last_symbol_3)
+{
+    string s = "8*(5+5)-";
+    vector<Lexem> t;
+    ASSERT_ANY_THROW(from_string_to_vector(s, t));
+}
 
 /*Calculation validation */
 
@@ -287,9 +293,9 @@ TEST(Lexem, calculation_validation_10)
     EXPECT_NEAR(4.0,calc(t),eps);
 }
 
-/*Correction of math expression */
+/*Correctness of math expression */
 
-TEST(Lexem, correction_of_math_expression_div_0_1)
+TEST(Lexem, correctness_of_math_expression_div_0_1)
 {
     string s = "42/(3559*3559-1321*9588-733)";
     vector<Lexem> t;
@@ -297,7 +303,7 @@ TEST(Lexem, correction_of_math_expression_div_0_1)
     from_string_to_vector(s,t);
     ASSERT_ANY_THROW(calc(t));
 }
-TEST(Lexem, correction_of_math_expression_div_0_2)
+TEST(Lexem, correctness_of_math_expression_div_0_2)
 {
     string s = "42/ln(1)";
     vector<Lexem> t;
@@ -305,7 +311,7 @@ TEST(Lexem, correction_of_math_expression_div_0_2)
     from_string_to_vector(s,t);
     ASSERT_ANY_THROW(calc(t));
 }
-TEST(Lexem, correction_of_math_expression_negative_argument_1)
+TEST(Lexem, correctness_of_math_expression_negative_argument_1)
 {
     string s = "42/ln(-1)";
     vector<Lexem> t;
@@ -313,7 +319,7 @@ TEST(Lexem, correction_of_math_expression_negative_argument_1)
     from_string_to_vector(s,t);
     ASSERT_ANY_THROW(calc(t));
 }
-TEST(Lexem, correction_of_math_expression_negative_argument_2)
+TEST(Lexem, correctness_of_math_expression_negative_argument_2)
 {
     string s = "ln(ln(exp(-42)))";
     vector<Lexem> t;
@@ -321,11 +327,197 @@ TEST(Lexem, correction_of_math_expression_negative_argument_2)
     from_string_to_vector(s,t);
     ASSERT_ANY_THROW(calc(t));
 }
-TEST(Lexem, correction_of_math_expression_negative_argument_3)
+TEST(Lexem, correctness_of_math_expression_negative_argument_3)
 {
     string s = "sqrt(cos(3.14159265))";
     vector<Lexem> t;
     priority_creation();
     from_string_to_vector(s,t);
+    ASSERT_ANY_THROW(calc(t));
+}
+
+/*Calculation validation with parameters*/
+
+TEST(Lexem, calculation_validation_with_parameters_1)
+{
+    string s = "(a*b)";
+    vector<Lexem> t;
+    
+    double a, b, ans;
+    a = 3.14159265;
+    b = 0.31830988;
+    ans = a * b;
+
+    vector<double> param;
+    param.push_back(a);
+    param.push_back(b);
+
+    priority_creation();
+    from_string_to_vector(s,t);
+    set_parameters(t,param);
+    clear_parameters();
+
+    EXPECT_NEAR(ans,calc(t),eps);
+}
+TEST(Lexem, calculation_validation_with_parameters_2)
+{
+    string s = "(a*b)+a";
+    vector<Lexem> t;
+    
+    double a, b, ans;
+    a = 3.14159265;
+    b = 0.31830988;
+    ans = a * b + a;
+
+    vector<double> param;
+    param.push_back(a);
+    param.push_back(b);
+
+    priority_creation();
+    from_string_to_vector(s,t);
+    set_parameters(t,param);
+    clear_parameters();
+
+    EXPECT_NEAR(ans,calc(t),eps);
+}
+TEST(Lexem, calculation_validation_with_parameters_3)
+{
+    string s = "65*78.35-ln(2*a*b)+z-97.65";
+    vector<Lexem> t;
+    
+    double a, b, c, ans;
+    a = 3.14159265;
+    b = 0.31830988;
+    c = 23.71;
+    ans = 65 * 78.35 - log(2 * a * b) + c - 97.65;
+
+    vector<double> param;
+    param.push_back(a);
+    param.push_back(b);
+    param.push_back(c);
+    priority_creation();
+    from_string_to_vector(s,t);
+    set_parameters(t,param);
+    clear_parameters();
+
+    EXPECT_NEAR(ans,calc(t),eps);
+}
+TEST(Lexem, calculation_validation_with_parameters_4)
+{
+    string s = "ln(exp(sqrt(4*(cos(-exp(sqrt(f)))*cos(-exp(sqrt(f)))+sin(-exp(sqrt(f)))*sin(-exp(sqrt(f)))))))+r";
+    vector<Lexem> t;
+    
+    double a, b, ans;
+    a = 6.02214129e2;
+    b = 3.14159265;
+    ans = 2.0 + b;
+
+    vector<double> param;
+    param.push_back(a);
+    param.push_back(b);
+    priority_creation();
+    from_string_to_vector(s,t);
+    set_parameters(t,param);
+    clear_parameters();
+
+    EXPECT_NEAR(ans,calc(t),eps);
+}
+
+/*Correctness of math expression with parameters*/
+
+TEST(Lexem, correctness_of_math_expression_with_parameters_div_0_1)
+{
+    string s = "ln(a)/b";
+    vector<Lexem> t;
+
+    double a, b;
+    a = 3.14159265;
+    b = 0;
+
+    vector<double> param;
+    param.push_back(a);
+    param.push_back(b);
+    priority_creation();
+    from_string_to_vector(s,t);
+    set_parameters(t,param);
+    clear_parameters();
+
+    ASSERT_ANY_THROW(calc(t));
+}
+TEST(Lexem, correctness_of_math_expression_with_parameters_div_0_2)
+{
+    string s = "46*73.7154-ln(a)/(b+a)";
+    vector<Lexem> t;
+
+    double a, b;
+    a = 3.14159265;
+    b = -a;
+
+    vector<double> param;
+    param.push_back(a);
+    param.push_back(b);
+    priority_creation();
+    from_string_to_vector(s,t);
+    set_parameters(t,param);
+    clear_parameters();
+    
+    ASSERT_ANY_THROW(calc(t));
+}
+TEST(Lexem, correctness_of_math_expression_with_parameters_negative_argument_1)
+{
+    string s = "42/ln(b)+a/8+14.365";
+    vector<Lexem> t;
+
+    double a, b;
+    a = 3.14159265;
+    b = -a;
+
+    vector<double> param;
+    param.push_back(a);
+    param.push_back(b);
+    priority_creation();
+    from_string_to_vector(s,t);
+    set_parameters(t,param);
+    clear_parameters();
+
+    ASSERT_ANY_THROW(calc(t));
+}
+TEST(Lexem, correctness_of_math_expression_with_parameters_negative_argument_2)
+{
+    string s = "1.0+2.1+3.2+4.3/a+f-sqrt(a*(-b+3))";
+    vector<Lexem> t;
+   
+    double a, b, c;
+    a = 3.14159265;
+    b = 8;
+    c = -a;
+
+    vector<double> param;
+    param.push_back(a);
+    param.push_back(b);
+    param.push_back(c);
+    priority_creation();
+    from_string_to_vector(s,t);
+    set_parameters(t,param);
+    clear_parameters();
+
+    ASSERT_ANY_THROW(calc(t));
+}
+TEST(Lexem, correctness_of_math_expression_with_parameters_negative_argument_3)
+{
+    string s = "exp(s)+sqrt(cos(z))";
+    vector<Lexem> t;
+
+    double a, b;
+    a = 3.14159265;
+    b = exp(1);
+    vector<double> param;
+    param.push_back(a);
+    param.push_back(b);
+    priority_creation();
+    from_string_to_vector(s,t);
+    set_parameters(t,param);
+    clear_parameters();
+
     ASSERT_ANY_THROW(calc(t));
 }
