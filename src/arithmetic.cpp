@@ -19,13 +19,17 @@ string error_message(int i)
 {
 	switch (i)
 	{
-		case 1: return "Point_before_digits_in_symbol: ";
-		case 2: return "Wrong_bracket_sequence_in_symbol: ";
-		case 3: return "Unacceptable_symbol: "; 
-		case 4: return "Missed_operation_in_symbol: "; 
-		case 5: return "Missed_operand_in_symbol: ";
+		case 1: return "Point_before_digits_in_symbol: (";
+		case 2: return "Wrong_bracket_sequence_in_symbol: (";
+		case 3: return "Unacceptable_symbol: ("; 
+		case 4: return "Missed_operation_in_symbol: ("; 
+		case 5: return "Missed_operand_in_symbol: (";
 		case 6: return "Incorrect_first_symbol";
         case 7: return "Unacceptable_substring: ";
+        case 8: return "Incorrect_last_symbol";
+        case 9: return "Error: out of range of function: ln(";
+        case 10: return "Error: out of range of function: sqrt(";
+        case 11: return "Division by zero is impossible: ";
 		default: return "Unknown_exception";
 	}
 }
@@ -39,6 +43,7 @@ bool Is_Letter(char n)
 }
 bool check(Lexem last, Lexem& cur, int& flag)
 {
+    //catch unary minus
     if((last.Get_Op() == "(") && cur.Get_Op() == "-")
     {
         string un_sub = "--";
@@ -78,17 +83,15 @@ bool check(Lexem last, Lexem& cur, int& flag)
     }
     return true;
 }
-void from_string_to_vector(string s, vector<Lexem>& str, bool& check_er)
+void from_string_to_vector(string s, vector<Lexem>& str)
 {
     Stack<char> bkt; //Checking the bracket sequence
-    double b = 0.0; //The integer part of number
-    double b1 = 0.0; //Fractional part of the number
+    double integer = 0.0; //The integer part of number
+    double fract = 0.0; //Fractional part of the number
     string math_f = ""; //name of mathematical function
 	if (!Is_Digit(s[0]) && s[0] != '(' && s[0] != '-' && !Is_Letter(s[0])) //Ckeck the first element
 	{
-		cout << error_message(6) << endl;
-		check_er = false;
-		return;
+        throw(6);
 	}
     int k = 0;
     if(s[0] == '(')
@@ -97,7 +100,7 @@ void from_string_to_vector(string s, vector<Lexem>& str, bool& check_er)
 		bkt.push('(');
         k++;
     }
-    else if(s[0] == '-')
+    else if(s[0] == '-')//catch unary minus
     {
         string un_sub = "--";
         str.push_back(un_sub);
@@ -108,25 +111,22 @@ void from_string_to_vector(string s, vector<Lexem>& str, bool& check_er)
         int f = i; //Flag for reading number
 		Lexem cur(s[i]); //The current lexem 
 		int flag; //Flag to check the correct sequence of operands and operations
-		check_er = true; //Check incorrect enter
-        while(Is_Digit(s[i]))
+        while(Is_Digit(s[i])) //read integer part of number
         {
-            b = b * 10.0 + double(s[i] - 48);
+            integer = integer * 10.0 + double(s[i] - 48);
             i++;
         }
         if(s[i] == '.')
         {
             if(f == i) //If find '.' before digits
             {
-                cout << error_message(1) << i + 1 << endl;
-                check_er = false;
-                return;
+                throw(make_pair(1,i + 1));
             }
             ++i;
             int f1 = i;
-            while(Is_Digit(s[i]))
+            while(Is_Digit(s[i])) //read fractional part of number
             {
-                b1 = b1 * 10.0 + double(s[i] - 48);
+                fract = fract * 10.0 + double(s[i] - 48);
                 i++;
             }
             double m = 1.0;
@@ -134,17 +134,22 @@ void from_string_to_vector(string s, vector<Lexem>& str, bool& check_er)
             {
                 m *= 10.0;
             }
-            b1 /= m;
+            fract /= m;
         }
         if(f != i) //Check whether the number was read
         {
+            Lexem curnum(integer + fract);
+            if(!str.empty() && !check(str.back(),curnum,flag)) //Wrong order operation and operands
+            {
+                throw(make_pair(4 + flag,i + 1));
+            }
             i--;
-            str.push_back(b + b1);
-            b = 0.0;
-            b1 = 0.0;
+            str.push_back(curnum);
+            integer = 0.0;
+            fract = 0.0;
             continue;
         }
-        while(Is_Letter(s[i]))
+        while(Is_Letter(s[i])) //read mathematical function
         {
             math_f += s[i];
             i++;
@@ -155,59 +160,63 @@ void from_string_to_vector(string s, vector<Lexem>& str, bool& check_er)
             Lexem temp(math_f);
             if(!temp.Is_Un_Op()) //math function input validation
             {
-                cout << error_message(7) << math_f << endl;
-                check_er = false;
-                return;               
+                throw(make_pair(7,math_f));            
             }
             if(!str.empty() && !check(str.back(),temp,flag)) //Wrong order operation and operands
             {
-                cout << error_message(4 + flag) << i + 1 << endl;
-                check_er = false;
-                return;
+                throw(make_pair(4 + flag,i + 1));
             }
             math_f = ""; 
             str.push_back(temp);
             continue;
         }
-        if(s[i] == '(')
+        if(!cur.Is_Op()) 
         {
-            bkt.push('(');
-        }
-        else if(s[i] == ')')
-        {
-            if(!bkt.IsEmpty() && bkt.front() == '(')
+            if(s[i] == '(') //Check right braket sequence
             {
-                bkt.pop();
+                bkt.push('(');
             }
-            else //No matching opening bracket
+            else if(s[i] == ')')
             {
-                cout << error_message(2) << i + 1 << endl;
-                check_er = false;
-                return;
+                if(!bkt.IsEmpty() && bkt.front() == '(')
+                {
+                    bkt.pop();
+                }
+                else //No matching opening bracket
+                {
+                    throw(make_pair(2,i + 1));
+                }
+            }        
+            else    //Unacceptable symbol
+            {    
+                throw(make_pair(3,i + 1));
             }
         }
-        else if(!cur.Is_Op()) //Unacceptable symbol
+        if(!check(str.back(),cur,flag)) //Wrong order operation and operands
         {
-            cout << error_message(3) << i + 1 << endl;
-            check_er = false;
-            return;
-        }
-        else if(!check(str.back(),cur,flag)) //Wrong order operation and operands
-        {
-            cout << error_message(4 + flag) << i + 1 << endl;
-            check_er = false;
-            return;
+            throw(make_pair(4 + flag,i + 1));
         }
         str.push_back(cur);
     }
 	if (!bkt.IsEmpty()) //No matching closing bracket
 	{
-        cout << error_message(2) << s.size() + 1 << endl;
-        check_er = false;
-		return;
+        throw(make_pair(2,s.size() + 1));
 	}
+    int flag;
+    if(str.size() > 1) //Ckeck the last element
+    {
+        if(!str.back().Is_Num() && str.back().Get_Op() != ")")
+        {
+            throw(8);
+        }
+        if(!check(str[str.size() - 2],str.back(),flag)) //Wrong order operation and operands
+        {
+            throw(make_pair(4 + flag, str.size() + 1));
+        }
+    }
+
 }
-void do_op(Stack<double>&a, string s, bool& check_er)
+void do_op(Stack<double>&a, string s)
 {
 	double num2 = a.front(), num1;
 	a.pop();
@@ -217,10 +226,8 @@ void do_op(Stack<double>&a, string s, bool& check_er)
         if(s == "ln") 
         {
             if(num2 <= 0)
-            {
-                cout << "Error: out of range of function: ln(" << num2 << ")" << endl;
-                check_er = false;
-                return;            
+            {   
+                throw(make_pair(9, num2));  
             }
             a.push(log(num2));
         }
@@ -228,9 +235,7 @@ void do_op(Stack<double>&a, string s, bool& check_er)
         {
             if(num2 < 0)
             {
-                cout << "Error: out of range of function: sqrt(" << num2 <<")" << endl;
-                check_er = false;
-                return;            
+                throw(make_pair(10, num2));      
             }
             a.push(sqrt(num2));
         } 
@@ -247,11 +252,9 @@ void do_op(Stack<double>&a, string s, bool& check_er)
         else if(s == "*") a.push(num1 * num2);
         else  
         {
-            if(num2 == 0)
+            if(num2 < eps)
             {
-                cout << "Division by zero is impossible: " << num1 << "/";
-                check_er = false;
-                return;
+                throw(num1); 
             }
             a.push(num1 / num2); 
         }
@@ -259,57 +262,49 @@ void do_op(Stack<double>&a, string s, bool& check_er)
 }
 double calc(vector<Lexem> str)
 {
-	Stack<double> elem; //operands
-	Stack<string> opr; //operations
-    bool check_er = true; //check incorrect mathematical expression
-	for (int i = 0; i < str.size(); i++)
-	{
-		if (str[i].Is_Num())
-		{
-			elem.push(str[i].Get_Num());
-		}
-		else if (str[i].Is_Op() || str[i].Is_Un_Op())
-		{
-			string temp = str[i].Is_Op() ? str[i].Get_Op() : str[i].Get_Un_Op();
-			while (!opr.IsEmpty() && 
-				(str[i].Is_Op() && (priority[temp] <= priority[opr.front()]) ||    //binary operations in a row
-					str[i].Is_Un_Op() && (priority[temp] < priority[opr.front()])))//unary operations from right to left
-			{
-				do_op(elem, opr.front(),check_er);
-                if(!check_er)
-                {
-                    return 0;
-                }
-				opr.pop();
-			}
-			opr.push(temp);
-		}
-		else if (str[i].Get_Op() == ")")
-		{
-			while (!opr.IsEmpty() && opr.front() != "(")
-			{
-				do_op(elem, opr.front(), check_er);
-				if (!check_er)
-				{
-					return 0;
-				}
-				opr.pop();
-			}
-			opr.pop();
-		}
-		else
-		{
-			opr.push(str[i].Get_Op());
-		}
-	}
-	while (!opr.IsEmpty())
-	{
-		do_op(elem, opr.front(),check_er);
-        if(!check_er)
+    Stack<double> elem; //operands
+    Stack<string> opr; //operations
+    for (int i = 0; i < str.size(); i++)
+    {
+        if (str[i].Is_Num())
         {
-            return 0;
+            elem.push(str[i].Get_Num());
         }
-		opr.pop();
-	}
-	return elem.front();
+        else if (str[i].Is_Op() || str[i].Is_Un_Op())
+        {
+            string temp = str[i].Is_Op() ? str[i].Get_Op() : str[i].Get_Un_Op();
+            if(opr.IsEmpty())
+            {
+                opr.push(temp);
+                continue;
+            }
+            while (!opr.IsEmpty() &&
+                (str[i].Is_Op() && (priority[temp] <= priority[opr.front()])) || //binary operations in a row
+                (str[i].Is_Un_Op() && (priority[temp] < priority[opr.front()])))//unary operations from right to left
+            {
+                do_op(elem, opr.front());
+                opr.pop();
+            }
+            opr.push(temp);
+        }
+        else if (str[i].Get_Op() == ")")
+        {
+            while (!opr.IsEmpty() && opr.front() != "(")
+            {
+                do_op(elem, opr.front());
+                opr.pop();
+            }
+            opr.pop();
+        }
+        else
+        {
+            opr.push(str[i].Get_Op());
+        }
+    }
+    while (!opr.IsEmpty())
+    {
+        do_op(elem, opr.front());
+        opr.pop();
+    }
+    return elem.front();
 }

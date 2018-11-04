@@ -5,7 +5,7 @@
 #include "map"
 #include "cmath"
 #include "stack.h"
-
+#define eps 1e-10
 using namespace std;
 class Lexem{
 private:
@@ -48,9 +48,9 @@ public:
 void priority_creation();
 bool Is_Digit(char n);
 bool Is_Letter(char n);
-void from_string_to_vector(string s, vector<Lexem>& str, bool& check_er);
+void from_string_to_vector(string s, vector<Lexem>& str);
 double calc(vector<Lexem> str);
-void do_op(Stack<double>&a, char s, bool& check_er);
+void do_op(Stack<double>&a, char s);
 bool check(Lexem last, Lexem& cur, int& flag);
 string error_message(int i);
 #endif
