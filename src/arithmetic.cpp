@@ -318,7 +318,7 @@ void do_op(Stack<double>&a, string s)
         else if(s == "*") a.push(num1 * num2);
         else  
         {
-            if(num2 < eps)
+            if(abs(num2) < eps)
             {
                 throw(num1); 
             }
