@@ -36,5 +36,7 @@ TLexeme Check_number(const string &s, int &i, const set<char>& num, int sign);
 vector<TLexeme> Create_lexeme_array(const string& s);
 string New_line_without_spaces(const string &s);
 vector<TLexeme> Create_RPN_array(const vector<TLexeme>& v);
+void Error_checking(const vector<TLexeme>& v);
+bool Type_checking(const vector<int>& v, int type);
 
 #endif _ARITHMETIC_H_

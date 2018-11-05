@@ -595,3 +595,281 @@ TEST(Check_number, can_create_negative_number_from_string)
 	EXPECT_EQ(ans.GetType(), number);
 	EXPECT_NEAR(ans.GetValue().elem, -3, 1e-5);
 }
+
+TEST(Error_checking, no_exceptions_1)
+{
+	//2 + 4 - (-(0.001 * 15)) - 6
+	vector<TLexeme> v;
+	TLexeme t(2.0);
+	v.push_back(t);
+	TLexeme t1('+');
+	v.push_back(t1);
+	TLexeme t2(4.0);
+	v.push_back(t2);
+	TLexeme t3('-');
+	v.push_back(t3);
+	TLexeme t4('(');
+	v.push_back(t4);
+	TLexeme t5('-', unary_operation);
+	v.push_back(t5);
+	TLexeme t6('(');
+	v.push_back(t6);
+	TLexeme t7(0.001);
+	v.push_back(t7);
+	TLexeme t8('*');
+	v.push_back(t8);
+	TLexeme t9(15.0);
+	v.push_back(t9);
+	TLexeme t10(')');
+	v.push_back(t10);
+	TLexeme t11(')');
+	v.push_back(t11);
+	TLexeme t12('-');
+	v.push_back(t12);
+	TLexeme t13(6.0);
+	v.push_back(t13);
+	ASSERT_NO_THROW(Error_checking(v));
+}
+
+TEST(Error_checking, no_exceptions_2)
+{
+	// 6*(-6*(-6*1))
+	vector<TLexeme> v;
+	TLexeme t(6.0);
+	v.push_back(t);
+	TLexeme t1('*');
+	v.push_back(t1);
+	TLexeme t2('(');
+	v.push_back(t2);
+	TLexeme t3('-', unary_operation);
+	v.push_back(t3);
+	TLexeme t4(6.0);
+	v.push_back(t4);
+	TLexeme t5('*');
+	v.push_back(t5);
+	TLexeme t6('(');
+	v.push_back(t6);
+	TLexeme t7('-', unary_operation);
+	v.push_back(t7);
+	TLexeme t8(6.0);
+	v.push_back(t8);
+	TLexeme t9('*');
+	v.push_back(t9);
+	TLexeme t10(1.0);
+	v.push_back(t10);
+	TLexeme t11(')');
+	v.push_back(t11);
+	TLexeme t12(')');
+	v.push_back(t12);
+	ASSERT_NO_THROW(Error_checking(v));
+}
+
+TEST(Error_checking, no_exceptions_3)
+{
+	// -((2 * 8) - 8)
+	vector<TLexeme> v;
+	TLexeme t('-', unary_operation);
+	v.push_back(t);
+	TLexeme t1('(');
+	v.push_back(t1);
+	TLexeme t2('(');
+	v.push_back(t2);
+	TLexeme t3(2.0);
+	v.push_back(t3);
+	TLexeme t4('*');
+	v.push_back(t4);
+	TLexeme t5(8.0);
+	v.push_back(t5);
+	TLexeme t6(')');
+	v.push_back(t6);
+	TLexeme t7('-');
+	v.push_back(t7);
+	TLexeme t8(8.0);
+	v.push_back(t8);
+	TLexeme t9(')');
+	v.push_back(t9);
+	ASSERT_NO_THROW(Error_checking(v));
+}
+
+TEST(Error_checking, no_exceprions_when_there_are_a_lot_of_brackets)
+{
+	string s = "(((1 * 4) -2))";
+	s = New_line_without_spaces(s);
+	vector<TLexeme> v = Create_lexeme_array(s);
+	ASSERT_NO_THROW(Error_checking(v));
+}
+
+TEST(Error_checking, throws_an_exception_when_last_lexeme_is_wrong)
+{
+	// 1 + (2 - 5) * 4 -
+	vector<TLexeme> v;
+	TLexeme t(1.0);
+	v.push_back(t);
+	TLexeme t1('+');
+	v.push_back(t1);
+	TLexeme t2('(');
+	v.push_back(t2);
+	TLexeme t3(2.0);
+	v.push_back(t3);
+	TLexeme t4('-');
+	v.push_back(t4);
+	TLexeme t5(5.0);
+	v.push_back(t5);
+	TLexeme t6(')');
+	v.push_back(t6);
+	TLexeme t7('*');
+	v.push_back(t7);
+	TLexeme t8(4.0);
+	v.push_back(t8);
+	TLexeme t9('-');
+	v.push_back(t9);
+	ASSERT_ANY_THROW(Error_checking(v));
+}
+
+TEST(Error_checking, throws_an_exception_when_first_lexeme_is_wrong)
+{
+	// 2 1 + (2 - 5) * 4
+	vector<TLexeme> v;
+	TLexeme t(2.0);
+	v.push_back(t);
+	TLexeme t1(1.0);
+	v.push_back(t1);
+	TLexeme t2('+');
+	v.push_back(t2);
+	TLexeme t3('(');
+	v.push_back(t3);
+	TLexeme t4(2.0);
+	v.push_back(t4);
+	TLexeme t5('-');
+	v.push_back(t5);
+	TLexeme t6(5.0);
+	v.push_back(t6);
+	TLexeme t7(')');
+	v.push_back(t7);
+	TLexeme t8('*');
+	v.push_back(t8);
+	TLexeme t9(4.0);
+	v.push_back(t9);
+	ASSERT_ANY_THROW(Error_checking(v));
+}
+
+TEST(Error_checking, throws_an_exception_when_any_lexeme_is_wrong)
+{
+	// 1 + (2 - 5 +) * 4
+	vector<TLexeme> v;
+	TLexeme t(1.0);
+	v.push_back(t);
+	TLexeme t1('+');
+	v.push_back(t1);
+	TLexeme t2('(');
+	v.push_back(t2);
+	TLexeme t3(2.0);
+	v.push_back(t3);
+	TLexeme t4('-');
+	v.push_back(t4);
+	TLexeme t5(5.0);
+	v.push_back(t5);
+	TLexeme t6('+');
+	v.push_back(t6);
+	TLexeme t7(')');
+	v.push_back(t7);
+	TLexeme t8('*');
+	v.push_back(t8);
+	TLexeme t9(4.0);
+	v.push_back(t9);
+	ASSERT_ANY_THROW(Error_checking(v));
+}
+
+TEST(Error_checking, throws_an_exception_when_there_is_an_extra_opening_bracket)
+{
+	// 1 + ((2 - 5) * 4
+	vector<TLexeme> v;
+	TLexeme t(1.0);
+	v.push_back(t);
+	TLexeme t1('+');
+	v.push_back(t1);
+	TLexeme t2('(');
+	v.push_back(t2);
+	TLexeme t3('(');
+	v.push_back(t3);
+	TLexeme t4(2.0);
+	v.push_back(t4);
+	TLexeme t5('-');
+	v.push_back(t5);
+	TLexeme t6(5.0);
+	v.push_back(t6);
+	TLexeme t7(')');
+	v.push_back(t7);
+	TLexeme t8('*');
+	v.push_back(t8);
+	TLexeme t9(4.0);
+	v.push_back(t9);
+	ASSERT_ANY_THROW(Error_checking(v));
+}
+
+TEST(Error_checking, throws_an_exception_when_there_is_an_extra_closing_bracket)
+{
+	// 1 + (2) - 5) * 4
+	vector<TLexeme> v;
+	TLexeme t(1.0);
+	v.push_back(t);
+	TLexeme t1('+');
+	v.push_back(t1);
+	TLexeme t2('(');
+	v.push_back(t2);
+	TLexeme t3(2.0);
+	v.push_back(t3);
+	TLexeme t4(')');
+	v.push_back(t4);
+	TLexeme t5('-');
+	v.push_back(t5);
+	TLexeme t6(5.0);
+	v.push_back(t6);
+	TLexeme t7(')');
+	v.push_back(t7);
+	TLexeme t8('*');
+	v.push_back(t8);
+	TLexeme t9(4.0);
+	v.push_back(t9);
+	ASSERT_ANY_THROW(Error_checking(v));
+}
+
+TEST(Error_checking, throws_an_exception_when_the_brackets_are_swapped_1)
+{
+	// 1 + )2 - 5( * 4
+	vector<TLexeme> v;
+	TLexeme t(1.0);
+	v.push_back(t);
+	TLexeme t1('+');
+	v.push_back(t1);
+	TLexeme t2(')');
+	v.push_back(t2);
+	TLexeme t3(2.0);
+	v.push_back(t3);
+	TLexeme t4('-');
+	v.push_back(t4);
+	TLexeme t5(5.0);
+	v.push_back(t5);
+	TLexeme t6('(');
+	v.push_back(t6);
+	TLexeme t7('*');
+	v.push_back(t7);
+	TLexeme t8(4.0);
+	v.push_back(t8);
+	ASSERT_ANY_THROW(Error_checking(v));
+}
+
+TEST(Error_checking, throws_an_exception_when_the_brackets_are_swapped_2)
+{
+	string s = "(()1 * 4) -2()";
+	s = New_line_without_spaces(s);
+	vector<TLexeme> v = Create_lexeme_array(s);
+	ASSERT_ANY_THROW(Error_checking(v));
+}
+
+//TEST(Error_checking, temp)
+//{
+//	string s = "3.9.0.4";
+//	s = New_line_without_spaces(s);
+//	ASSERT_ANY_THROW(Error_checking(Create_lexeme_array(s)));
+//}

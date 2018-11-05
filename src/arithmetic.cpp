@@ -107,6 +107,10 @@ double Solver(const vector<TLexeme> &v)
 				ans = t1.GetValue().elem * t2.GetValue().elem;
 				break;
 			case '/':
+				if (abs(t2.GetValue().elem) < 1e-7)
+				{
+					throw "Division by zero";
+				}
 				ans = t1.GetValue().elem / t2.GetValue().elem;
 				break;
 			}
@@ -119,6 +123,19 @@ double Solver(const vector<TLexeme> &v)
 
 double Сonverting_number(const string& s, int index, int sign)
 {
+	int k = 0;
+	for (int i = 0; i < s.size(); i++)
+	{
+		if (s[i] == '.')
+		{
+			k++;
+		}
+		if (k > 1)
+		{
+			pair<string, int> err("Incorrect number", index + i);
+			throw err;
+		}
+	}
 	double ans;
 	if (s[0] == '.')
 	{
@@ -273,5 +290,102 @@ vector<TLexeme> Create_RPN_array(const vector<TLexeme>& v)
 	{
 		ans.push_back(s.pop());
 	}
+	return ans;
+}
+
+bool Type_checking(const vector<int>& v, int type)
+{
+	for (int i = 0; i < v.size(); i++)
+	{
+		if (v[i] == type)
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+
+void Error_checking(const vector<TLexeme>& v)
+{
+	map<int, vector<int>> m;
+	vector<int> a1 = { binary_operation, cl_bracket };
+	m[number] = a1;
+	vector<int> a2 = { op_bracket, number, unary_operation };
+	m[op_bracket] = a2;
+	vector<int> a3 = { cl_bracket, binary_operation };
+	m[cl_bracket] = a3;
+	vector<int> a4 = { op_bracket, number };
+	m[unary_operation] = a4;
+	vector<int> a5 = { op_bracket, number };
+	m[binary_operation] = a5;
+
+	TStack<pair<TLexeme, int>> s;
+	if (v[0].GetType() == cl_bracket || v[0].GetType() == binary_operation)
+	{
+		pair<string, int> err("Incorrect operation or bracket", 0);
+		throw err;
+	}
+	else if (v[v.size() - 1].GetType() == unary_operation || v[v.size() - 1].GetType() == binary_operation || v[v.size() - 1].GetType() == op_bracket)
+	{
+		pair<string, int> err("Incorrect operation or bracket", v.size() - 1);
+		throw err;
+	}
+	for (int i = 0; i < v.size() - 1; i++)
+	{
+		if (v[i].GetType() == op_bracket)
+		{
+			s.push(make_pair(v[i], i));
+		}
+		else if (v[i].GetType() == cl_bracket)
+		{
+			if (s.front().first.GetType() == op_bracket)
+			{
+				s.pop();
+			}
+			else
+			{
+				pair<string, int> err("Incorrect bracket", i);
+				throw err;
+			}
+		}
+		vector<int> t = m[v[i].GetType()];
+		if (Type_checking(t, v[i + 1].GetType()))
+		{
+			continue;
+		}
+		else
+		{
+			pair<string, int> err("Incorrect operand or operation", i);
+			throw err;
+		}
+	}
+	if (v[v.size() - 1].GetType() == op_bracket)
+	{
+		s.push(make_pair(v[v.size() - 1], v.size() - 1));
+	}
+	else if (v[v.size() - 1].GetType() == cl_bracket)
+	{
+		if (s.front().first.GetType() == op_bracket)
+		{
+			s.pop();
+		}
+		else
+		{
+			pair<string, int> err("Incorrect bracket", v.size() - 1);
+			throw err;
+		}
+	}
+	if (!s.isEmpty())
+	{
+		throw "Unpaired number of brackets";
+	}
+}
+
+double Calculate(const string& s)
+{
+	string temp = New_line_without_spaces(s);
+	vector<TLexeme> v = Create_lexeme_array(temp);
+	Error_checking(v);
+	double ans = Solver(Create_RPN_array(v));
 	return ans;
 }
