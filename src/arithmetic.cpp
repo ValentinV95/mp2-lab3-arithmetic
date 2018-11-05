@@ -347,7 +347,7 @@ void Error_checking(const vector<pair<TLexeme, int>>& v)
 		}
 		else
 		{
-			pair<int, int> err(missed_opperation_or_opperand, v[i].second);
+			pair<int, int> err(missed_operation_or_operand, v[i].second);
 			throw err;
 		}
 	}
@@ -406,7 +406,7 @@ string Error_output(pair<int, int> err)
 	case wrong_bracket_sequence:
 		temp = "Wrong bracket sequence: ";
 		break;
-	case missed_opperation_or_opperand:
+	case missed_operation_or_operand:
 		temp = "Missed operration or opperand: ";
 		break;
 	default:

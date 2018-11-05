@@ -26,7 +26,7 @@ enum errors
 	incorrect_first_symbol, 
 	incorrect_last_symbol, 
 	wrong_bracket_sequence, 
-	missed_opperation_or_opperand
+	missed_operation_or_operand
 };
 
 union elem_or_oper
