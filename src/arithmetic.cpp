@@ -1,8 +1,4 @@
 ﻿#include "arithmetic.h"
-#include "stack.h"
-#include <vector>
-#include <string>
-#include <set>
 #include <map>
 using namespace std;
 
@@ -70,12 +66,12 @@ int TLexeme::GetType() const
 	return type_elem;
 }
 
-double Solver(const vector<TLexeme> &v)
+double Solver(const vector<pair<TLexeme, int>> &v)
 {
 	TStack<TLexeme> s;
 	for (int i = 0; i < v.size(); i++)
 	{
-		TLexeme temp = v[i];
+		TLexeme temp = v[i].first;
 		if (temp.GetType() == number)
 		{
 			s.push(temp);
@@ -109,7 +105,8 @@ double Solver(const vector<TLexeme> &v)
 			case '/':
 				if (abs(t2.GetValue().elem) < 1e-7)
 				{
-					throw "Division by zero";
+					pair<int, int> err(division_by_zero, v[i].second);
+					throw err;
 				}
 				ans = t1.GetValue().elem / t2.GetValue().elem;
 				break;
@@ -132,19 +129,19 @@ double Сonverting_number(const string& s, int index, int sign)
 		}
 		if (k > 1)
 		{
-			pair<string, int> err("Incorrect number", index + i);
+			pair<int, int> err(incorrect_point, index + i);
 			throw err;
 		}
 	}
 	double ans;
 	if (s[0] == '.')
 	{
-		pair<string, int> err("Incorrect number", index);
+		pair<int, int> err(incorrect_point, index);
 		throw err;
 	}
 	else if (s[s.size() - 1] == '.')
 	{
-		pair<string, int> err("Incorrect number", index + s.size() - 1);
+		pair<int, int> err(incorrect_point, index + s.size() - 1);
 		throw err;
 	}
 	else
@@ -158,11 +155,11 @@ double Сonverting_number(const string& s, int index, int sign)
 	return ans;
 }
 
-TLexeme Check_number(const string &s, int &i, const set<char>& num, int sign)
+TLexeme Check_number(const string &s, int &i, int sign)
 {
 	string temp = "";
 	int pos = i, k = i;
-	while (!(num.find(s[k]) == num.end()) || s[k] == '.')
+	while ((s[k] >= '0' && s[k] <= '9') || s[k] == '.')
 	{
 		temp += s[k];
 		k++;
@@ -185,62 +182,57 @@ string New_line_without_spaces(const string &s)
 	return temp;
 }
 
-vector<TLexeme> Create_lexeme_array(const string& str)
+vector<pair<TLexeme, int>> Create_lexeme_array(const string& str)
 {
 	string s = New_line_without_spaces(str);
-	set<char> num;
-	for (char i = '0'; i <= '9'; i++)
-	{
-		num.insert(i);
-	}
-	vector<TLexeme> v;
+	vector<pair<TLexeme, int>> v;
 	for (int i = 0; i < s.size(); i++)
 	{
-		if (!(num.find(s[i]) == num.end()) || s[i] == '.')
+		if ((s[i] >= '0' && s[i] <= '9') || s[i] == '.')
 		{
-			TLexeme p = Check_number(s, i, num, positive);
-			v.push_back(p);
+			TLexeme p = Check_number(s, i, positive);
+			v.push_back(make_pair(p, i));
 		}
 		else if (i == 0 && s[i] == '-' && i + 1 < s.size())
 		{
-			if (!(num.find(s[i + 1]) == num.end()))
+			if (s[i + 1] >= '0' && s[i + 1] <= '9')
 			{
 				i++;
-				TLexeme p = Check_number(s, i, num, negative);
-				v.push_back(p);
+				TLexeme p = Check_number(s, i, negative);
+				v.push_back(make_pair(p, i));
 			}
 			else if (s[i + 1] == '(')
 			{
 				TLexeme p('-', unary_operation);
-				v.push_back(p);
+				v.push_back(make_pair(p, i));
 			}
 		}
-		else if (i != 0 && s[i - 1] == '(' && s[i] == '-' && i + 1 < s.size() && !(num.find(s[i + 1]) == num.end()))
+		else if (i != 0 && s[i - 1] == '(' && s[i] == '-' && i + 1 < s.size() && (s[i + 1] >= '0' && s[i + 1] <= '9'))
 		{
 			i++;
-			TLexeme p = Check_number(s, i, num, negative);
-			v.push_back(p);
+			TLexeme p = Check_number(s, i, negative);
+			v.push_back(make_pair(p, i));
 		}
 		else if (s[i] == '-' && i + 1 < s.size() && s[i + 1] == '(')
 		{
 			TLexeme p('-', unary_operation);
-			v.push_back(p);
+			v.push_back(make_pair(p, i));
 		}
 		else if (s[i] == '-' || s[i] == '+' || s[i] == '*' || s[i] == '/' || s[i] == '(' || s[i] == ')')
 		{
 			TLexeme p(s[i]);
-			v.push_back(p);
+			v.push_back(make_pair(p, i));
 		}
 		else
 		{
-			pair<string, int> err("Incorrect symbol", i);
+			pair<int, int> err(unknown_symbol, i);
 			throw err;
 		}
 	}
 	return v;
 }
 
-vector<TLexeme> Create_RPN_array(const vector<TLexeme>& v)
+vector<pair<TLexeme, int>> Create_RPN_array(const vector<pair<TLexeme, int>>& v)
 {
 	map<pair<char, int>, int> m;
 	m[make_pair('-', unary_operation)] = 3;
@@ -249,37 +241,37 @@ vector<TLexeme> Create_RPN_array(const vector<TLexeme>& v)
 	m[make_pair('+', binary_operation)] = 1;
 	m[make_pair('-', binary_operation)] = 1;
 	m[make_pair('(', op_bracket)] = 0;
-	TStack<TLexeme> s;
-	vector<TLexeme> ans;
+	TStack<pair<TLexeme, int>> s;
+	vector<pair<TLexeme, int>> ans;
 	for (int i = 0; i < v.size(); i++)
 	{
-		if (v[i].GetType() == number)
+		if (v[i].first.GetType() == number)
 		{
 			ans.push_back(v[i]);
 		}
-		else if (v[i].GetValue().oper == '*' || v[i].GetValue().oper == '/' || v[i].GetValue().oper == '+' || v[i].GetValue().oper == '-')
+		else if (v[i].first.GetValue().oper == '*' || v[i].first.GetValue().oper == '/' || v[i].first.GetValue().oper == '+' || v[i].first.GetValue().oper == '-')
 		{
-			int priority = m[make_pair(v[i].GetValue().oper, v[i].GetType())];
-			if (s.isEmpty() || m[make_pair(s.front().GetValue().oper, s.front().GetType())] < priority)
+			int priority = m[make_pair(v[i].first.GetValue().oper, v[i].first.GetType())];
+			if (s.isEmpty() || m[make_pair(s.front().first.GetValue().oper, s.front().first.GetType())] < priority)
 			{
 				s.push(v[i]);
 			}
 			else
 			{
-				while (!s.isEmpty() && m[make_pair(s.front().GetValue().oper, s.front().GetType())] >= priority)
+				while (!s.isEmpty() && m[make_pair(s.front().first.GetValue().oper, s.front().first.GetType())] >= priority)
 				{
 					ans.push_back(s.pop());
 				}
 				s.push(v[i]);
 			}
 		}
-		else if (v[i].GetType() == op_bracket)
+		else if (v[i].first.GetType() == op_bracket)
 		{
 			s.push(v[i]);
 		}
-		else if (v[i].GetType() == cl_bracket)
+		else if (v[i].first.GetType() == cl_bracket)
 		{
-			while (!s.isEmpty() && s.front().GetType() != op_bracket)
+			while (!s.isEmpty() && s.front().first.GetType() != op_bracket)
 			{
 				ans.push_back(s.pop());
 			}
@@ -305,7 +297,7 @@ bool Type_checking(const vector<int>& v, int type)
 	return 0;
 }
 
-void Error_checking(const vector<TLexeme>& v)
+void Error_checking(const vector<pair<TLexeme, int>>& v)
 {
 	map<int, vector<int>> m;
 	vector<int> a1 = { binary_operation, cl_bracket };
@@ -320,72 +312,105 @@ void Error_checking(const vector<TLexeme>& v)
 	m[binary_operation] = a5;
 
 	TStack<pair<TLexeme, int>> s;
-	if (v[0].GetType() == cl_bracket || v[0].GetType() == binary_operation)
+	if (v[0].first.GetType() == cl_bracket || v[0].first.GetType() == binary_operation)
 	{
-		pair<string, int> err("Incorrect operation or bracket", 0);
+		pair<int, int> err(incorrect_first_symbol, v[0].second);
 		throw err;
 	}
-	else if (v[v.size() - 1].GetType() == unary_operation || v[v.size() - 1].GetType() == binary_operation || v[v.size() - 1].GetType() == op_bracket)
+	else if (v[v.size() - 1].first.GetType() == unary_operation || v[v.size() - 1].first.GetType() == binary_operation || v[v.size() - 1].first.GetType() == op_bracket)
 	{
-		pair<string, int> err("Incorrect operation or bracket", v.size() - 1);
+		pair<int, int> err(incorrect_last_symbol, v[v.size() - 1].second);
 		throw err;
 	}
 	for (int i = 0; i < v.size() - 1; i++)
 	{
-		if (v[i].GetType() == op_bracket)
+		if (v[i].first.GetType() == op_bracket)
 		{
-			s.push(make_pair(v[i], i));
+			s.push(v[i]);
 		}
-		else if (v[i].GetType() == cl_bracket)
+		else if (v[i].first.GetType() == cl_bracket)
 		{
-			if (s.front().first.GetType() == op_bracket)
+			if (!s.isEmpty() && s.front().first.GetType() == op_bracket)
 			{
 				s.pop();
 			}
 			else
 			{
-				pair<string, int> err("Incorrect bracket", i);
+				pair<int, int> err(wrong_bracket_sequence, v[i].second);
 				throw err;
 			}
 		}
-		vector<int> t = m[v[i].GetType()];
-		if (Type_checking(t, v[i + 1].GetType()))
+		vector<int> t = m[v[i].first.GetType()];
+		if (Type_checking(t, v[i + 1].first.GetType()))
 		{
 			continue;
 		}
 		else
 		{
-			pair<string, int> err("Incorrect operand or operation", i);
+			pair<int, int> err(missed_opperation_or_opperand, v[i].second);
 			throw err;
 		}
 	}
-	if (v[v.size() - 1].GetType() == op_bracket)
+	if (v[v.size() - 1].first.GetType() == op_bracket)
 	{
-		s.push(make_pair(v[v.size() - 1], v.size() - 1));
+		s.push(v[v.size() - 1]);
 	}
-	else if (v[v.size() - 1].GetType() == cl_bracket)
+	else if (v[v.size() - 1].first.GetType() == cl_bracket)
 	{
-		if (s.front().first.GetType() == op_bracket)
+		if (!s.isEmpty() && s.front().first.GetType() == op_bracket)
 		{
 			s.pop();
 		}
 		else
 		{
-			pair<string, int> err("Incorrect bracket", v.size() - 1);
+			pair<int, int> err(wrong_bracket_sequence, v[v.size() - 1].second);
 			throw err;
 		}
 	}
 	if (!s.isEmpty())
 	{
-		throw "Unpaired number of brackets";
+		pair<int, int> err(wrong_bracket_sequence, v[v.size() - 1].second);
+		throw err;
 	}
 }
 
 double Calculate(const string& s)
 {
 	string temp = New_line_without_spaces(s);
-	vector<TLexeme> v = Create_lexeme_array(temp);
+	vector<pair<TLexeme, int>> v = Create_lexeme_array(temp);
 	Error_checking(v);
 	double ans = Solver(Create_RPN_array(v));
 	return ans;
+}
+
+string Error_output(pair<int, int> err)
+{
+	string temp;
+	switch (err.first)
+	{
+	case division_by_zero:
+		temp = "Division by zero in symbol: ";
+		break;
+	case incorrect_point:
+		temp = "Incorrect point in symbol: ";
+		break;
+	case unknown_symbol:
+		temp = "Unknown symbol: ";
+		break;
+	case incorrect_first_symbol:
+		temp = "Incorrect first symbol: ";
+		break;
+	case incorrect_last_symbol:
+		temp = "Incorrect last symbol: ";
+		break;
+	case wrong_bracket_sequence:
+		temp = "Wrong bracket sequence: ";
+		break;
+	case missed_opperation_or_opperand:
+		temp = "Missed operration or opperand: ";
+		break;
+	default:
+		temp = "Unknown error: ";
+	}
+	return temp;
 }
