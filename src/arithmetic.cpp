@@ -49,7 +49,7 @@ void priority_creation()
 vector<vector<int>> parameter(26);
 bool check_parameters()
 {
-    for(int i = 0; i < 26; i++)
+    for(int i = 0; i < parameter.size(); i++)
     {
         if(!parameter[i].empty())
         {
@@ -105,31 +105,31 @@ bool check(Lexem last, Lexem& cur, int& flag)
         return true;
     }
     //incorrect lexem after operand
-    if((last.Is_Num() && cur.Is_Num()) || (last.Is_Num() && (cur.Get_Op() == "(")) || (last.Is_Num() && cur.Is_Un_Op()))
+    if( last.Is_Num() && ( cur.Is_Num() || (cur.Get_Op() == "(") || cur.Is_Un_Op() ))
     {
         flag = 0;
         return false;
     }
     //incorrect lexem after operation
-    if((last.Is_Op() && cur.Is_Op()) || (last.Is_Op() && (cur.Get_Op() == ")")))
+    if( last.Is_Op() && ( cur.Is_Op() || (cur.Get_Op() == ")") ))
     {
         flag = 1;
         return false;       
     }
     //incorrect lexem after closing bracket
-    if(((last.Get_Op() == ")") && cur.Is_Num()) || ((last.Get_Op() == ")") && (cur.Get_Op() == "(")) || ((last.Get_Op() == ")") && cur.Is_Un_Op()))
+    if( (last.Get_Op() == ")") && ( cur.Is_Num() || (cur.Get_Op() == "(") || cur.Is_Un_Op() ))
     {
         flag = 0;
         return false;
     }   
     //incorrect lexem after opening bracket
-    if(((last.Get_Op() == "(") && cur.Is_Op()) || ((last.Get_Op() == "(") && (cur.Get_Op() == ")")))
+    if( (last.Get_Op() == "(") && ( cur.Is_Op() || (cur.Get_Op() == ")") ))
     {
         flag = 1;
         return false;       
     }
     //incorrect lexem after unary operation
-    if((last.Is_Un_Op() && (cur.Get_Op() == ")")) || (last.Is_Un_Op() && (cur.Is_Op())))
+    if( last.Is_Un_Op() && ( (cur.Get_Op() == ")") || cur.Is_Op() ))
     {
         flag = 1;
         return false;       
