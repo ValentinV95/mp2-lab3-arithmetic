@@ -3,10 +3,10 @@ int main()
 {
 	string s;
 	int t = 0;
-	bool check = true;
+	bool check;
 	priority_creation();
 	cout.precision(10);
-	cout << "Arithmetic_expressions_interpreter_3.2" << endl;
+	cout << "Arithmetic_expressions_interpreter_3.3" << endl;
 	cout << endl;
 	cout << "Expression may contain:" << endl;
 	cout << "Double numbers separated by point: 3.14" << endl;
@@ -16,10 +16,16 @@ int main()
 	cout << endl;
 	do {
 		vector <Lexem> str;
+		cout << "Enter your data" << endl;
 		do { 
+			check = true;
 			try{
-			    cout << "Enter your data" << endl;
-			    cin >> s;
+			   	string s;
+				getline(cin, s);
+				if (s == "")
+				{
+					getline(cin, s);
+				}
 			    from_string_to_vector(s, str);
 			}
 			catch(int er)
@@ -70,6 +76,7 @@ int main()
 			}
 			cout << "Exit - 0" << endl;
 			cin >> t;
+			cout.flush();
 			cout << endl;
 		} while(t == 2 && check_parameters());
     clear_parameters();

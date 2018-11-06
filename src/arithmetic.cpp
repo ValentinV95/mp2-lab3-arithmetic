@@ -143,7 +143,7 @@ void from_string_to_vector(string s, vector<Lexem>& str)
     double integer = 0.0; //The integer part of number
     double fract = 0.0; //Fractional part of the number
     string math_f = ""; //Name of mathematical function
-	if (!Is_Digit(s[0]) && s[0] != '(' && s[0] != '-' && !Is_Letter(s[0])) //Ckeck the first element
+	if (!Is_Digit(s[0]) && s[0] != '(' && s[0] != '-' && !Is_Letter(s[0]) && s[0] != ' ') //Ckeck the first element
 	{
         throw(6);
 	}
@@ -165,6 +165,10 @@ void from_string_to_vector(string s, vector<Lexem>& str)
         int f = i; //Flag for reading number
 		Lexem cur(s[i]); //The current lexem 
 		int flag; //Flag to determine the type of error
+        if(s[i] == ' ')
+        {
+            continue;
+        }
         while(Is_Digit(s[i])) //Read integer part of number
         {
             integer = integer * 10.0 + double(s[i] - 48);
@@ -267,12 +271,12 @@ void from_string_to_vector(string s, vector<Lexem>& str)
     }
 	if (!bkt.IsEmpty()) //No matching closing bracket
 	{
-        throw(make_pair(2,s.size() + 1));
+        throw(make_pair(2,(int)s.size() + 1));
 	}
     int flag;
     if(str.size() > 1) //Ckeck the last element
     {
-        if(!str.back().Is_Num() && str.back().Get_Op() != ")")
+        if(!str.back().Is_Num() && str.back().Get_Op() != ")" && s[s.size() - 1] != ' ')
         {
             throw(8);
         }
@@ -280,6 +284,11 @@ void from_string_to_vector(string s, vector<Lexem>& str)
         {
             throw(make_pair(4 + flag, str.size() + 1));
         }
+    }
+    if(str.empty())
+    {
+		string s = "Empty string";
+         throw(make_pair(7,s));
     }
 }
 void do_op(Stack<double>&a, string s)
