@@ -1,5 +1,5 @@
-#ifndef stack
-#define stack
+#ifndef stack_h
+#define stack_h
 
 #include "iostream"
 #include "vector"

@@ -6,7 +6,7 @@ int main()
 	bool check;
 	priority_creation();
 	cout.precision(10);
-	cout << "Arithmetic_expressions_interpreter_3.3" << endl;
+	cout << "Arithmetic_expressions_interpreter_3.4" << endl;
 	cout << endl;
 	cout << "Expression may contain:" << endl;
 	cout << "Double numbers separated by point: 3.14" << endl;
@@ -16,6 +16,7 @@ int main()
 	cout << endl;
 	do {
 		vector <Lexem> str;
+		vector <Lexem> rpn;
 		cout << "Enter your data" << endl;
 		do { 
 			check = true;
@@ -58,7 +59,8 @@ int main()
           			set_parameters(str,param);
 					cout << endl;
 				}
-				cout << "Answer = " << calc(str) << endl;
+				rpn = RPN(str);
+				cout << "Answer = " << calc(rpn) << endl;
 				cout << endl;
 			}
 			catch(double er)

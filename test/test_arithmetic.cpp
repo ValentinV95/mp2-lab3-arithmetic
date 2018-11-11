@@ -8,7 +8,7 @@ TEST(Lexem, can_create_operand)
 }
 TEST(Lexem, can_create_operation)
 {
-    char d = '+';
+    string d = "+";
     ASSERT_NO_THROW(Lexem t(d));
 }
 TEST(Lexem, can_create_unary_operation)
@@ -24,7 +24,7 @@ TEST(Lexem, can_get_num)
 }
 TEST(Lexem, can_get_op)
 {
-    char d = '/';
+    string d = "/";
     Lexem t(d);
     EXPECT_EQ("/",t.Get_Op());
 }
@@ -42,7 +42,7 @@ TEST(Lexem, Is_Num_return_true_when_create_operand)
 }
 TEST(Lexem, Is_Num_return_false_when_create_operation)
 {
-    char d = '*';
+    string d = "/";
     Lexem t(d);
     EXPECT_EQ(false,t.Is_Num());
 }
@@ -153,7 +153,7 @@ TEST(Lexem, find_error_when_wrong_bracket_sequence_3)
 
 TEST(Lexem, find_error_when_enter_unacceptable_substring_1)
 {
-    string s = "(2*8)/2-(9/3)+Ln3+(-1)*exp2";
+    string s = "(2*8)+Ln3+(-1)*exp2";
     vector<Lexem> t;
     ASSERT_ANY_THROW(from_string_to_vector(s, t));
 }
@@ -217,6 +217,7 @@ TEST(Lexem, calculation_validation_1)
     vector<Lexem> t;
     priority_creation();
     from_string_to_vector(s,t);
+    t = RPN(t);
     EXPECT_NEAR(2.0*8.0,calc(t),eps);
 }
 TEST(Lexem, calculation_validation_2)
@@ -225,6 +226,7 @@ TEST(Lexem, calculation_validation_2)
     vector<Lexem> t;
     priority_creation();
     from_string_to_vector(s,t);
+    t = RPN(t);
     EXPECT_NEAR(8.0,calc(t),eps);
 }
 TEST(Lexem, calculation_validation_3)
@@ -233,6 +235,7 @@ TEST(Lexem, calculation_validation_3)
     vector<Lexem> t;
     priority_creation();
     from_string_to_vector(s,t);
+    t = RPN(t);
     EXPECT_NEAR(-8.0,calc(t),eps);
 }
 TEST(Lexem, calculation_validation_4)
@@ -241,6 +244,7 @@ TEST(Lexem, calculation_validation_4)
     vector<Lexem> t;
     priority_creation();
     from_string_to_vector(s,t);
+    t = RPN(t);
     EXPECT_NEAR(3,calc(t),eps);
 }
 TEST(Lexem, calculation_validation_5)
@@ -249,6 +253,7 @@ TEST(Lexem, calculation_validation_5)
     vector<Lexem> t;
     priority_creation();
     from_string_to_vector(s,t);
+    t = RPN(t);
     EXPECT_NEAR(exp(1),calc(t),eps);
 }
 TEST(Lexem, calculation_validation_6)
@@ -257,6 +262,7 @@ TEST(Lexem, calculation_validation_6)
     vector<Lexem> t;
     priority_creation();
     from_string_to_vector(s,t);
+    t = RPN(t);
     EXPECT_NEAR(216,calc(t),eps);
 }
 TEST(Lexem, calculation_validation_7)
@@ -265,6 +271,7 @@ TEST(Lexem, calculation_validation_7)
     vector<Lexem> t;
     priority_creation();
     from_string_to_vector(s,t);
+    t = RPN(t);
     EXPECT_NEAR(36,calc(t),eps);
 }
 TEST(Lexem, calculation_validation_8)
@@ -273,6 +280,7 @@ TEST(Lexem, calculation_validation_8)
     vector<Lexem> t;
     priority_creation();
     from_string_to_vector(s,t);
+    t = RPN(t);
     EXPECT_NEAR(-5.00001,calc(t),eps);
 }
 TEST(Lexem, calculation_validation_9)
@@ -282,6 +290,7 @@ TEST(Lexem, calculation_validation_9)
     vector<Lexem> t;
     priority_creation();
     from_string_to_vector(s,t);
+    t = RPN(t);
     EXPECT_NEAR(ans,calc(t),eps);
 }
 TEST(Lexem, calculation_validation_10)
@@ -290,7 +299,28 @@ TEST(Lexem, calculation_validation_10)
     vector<Lexem> t;
     priority_creation();
     from_string_to_vector(s,t);
+    t = RPN(t);
     EXPECT_NEAR(4.0,calc(t),eps);
+}
+TEST(Lexem, calculation_validation_11)
+{
+    string s = "2.36548---2158+9";
+    double ans = 2.36548 - 2158 + 9;
+    vector<Lexem> t;
+    priority_creation();
+    from_string_to_vector(s,t);
+    t = RPN(t);
+    EXPECT_NEAR(ans,calc(t),eps);
+}
+TEST(Lexem, calculation_validation_12)
+{
+    string s = "5.1413 + -3.1415";
+    double ans = 5.1413 - 3.1415;
+    vector<Lexem> t;
+    priority_creation();
+    from_string_to_vector(s,t);
+    t = RPN(t);
+    EXPECT_NEAR(ans,calc(t),eps);
 }
 
 /*Correctness of math expression */
@@ -301,6 +331,7 @@ TEST(Lexem, correctness_of_math_expression_div_0_1)
     vector<Lexem> t;
     priority_creation();
     from_string_to_vector(s,t);
+    t = RPN(t);
     ASSERT_ANY_THROW(calc(t));
 }
 TEST(Lexem, correctness_of_math_expression_div_0_2)
@@ -309,6 +340,7 @@ TEST(Lexem, correctness_of_math_expression_div_0_2)
     vector<Lexem> t;
     priority_creation();
     from_string_to_vector(s,t);
+    t = RPN(t);
     ASSERT_ANY_THROW(calc(t));
 }
 TEST(Lexem, correctness_of_math_expression_negative_argument_1)
@@ -317,6 +349,7 @@ TEST(Lexem, correctness_of_math_expression_negative_argument_1)
     vector<Lexem> t;
     priority_creation();
     from_string_to_vector(s,t);
+    t = RPN(t);
     ASSERT_ANY_THROW(calc(t));
 }
 TEST(Lexem, correctness_of_math_expression_negative_argument_2)
@@ -325,6 +358,7 @@ TEST(Lexem, correctness_of_math_expression_negative_argument_2)
     vector<Lexem> t;
     priority_creation();
     from_string_to_vector(s,t);
+    t = RPN(t);
     ASSERT_ANY_THROW(calc(t));
 }
 TEST(Lexem, correctness_of_math_expression_negative_argument_3)
@@ -333,6 +367,7 @@ TEST(Lexem, correctness_of_math_expression_negative_argument_3)
     vector<Lexem> t;
     priority_creation();
     from_string_to_vector(s,t);
+    t = RPN(t);
     ASSERT_ANY_THROW(calc(t));
 }
 
@@ -356,6 +391,7 @@ TEST(Lexem, calculation_validation_with_parameters_1)
     from_string_to_vector(s,t);
     set_parameters(t,param);
     clear_parameters();
+    t = RPN(t);
 
     EXPECT_NEAR(ans,calc(t),eps);
 }
@@ -377,6 +413,7 @@ TEST(Lexem, calculation_validation_with_parameters_2)
     from_string_to_vector(s,t);
     set_parameters(t,param);
     clear_parameters();
+    t = RPN(t);
 
     EXPECT_NEAR(ans,calc(t),eps);
 }
@@ -399,6 +436,7 @@ TEST(Lexem, calculation_validation_with_parameters_3)
     from_string_to_vector(s,t);
     set_parameters(t,param);
     clear_parameters();
+    t = RPN(t);
 
     EXPECT_NEAR(ans,calc(t),eps);
 }
@@ -419,6 +457,7 @@ TEST(Lexem, calculation_validation_with_parameters_4)
     from_string_to_vector(s,t);
     set_parameters(t,param);
     clear_parameters();
+    t = RPN(t);
 
     EXPECT_NEAR(ans,calc(t),eps);
 }
@@ -441,6 +480,7 @@ TEST(Lexem, correctness_of_math_expression_with_parameters_div_0_1)
     from_string_to_vector(s,t);
     set_parameters(t,param);
     clear_parameters();
+    t = RPN(t);
 
     ASSERT_ANY_THROW(calc(t));
 }
@@ -460,6 +500,7 @@ TEST(Lexem, correctness_of_math_expression_with_parameters_div_0_2)
     from_string_to_vector(s,t);
     set_parameters(t,param);
     clear_parameters();
+    t = RPN(t);
     
     ASSERT_ANY_THROW(calc(t));
 }
@@ -479,6 +520,7 @@ TEST(Lexem, correctness_of_math_expression_with_parameters_negative_argument_1)
     from_string_to_vector(s,t);
     set_parameters(t,param);
     clear_parameters();
+    t = RPN(t);
 
     ASSERT_ANY_THROW(calc(t));
 }
@@ -500,6 +542,7 @@ TEST(Lexem, correctness_of_math_expression_with_parameters_negative_argument_2)
     from_string_to_vector(s,t);
     set_parameters(t,param);
     clear_parameters();
+    t = RPN(t);
 
     ASSERT_ANY_THROW(calc(t));
 }
@@ -518,6 +561,7 @@ TEST(Lexem, correctness_of_math_expression_with_parameters_negative_argument_3)
     from_string_to_vector(s,t);
     set_parameters(t,param);
     clear_parameters();
+    t = RPN(t);
 
     ASSERT_ANY_THROW(calc(t));
 }
