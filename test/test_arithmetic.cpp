@@ -322,6 +322,26 @@ TEST(Lexem, calculation_validation_12)
     t = RPN(t);
     EXPECT_NEAR(ans,calc(t),eps);
 }
+TEST(Lexem, calculation_validation_13)
+{
+	string s = "2 - - - - 2";
+	double ans = 4;
+	vector<Lexem> t;
+	priority_creation();
+	from_string_to_vector(s, t);
+	t = RPN(t);
+	EXPECT_NEAR(ans, calc(t), eps);
+}
+TEST(Lexem, calculation_validation_14)
+{
+	string s = "2 + - - - - 2";
+	double ans = 4;
+	vector<Lexem> t;
+	priority_creation();
+	from_string_to_vector(s, t);
+	t = RPN(t);
+	EXPECT_NEAR(ans, calc(t), eps);
+}
 
 /*Correctness of math expression */
 

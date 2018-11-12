@@ -205,10 +205,18 @@ void Push_Unary_Minus(vector<Lexem>& str, string& s, int& i)
     i--;
     Lexem curus("--");
 	Lexem curs("-");
+	Lexem cura("+");
 	int flag;
-	if (k % 2 && !str.empty() && check(str.back(), curs, flag))
+	if (!str.empty() && check(str.back(), curs, flag))
 	{
-		str.push_back(curs);
+		if (k % 2)
+		{
+			str.push_back(curs);
+		}
+		else
+		{
+			str.push_back(cura);
+		}
 	}
     else if(k % 2)
     {
@@ -254,7 +262,16 @@ bool check(Lexem last, Lexem& cur, int& flag)
 void from_string_to_vector(string s, vector<Lexem>& str)
 {
     Stack<char> bkt; //Checking the bracket sequence
-	if (!Is_Digit(s[0]) && s[0] != '(' && s[0] != '-' && !Is_Letter(s[0]) && s[0] != ' ') //Ckeck the first element
+	string st;
+	for (int i = 0; i < s.size(); i++)
+	{
+		if (s[i] != ' ')
+		{
+			st += s[i];
+		}
+	}
+	s = st;
+	if (!Is_Digit(s[0]) && s[0] != '(' && s[0] != '-' && !Is_Letter(s[0])) //Ckeck the first element
 	{
         throw(6);
 	}
@@ -273,10 +290,6 @@ void from_string_to_vector(string s, vector<Lexem>& str)
         temp += s[i];
 		Lexem cur(temp); //The current lexem 
 		int flag; //Flag to determine the type of error
-        if(s[i] == ' ')
-        {
-            continue;
-        }
         if(Is_Digit(s[i]))
         {
             Push_Double(str, s, i);
