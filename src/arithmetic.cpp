@@ -203,33 +203,16 @@ void Push_Unary_Minus(vector<Lexem>& str, string& s, int& i)
         k++;
     } 
     i--;
-    if(f == 0 || str.back().Get_Op() == "+")
+    Lexem curus("--");
+	Lexem curs("-");
+	int flag;
+	if (k % 2 && !str.empty() && check(str.back(), curs, flag))
+	{
+		str.push_back(curs);
+	}
+    else if(k % 2)
     {
-        Lexem curs("--");
-        if(k % 2)
-        {
-            str.push_back(curs);
-        }
-        return;
-    }
-    else if( (str.back().Get_Op() == "(") && (k % 2) )
-    {
-        string un_sub = "--";
-		Lexem curt(un_sub);
-        str.push_back(curt);
-        return;
-    } 
-    else if(str.back().Get_Op() == "("){return;}
-    else
-    {
-		Lexem curs("-");
-        Lexem cura("+");
-        int flag;
-        if(!check(str.back(),curs,flag)) //Wrong order of operations and operands
-        {
-            throw(make_pair(4 + flag,i + 1));
-        }
-        str.push_back((k % 2) ? curs : cura);
+        str.push_back(curus);
     }
 }
 

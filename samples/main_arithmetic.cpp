@@ -6,7 +6,7 @@ int main()
 	bool check;
 	priority_creation();
 	cout.precision(10);
-	cout << "Arithmetic_expressions_interpreter_3.4" << endl;
+	cout << "Arithmetic_expressions_interpreter_3.5" << endl;
 	cout << endl;
 	cout << "Expression may contain:" << endl;
 	cout << "Double numbers separated by point: 3.14" << endl;
