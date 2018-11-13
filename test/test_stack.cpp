@@ -45,14 +45,6 @@ TEST(TStack, can_check_if_stack_is_empty)
 	EXPECT_EQ(s.isEmpty(), true);
 }
 
-TEST(TStack, can_check_if_stack_is_full)
-{
-	TStack<int> s(1);
-	EXPECT_EQ(s.isFull(), false);
-	s.push(15);
-	EXPECT_EQ(s.isFull(), true);
-}
-
 TEST(TStack, can_delete_all_elements)
 {
 	TStack<int> s(2);

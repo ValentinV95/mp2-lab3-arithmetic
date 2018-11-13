@@ -9,7 +9,11 @@ TLexeme::TLexeme()
 
 TLexeme::TLexeme(char ch, int p)
 {
-	if (p == binary_operation && (ch == '*' || ch == '/' || ch == '+' || ch == '-'))
+	if ((p != binary_operation && p != unary_operation) || (ch != '*' && ch != '/' && ch != '+' && ch != '-' && ch != ')' && ch != '('))
+	{
+		throw "Incorrect initialization";
+	}
+	else if (p == binary_operation && (ch == '*' || ch == '/' || ch == '+' || ch == '-'))
 	{
 		type_elem = binary_operation;
 		value.oper = ch;
@@ -28,10 +32,6 @@ TLexeme::TLexeme(char ch, int p)
 	{
 		type_elem = cl_bracket;
 		value.oper = ch;
-	}
-	else
-	{
-		type_elem = no_type;
 	}
 }
 
@@ -182,45 +182,184 @@ string New_line_without_spaces(const string &s)
 	return temp;
 }
 
+pair<bool, int> Check_unary_minus(const string& s, int &i)
+{
+	if (i == 0)
+	{
+		if (s[0] == '-' && s.size() > 1)
+		{
+			if (s[1] >= '0' && s[1] <= '9')
+			{
+				i++;
+				return make_pair(true, 1);
+			}
+			else if (s[1] == '(')
+			{
+				return make_pair(true, 2);
+			}
+			else if (s[1] == '-')
+			{
+				int k = 0;
+				while (s[i] == '-')
+				{
+					k++;
+					i++;
+				}
+				if (s[i] >= '0' && s[i] <= '9')
+				{
+					if (k & 1)
+					{
+						return make_pair(true, 1);
+					}
+					else
+					{
+						return make_pair(true, 0);
+					}
+				}
+				else if (s[i] == '(')
+				{
+					return make_pair(true, 3);
+				}
+			}
+		}
+		return make_pair(false, -1);
+	}
+	else if (i + 1 < s.size())
+	{
+		if ((s[i - 1] == '(' || s[i - 1] == '+' || s[i - 1] == '-' || s[i - 1] == '*' || s[i - 1] == '/') && s[i] == '-' && (s[i + 1] >= '0' && s[i + 1] <= '9'))
+		{
+			i++;
+			return make_pair(true, 1);
+		}
+		else if (s[i] == '-' && s[i + 1] == '(')
+		{
+			return make_pair(true, 2);
+		}
+		else if (s[i] == '-' && s[i + 1] == '-')
+		{
+			int k = 0;
+			while (s[i] == '-')
+			{
+				k++;
+				i++;
+			}
+			if (s[i] >= '0' && s[i] <= '9')
+			{
+				if (k & 1)
+				{
+					return make_pair(true, 1);
+				}
+				else
+				{
+					return make_pair(true, 0);
+				}
+			}
+			else if (s[i] == '(')
+			{
+				if (k & 1)
+				{
+					return make_pair(true, 3);
+				}
+				else
+				{
+					return make_pair(true, 4);
+				}
+			}
+		}
+		return make_pair(false, -1);
+	}
+	else
+	{
+		return make_pair(false, -1);
+	}
+}
+
 vector<pair<TLexeme, int>> Create_lexeme_array(const string& str)
 {
 	string s = New_line_without_spaces(str);
 	vector<pair<TLexeme, int>> v;
-	for (int i = 0; i < s.size(); i++)
+	int i = 0;
+	pair<bool, int> temp = Check_unary_minus(s, i);
+	if (temp.first)
 	{
-		if ((s[i] >= '0' && s[i] <= '9') || s[i] == '.')
+		if (temp.second == 0)
 		{
+			TLexeme p0('+');
+			v.push_back(make_pair(p0, i - 1));
 			TLexeme p = Check_number(s, i, positive);
 			v.push_back(make_pair(p, i));
 		}
-		else if (i == 0 && s[i] == '-' && i + 1 < s.size())
+		else if (temp.second == 1)
 		{
-			if (s[i + 1] >= '0' && s[i + 1] <= '9')
-			{
-				i++;
-				TLexeme p = Check_number(s, i, negative);
-				v.push_back(make_pair(p, i));
-			}
-			else if (s[i + 1] == '(')
-			{
-				TLexeme p('-', unary_operation);
-				v.push_back(make_pair(p, i));
-			}
-		}
-		else if (i != 0 && s[i - 1] == '(' && s[i] == '-' && i + 1 < s.size() && (s[i + 1] >= '0' && s[i + 1] <= '9'))
-		{
-			i++;
 			TLexeme p = Check_number(s, i, negative);
-			v.push_back(make_pair(p, i));
+			v.push_back(make_pair(p, i - 1));
 		}
-		else if (s[i] == '-' && i + 1 < s.size() && s[i + 1] == '(')
+		else if (temp.second == 2)
 		{
 			TLexeme p('-', unary_operation);
 			v.push_back(make_pair(p, i));
 		}
+		else if (temp.second == 3)
+		{
+			TLexeme p0('-', unary_operation);
+			v.push_back(make_pair(p0, i - 1));
+			TLexeme p('(');
+			v.push_back(make_pair(p, i));
+		}
+		else if (temp.second == 4)
+		{
+			TLexeme p0('+');
+			v.push_back(make_pair(p0, i - 1));
+			TLexeme p('(');
+			v.push_back(make_pair(p, i));
+		}
+		i++;
+	}
+	for (; i < s.size(); i++)
+	{
+		temp = Check_unary_minus(s, i);
+		if (temp.first)
+		{
+			if (temp.second == 0)
+			{
+				TLexeme p0('+');
+				v.push_back(make_pair(p0, i - 1));
+				TLexeme p = Check_number(s, i, positive);
+				v.push_back(make_pair(p, i));
+			}
+			else if (temp.second == 1)
+			{
+				TLexeme p = Check_number(s, i, negative);
+				v.push_back(make_pair(p, i - 1));
+			}
+			else if (temp.second == 2)
+			{
+				TLexeme p('-', unary_operation);
+				v.push_back(make_pair(p, i));
+			}
+			else if (temp.second == 3)
+			{
+				TLexeme p0('-', unary_operation);
+				v.push_back(make_pair(p0, i - 1));
+				TLexeme p('(');
+				v.push_back(make_pair(p, i));
+			}
+			else if (temp.second == 4)
+			{
+				TLexeme p0('+');
+				v.push_back(make_pair(p0, i - 1));
+				TLexeme p('(');
+				v.push_back(make_pair(p, i));
+			}
+		}
 		else if (s[i] == '-' || s[i] == '+' || s[i] == '*' || s[i] == '/' || s[i] == '(' || s[i] == ')')
 		{
 			TLexeme p(s[i]);
+			v.push_back(make_pair(p, i));
+		}
+		else if ((s[i] >= '0' && s[i] <= '9') || s[i] == '.')
+		{
+			TLexeme p = Check_number(s, i, positive);
 			v.push_back(make_pair(p, i));
 		}
 		else
@@ -306,9 +445,9 @@ void Error_checking(const vector<pair<TLexeme, int>>& v)
 	m[op_bracket] = a2;
 	vector<int> a3 = { cl_bracket, binary_operation };
 	m[cl_bracket] = a3;
-	vector<int> a4 = { op_bracket, number };
+	vector<int> a4 = { op_bracket, number, unary_operation };
 	m[unary_operation] = a4;
-	vector<int> a5 = { op_bracket, number };
+	vector<int> a5 = { op_bracket, number, unary_operation };
 	m[binary_operation] = a5;
 
 	TStack<pair<TLexeme, int>> s;
@@ -376,8 +515,7 @@ void Error_checking(const vector<pair<TLexeme, int>>& v)
 
 double Calculate(const string& s)
 {
-	string temp = New_line_without_spaces(s);
-	vector<pair<TLexeme, int>> v = Create_lexeme_array(temp);
+	vector<pair<TLexeme, int>> v = Create_lexeme_array(s);
 	Error_checking(v);
 	double ans = Solver(Create_RPN_array(v));
 	return ans;

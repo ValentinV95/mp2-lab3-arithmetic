@@ -888,6 +888,31 @@ TEST(Calculate, can_calculate_3)
 	ASSERT_NEAR(Calculate("1.215235 -6.124 * 124.566 / 12.16"), -61.5184972368421, eps);
 }
 
+TEST(Calculate, can_calculate_4)
+{
+	ASSERT_NEAR(Calculate("1.3 - -1.3"), 2.6, eps);
+}
+
+TEST(Calculate, can_calculate_5)
+{
+	ASSERT_NEAR(Calculate("2 - - - - 4"), 6, eps);
+}
+
+TEST(Calculate, can_calculate_6)
+{
+	ASSERT_NEAR(Calculate("8 / -4"), -2, eps);
+}
+
+TEST(Calculate, can_calculate_7)
+{
+	ASSERT_NEAR(Calculate("-----(2 + -3)"), 1, eps);
+}
+
+TEST(Calculate, can_calculate_8)
+{
+	ASSERT_NEAR(Calculate("4 * -(3 -- 2)"), -20, eps);
+}
+
 TEST(Calculate, can_not_calculate_wrong_expression_1)
 {
 	ASSERT_ANY_THROW(Calculate("1 - 14 * 2 / (14 - 2 * 7)"));

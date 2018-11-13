@@ -10,8 +10,8 @@ enum type
 	binary_operation, 
 	unary_operation, 
 	op_bracket, 
-	cl_bracket, 
-	no_type 
+	cl_bracket,
+	no_type
 };
 enum sign 
 {	
@@ -29,7 +29,7 @@ enum errors
 	missed_operation_or_operand
 };
 
-union elem_or_oper
+struct elem_or_oper
 {
 	double elem;
 	char oper;
@@ -61,5 +61,6 @@ vector<pair<TLexeme,int>> Create_RPN_array(const vector<pair<TLexeme, int>>& v);
 void Error_checking(const vector<pair<TLexeme, int>>& v);
 bool Type_checking(const vector<pair<TLexeme, int>>& v, int type);
 string Error_output(pair<int, int> err);
+pair<bool, int> Check_unary_minus(const string& str, int &i);
 
 #endif _ARITHMETIC_H_

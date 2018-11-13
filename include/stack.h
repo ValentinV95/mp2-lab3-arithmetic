@@ -12,10 +12,10 @@ private:
 	int top;
 	int size;
 	std::vector<ValType> v;
+	bool isFull() const;                 // Проверка на полноту
 public:
 	TStack(int n = size0);
 	virtual ~TStack() {};
-	bool isFull() const;                 // Проверка на полноту
 	bool isEmpty() const;                // Проверка на пустоту
 	void push(ValType elem);             // Вставка элемента
 	int CurrentSize() const;             // Получение количества элементов в стеке
