@@ -1,36 +1,36 @@
-// объявление и реализация шаблонного стека
-// стек поддерживает операции: 
-// - вставка элемента, 
-// - извлечение элемента, 
-// - просмотр верхнего элемента (без удаления)
-// - проверка на пустоту, 
-// - получение количества элементов в стеке
-// - очистка стека
-// при вставке в полный стек должна перевыделяться память
-
+#define DEFAULT_SIZE 10
+#define RESIZE_CONST 2
 #include <vector>
 #include <iostream>
 using namespace std;
-#define DEFAULT_SIZE 10
-template <class T> class Stack
+
+template <class T> class TStack
 {
 private:
 	T* a;
 	int _size;
 	int top;
-public:
-	Stack()
+	bool is_full()
 	{
-		_size = DEFAULT_SIZE;
+		return top == (_size - 1);
+	}
+public:
+	TStack(int size = DEFAULT_SIZE)
+	{
+		_size = size;
 		a = new T[_size];
 		top = -1;
+	}
+	~TStack()
+	{
+		delete[] a;
 	}
 	void push(T number)
 	{
 		if (this->is_full())
 		{
-			T* b = new T[2 * _size];
-			_size *= 2;
+			T* b = new T[RESIZE_CONST * _size];
+			_size *= RESIZE_CONST;
 			for (int i = 0;i<_size;i++)
 			{
 				b[i] = a[i];
@@ -52,17 +52,20 @@ public:
 			return a[top--];
 		}
 	}
-	T top()
+	T front()
 	{
-		return a[top];
+		if (top != -1)
+		{
+			return a[top];
+		}
+		else
+		{
+			throw "Stack is empty";
+		}
 	}
 	bool is_empty()
 	{
 		return top == -1;
-	}
-	bool is_full()
-	{
-		return top == (_size - 1);
 	}
 	int size()
 	{
