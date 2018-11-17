@@ -108,7 +108,7 @@ TEST(Create_lexeme_array, can_create_lexeme_array_with_unary_minus_3)
 	EXPECT_EQ(v[i++].first.GetValue().oper, '+');
 	EXPECT_NEAR(v[i++].first.GetValue().elem, 4.0, eps);
 	EXPECT_EQ(v[i++].first.GetValue().oper, '-');
-	EXPECT_EQ(v[i - 1].first.GetType(), unary_operation);
+	EXPECT_EQ(v[i - 1].first.GetType(), binary_operation);
 	EXPECT_EQ(v[i++].first.GetValue().oper, '(');
 	EXPECT_NEAR(v[i++].first.GetValue().elem, 0.001, eps);
 	EXPECT_EQ(v[i++].first.GetValue().oper, '*');
@@ -138,7 +138,7 @@ TEST(Create_lexeme_array, can_create_lexeme_array_with_double_numbers)
 
 TEST(Create_lexeme_array, can_not_create_lexeme_array_with_wrong_symbols)
 {
-	ASSERT_ANY_THROW(Create_lexeme_array("15z - 12a * 3"));
+	ASSERT_ANY_THROW(Create_lexeme_array("15A - 12B * 3"));
 }
 
 TEST(Create_lexeme_array, can_not_create_lexeme_array_with_wrong_numbers_1)
@@ -923,6 +923,11 @@ TEST(Calculate, can_calculate_10)
 	ASSERT_NEAR(Calculate("- - 2 * 3"), 6, eps);
 }
 
+TEST(Calculate, can_calculate_11)
+{
+	ASSERT_NEAR(Calculate("2 - - - 3"), -1, eps);
+}
+
 TEST(Calculate, can_not_calculate_wrong_expression_1)
 {
 	ASSERT_ANY_THROW(Calculate("1 - 14 * 2 / (14 - 2 * 7)"));
@@ -948,3 +953,67 @@ TEST(Calculate, can_not_calculate_wrong_expression_5)
 	ASSERT_ANY_THROW(Calculate("100 + (0 * (1 - (6 * 2))"));
 }
 
+TEST(Calculate, can_calculate_with_parameters_1)
+{
+	ASSERT_NEAR(Calculate("1 + x * 3 - 12", { 0 }), -11, eps);
+}
+
+TEST(Calculate, can_calculate_with_parameters_2)
+{
+	ASSERT_NEAR(Calculate("a + b - c / d", { 1.0, 15, -4.2, 2.1 }), 18, eps);
+}
+
+TEST(Calculate, can_calculate_with_parameters_3)
+{
+	ASSERT_NEAR(Calculate("x -- y", { 1.0, 12.2 }), 13.2, eps);
+}
+
+TEST(Calculate, can_calculate_with_parameters_4)
+{
+	ASSERT_NEAR(Calculate("-a - - - b * 3", { -24, 6 }), 6, eps);
+}
+
+TEST(Calculate, can_calculate_with_parameters_5)
+{
+	ASSERT_NEAR(Calculate("-(a * (b - (c / 2)) + x )", { 1, 3, 4, 10 }), -11, eps);
+}
+
+TEST(Calculate, can_calculate_with_parameters_6)
+{
+	ASSERT_NEAR(Calculate("x * -y", { -3, 3 }), 9, eps);
+}
+
+TEST(Calculate, can_calculate_with_parameters_7)
+{
+	ASSERT_NEAR(Calculate("(a - - (b * c / - (2 * d)))", { 2, 4, 6, 1.5}), -6, eps);
+}
+
+TEST(Calculate, can_calculate_with_parameters_8)
+{
+	ASSERT_NEAR(Calculate("-2 * a / -4 - (b)", { 8, 4}), 0.0, eps);
+}
+
+TEST(Calculate, can_calculate_with_parameters_9)
+{
+	ASSERT_NEAR(Calculate("- - - (- - - x - - y + (-z))", { 1, 2, 3}), 2, eps);
+}
+
+TEST(Calculate, can_calculate_with_parameters_10)
+{
+	ASSERT_NEAR(Calculate("k + - x * - y / z", { 0.1, 0.2, 0.8, 0.4}), 0.5, eps);
+}
+
+TEST(Calculate, can_not_incorrectly_initialize_1)
+{
+	ASSERT_ANY_THROW(Calculate("a + b", { 1, 15, 28, 64}));
+}
+
+TEST(Calculate, can_not_incorrectly_initialize_2)
+{
+	ASSERT_ANY_THROW(Calculate("2 * a - b", { 1 }));
+}
+
+TEST(Calculate, can_not_incorrectly_initialize_3)
+{
+	ASSERT_ANY_THROW(Calculate("A - z * B", { 1, 0, 4}));
+}

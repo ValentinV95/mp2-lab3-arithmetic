@@ -1,4 +1,5 @@
 ﻿#include "arithmetic.h"
+#include <iostream>
 #include <map>
 using namespace std;
 
@@ -197,6 +198,10 @@ pair<bool, int> Check_unary_minus(const string& s, int &i)
 			{
 				return make_pair(true, 2);
 			}
+			else if (s[1] >= 'a' && s[1] <= 'z')
+			{
+				return make_pair(true, 5);
+			}
 			else if (s[1] == '-')
 			{
 				int k = 0;
@@ -218,7 +223,25 @@ pair<bool, int> Check_unary_minus(const string& s, int &i)
 				}
 				else if (s[i] == '(')
 				{
-					return make_pair(true, 3);
+					if (k & 1)
+					{
+						return make_pair(true, 3);
+					}
+					else
+					{
+						return make_pair(true, 4);
+					}
+				}
+				else if (s[i] >= 'a' && s[i] <= 'z')
+				{
+					if (k & 1)
+					{
+						return make_pair(true, 6);
+					}
+					else
+					{
+						return make_pair(true, 7);
+					}
 				}
 			}
 		}
@@ -231,11 +254,19 @@ pair<bool, int> Check_unary_minus(const string& s, int &i)
 			i++;
 			return make_pair(true, 1);
 		}
-		else if (s[i] == '-' && s[i + 1] == '(')
+		else if ((s[i - 1] == '(' || s[i - 1] == '+' || s[i - 1] == '-' || s[i - 1] == '*' || s[i - 1] == '/') && (s[i] == '-' && s[i + 1] == '('))
 		{
 			return make_pair(true, 2);
 		}
-		else if (s[i] == '-' && s[i + 1] == '-')
+		else if (s[i] == '-' && s[i + 1] == '(')
+		{
+			return make_pair(true, 11);
+		}
+		else if ((s[i - 1] == '(' || s[i - 1] == '+' || s[i - 1] == '-' || s[i - 1] == '*' || s[i - 1] == '/') && s[i] == '-' && (s[i + 1] >= 'a' && s[i + 1] <= 'z'))
+		{
+			return make_pair(true, 5);
+		}
+		else if ((s[i - 1] == '(' || s[i - 1] == '+' || s[i - 1] == '-' || s[i - 1] == '*' || s[i - 1] == '/')  && (s[i] == '-' && s[i + 1] == '-'))
 		{
 			int k = 0;
 			while (s[i] == '-')
@@ -265,8 +296,64 @@ pair<bool, int> Check_unary_minus(const string& s, int &i)
 					return make_pair(true, 4);
 				}
 			}
+			else if (s[i] >= 'a' && s[i] <= 'z')
+			{
+				if (k & 1)
+				{
+					return make_pair(true, 6);
+				}
+				else
+				{
+					return make_pair(true, 7);
+				}
+			}
 		}
-		return make_pair(false, -1);
+		else if (s[i] == '-' && s[i + 1] == '-')
+		{
+			int k = 0;
+			while (s[i] == '-')
+			{
+				k++;
+				i++;
+			}
+			if (s[i] >= '0' && s[i] <= '9')
+			{
+				if (k & 1)
+				{
+					return make_pair(true, 8);
+				}
+				else
+				{
+					return make_pair(true, 0);
+				}
+			}
+			else if (s[i] == '(')
+			{
+				if (k & 1)
+				{
+					return make_pair(true, 9);
+				}
+				else
+				{
+					return make_pair(true, 4);
+				}
+			}
+			else if (s[i] >= 'a' && s[i] <= 'z')
+			{
+				if (k & 1)
+				{
+					return make_pair(true, 10);
+				}
+				else
+				{
+					return make_pair(true, 7);
+				}
+			}
+		}
+		else
+		{
+			return make_pair(false, -1);
+		}
 	}
 	else
 	{
@@ -274,8 +361,50 @@ pair<bool, int> Check_unary_minus(const string& s, int &i)
 	}
 }
 
-vector<pair<TLexeme, int>> Create_lexeme_array(const string& str)
+void Set_parameters(const map<char, int> &m, vector<pair<TLexeme, int>>& v, const vector<double>& input)
 {
+	if (!input.empty())
+	{
+		if (input.size() != m.size())
+		{
+			throw "Incorrect initialization with parameters.";
+		}
+		else
+		{
+			int i = 0;
+			for (auto it : m)
+			{
+				TLexeme p(input[i++]);
+				v[it.second] = make_pair(p, it.second);
+			}
+		}
+	}
+	else
+	{
+		for (auto it : m)
+		{
+			cout << it.first << " = ";
+			string temp;
+			cin >> temp;
+			int i = 0;
+			if (temp[i] == '-')
+			{
+				i++;
+				TLexeme p = Check_number(temp, i, negative);
+				v[it.second] = make_pair(p, it.second);
+			}
+			else
+			{
+				TLexeme p = Check_number(temp, i, positive);
+				v[it.second] = make_pair(p, it.second);
+			}
+		}
+	}
+}
+
+vector<pair<TLexeme, int>> Create_lexeme_array(const string& str, const vector<double>& input)
+{
+	map<char, int> parameters;
 	string s = New_line_without_spaces(str);
 	vector<pair<TLexeme, int>> v;
 	int i = 0;
@@ -292,7 +421,7 @@ vector<pair<TLexeme, int>> Create_lexeme_array(const string& str)
 			TLexeme p = Check_number(s, i, negative);
 			v.push_back(make_pair(p, i - 1));
 		}
-		else if (temp.second == 2)
+		else if (temp.second == 2 || temp.second == 5)
 		{
 			TLexeme p('-', unary_operation);
 			v.push_back(make_pair(p, i));
@@ -306,9 +435,21 @@ vector<pair<TLexeme, int>> Create_lexeme_array(const string& str)
 		}
 		else if (temp.second == 4)
 		{
-			TLexeme p0('+');
-			v.push_back(make_pair(p0, i - 1));
 			TLexeme p('(');
+			v.push_back(make_pair(p, i));
+		}
+		else if (temp.second == 6)
+		{
+			TLexeme p0('-', unary_operation);
+			v.push_back(make_pair(p0, i - 1));
+			parameters[s[i]] = v.size();
+			TLexeme p(0.0);
+			v.push_back(make_pair(p, i));
+		}
+		else if (temp.second == 7)
+		{
+			parameters[s[i]] = v.size();
+			TLexeme p(0.0);
 			v.push_back(make_pair(p, i));
 		}
 		i++;
@@ -334,7 +475,7 @@ vector<pair<TLexeme, int>> Create_lexeme_array(const string& str)
 				TLexeme p = Check_number(s, i, negative);
 				v.push_back(make_pair(p, i - 1));
 			}
-			else if (temp.second == 2)
+			else if (temp.second == 2 || temp.second == 5)
 			{
 				TLexeme p('-', unary_operation);
 				v.push_back(make_pair(p, i));
@@ -356,6 +497,52 @@ vector<pair<TLexeme, int>> Create_lexeme_array(const string& str)
 				TLexeme p('(');
 				v.push_back(make_pair(p, i));
 			}
+			else if (temp.second == 6)
+			{
+				TLexeme p0('-', unary_operation);
+				v.push_back(make_pair(p0, i - 1));
+				parameters[s[i]] = v.size();
+				TLexeme p(0.0);
+				v.push_back(make_pair(p, i));
+			}
+			else if (temp.second == 7)
+			{
+				if (s[k - 1] != '+')
+				{
+					TLexeme p0('+');
+					v.push_back(make_pair(p0, i - 1));
+				}
+				parameters[s[i]] = v.size();
+				TLexeme p(0.0);
+				v.push_back(make_pair(p, i));
+			}
+			else if (temp.second == 8)
+			{
+				TLexeme p0('-');
+				v.push_back(make_pair(p0, i - 1));
+				TLexeme p = Check_number(s, i, positive);
+				v.push_back(make_pair(p, i));
+			}
+			else if (temp.second == 9)
+			{
+				TLexeme p0('-');
+				v.push_back(make_pair(p0, i - 1));
+				TLexeme p('(');
+				v.push_back(make_pair(p, i));
+			}
+			else if (temp.second == 10)
+			{
+				TLexeme p0('-');
+				v.push_back(make_pair(p0, i - 1));
+				parameters[s[i]] = v.size();
+				TLexeme p(0.0);
+				v.push_back(make_pair(p, i));
+			}
+			else if (temp.second == 11)
+			{
+				TLexeme p('-');
+				v.push_back(make_pair(p, i));
+			}
 		}
 		else if (s[i] == '-' || s[i] == '+' || s[i] == '*' || s[i] == '/' || s[i] == '(' || s[i] == ')')
 		{
@@ -367,12 +554,19 @@ vector<pair<TLexeme, int>> Create_lexeme_array(const string& str)
 			TLexeme p = Check_number(s, i, positive);
 			v.push_back(make_pair(p, i));
 		}
+		else if (s[i] >= 'a' && s[i] <= 'z')
+		{
+			parameters[s[i]] = v.size();
+			TLexeme p(0.0);
+			v.push_back(make_pair(p, i));
+		}
 		else
 		{
 			pair<int, int> err(unknown_symbol, i);
 			throw err;
 		}
 	}
+	Set_parameters(parameters, v, input);
 	return v;
 }
 
@@ -518,9 +712,9 @@ void Error_checking(const vector<pair<TLexeme, int>>& v)
 	}
 }
 
-double Calculate(const string& s)
+double Calculate(const string& s, const vector<double>& input)
 {
-	vector<pair<TLexeme, int>> v = Create_lexeme_array(s);
+	vector<pair<TLexeme, int>> v = Create_lexeme_array(s, input);
 	Error_checking(v);
 	double ans = Solver(Create_RPN_array(v));
 	return ans;

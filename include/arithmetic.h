@@ -1,6 +1,7 @@
 ﻿#ifndef _ARITHMETIC_H_
 #define _ARITHMETIC_H_
 #include "stack.h"
+#include <map>
 #include <string>
 using namespace std;
 
@@ -18,14 +19,14 @@ enum sign
 	positive, 
 	negative 
 };
-enum errors 
-{	
-	division_by_zero, 
-	incorrect_point, 
-	unknown_symbol, 
-	incorrect_first_symbol, 
-	incorrect_last_symbol, 
-	wrong_bracket_sequence, 
+enum errors
+{
+	division_by_zero,
+	incorrect_point,
+	unknown_symbol,
+	incorrect_first_symbol,
+	incorrect_last_symbol,
+	wrong_bracket_sequence,
 	missed_operation_or_operand
 };
 
@@ -51,16 +52,17 @@ public:
 	int GetType() const;
 };
 
-double Calculate(const string& s);
+double Calculate(const string& s, const vector<double>& input = vector<double>());
 double Solver(const vector<pair<TLexeme, int>>& s);
 double Сonverting_number(const string& s, int index, int sign);
 TLexeme Check_number(const string &s, int &i, int sign);
-vector<pair<TLexeme, int>> Create_lexeme_array(const string& s);
+vector<pair<TLexeme, int>> Create_lexeme_array(const string& s, const vector<double>& input = vector<double>());
 string New_line_without_spaces(const string &s);
 vector<pair<TLexeme,int>> Create_RPN_array(const vector<pair<TLexeme, int>>& v);
 void Error_checking(const vector<pair<TLexeme, int>>& v);
 bool Type_checking(const vector<pair<TLexeme, int>>& v, int type);
 string Error_output(pair<int, int> err);
 pair<bool, int> Check_unary_minus(const string& str, int &i);
+void Set_parameters(const map<char, int> &m, vector<pair<TLexeme, int>>& v, const vector<double>& input = vector<double>());
 
 #endif _ARITHMETIC_H_
