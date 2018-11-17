@@ -913,6 +913,16 @@ TEST(Calculate, can_calculate_8)
 	ASSERT_NEAR(Calculate("4 * -(3 -- 2)"), -20, eps);
 }
 
+TEST(Calculate, can_calculate_9)
+{
+	ASSERT_NEAR(Calculate("3 + - - - - 4"), 7, eps);
+}
+
+TEST(Calculate, can_calculate_10)
+{
+	ASSERT_NEAR(Calculate("- - 2 * 3"), 6, eps);
+}
+
 TEST(Calculate, can_not_calculate_wrong_expression_1)
 {
 	ASSERT_ANY_THROW(Calculate("1 - 14 * 2 / (14 - 2 * 7)"));

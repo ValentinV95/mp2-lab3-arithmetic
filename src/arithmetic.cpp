@@ -284,8 +284,6 @@ vector<pair<TLexeme, int>> Create_lexeme_array(const string& str)
 	{
 		if (temp.second == 0)
 		{
-			TLexeme p0('+');
-			v.push_back(make_pair(p0, i - 1));
 			TLexeme p = Check_number(s, i, positive);
 			v.push_back(make_pair(p, i));
 		}
@@ -317,13 +315,17 @@ vector<pair<TLexeme, int>> Create_lexeme_array(const string& str)
 	}
 	for (; i < s.size(); i++)
 	{
+		int k = i;
 		temp = Check_unary_minus(s, i);
 		if (temp.first)
 		{
 			if (temp.second == 0)
 			{
-				TLexeme p0('+');
-				v.push_back(make_pair(p0, i - 1));
+				if (s[k - 1] != '+')
+				{
+					TLexeme p0('+');
+					v.push_back(make_pair(p0, i - 1));
+				}
 				TLexeme p = Check_number(s, i, positive);
 				v.push_back(make_pair(p, i));
 			}
@@ -346,8 +348,11 @@ vector<pair<TLexeme, int>> Create_lexeme_array(const string& str)
 			}
 			else if (temp.second == 4)
 			{
-				TLexeme p0('+');
-				v.push_back(make_pair(p0, i - 1));
+				if (s[k - 1] != '+')
+				{
+					TLexeme p0('+');
+					v.push_back(make_pair(p0, i - 1));
+				}
 				TLexeme p('(');
 				v.push_back(make_pair(p, i));
 			}
