@@ -69,54 +69,52 @@ int TLexeme::GetType() const
 
 double Solver(const vector<pair<TLexeme, int>> &v)
 {
-	TStack<TLexeme> s;
+	TStack<double> s;
 	for (int i = 0; i < v.size(); i++)
 	{
 		TLexeme temp = v[i].first;
 		if (temp.GetType() == number)
 		{
-			s.push(temp);
+			s.push(temp.GetValue().elem);
 		}
 		else if (temp.GetType() == unary_operation)
 		{
-			TLexeme t(s.pop());
+			double t = s.pop();
 			double ans;
 			if (temp.GetValue().oper == '-')
 			{
-				ans = -t.GetValue().elem;
+				ans = -t;
 			}
-			TLexeme a(ans);
 			s.push(ans);
 		}
 		else if (temp.GetType() == binary_operation)
 		{
-			TLexeme t2(s.pop()), t1(s.pop());
+			double t2 = s.pop(), t1 = s.pop();
 			double ans;
 			switch (temp.GetValue().oper)
 			{
 			case '+':
-				ans = t1.GetValue().elem + t2.GetValue().elem;
+				ans = t1 + t2;
 				break;
 			case '-':
-				ans = t1.GetValue().elem - t2.GetValue().elem;
+				ans = t1 - t2;
 				break;
 			case '*':
-				ans = t1.GetValue().elem * t2.GetValue().elem;
+				ans = t1 * t2;
 				break;
 			case '/':
-				if (abs(t2.GetValue().elem) < 1e-7)
+				if (abs(t2) < 1e-7)
 				{
 					pair<int, int> err(division_by_zero, v[i].second);
 					throw err;
 				}
-				ans = t1.GetValue().elem / t2.GetValue().elem;
+				ans = t1 / t2;
 				break;
 			}
-			TLexeme a(ans);
-			s.push(a);
+			s.push(ans);
 		}
 	}
-	return s.pop().GetValue().elem;
+	return s.pop();
 }
 
 double Сonverting_number(const string& s, int index, int sign)
