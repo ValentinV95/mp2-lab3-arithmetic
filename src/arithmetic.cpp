@@ -18,7 +18,7 @@ Calculate::Calculate(const std::string& inp)
 
 bool Calculate::is_op(char c)
 {
-	return c == '+' || c == '-' || c == '*' || c == '/' || c == '%';
+	return c == '+' || c == '-' || c == '*' || c == '/';
 }
 
 bool Calculate::delim(char c)
@@ -199,6 +199,10 @@ bool Calculate::Prover3()
 		else if (lex[i].tp == OP && lex[i + 1].tp == OP)
 		{
 			if (lex[i].s[0] == '-' && lex[i + 1].s[0] == '-')
+			{
+				continue;
+			}
+			else if (lex[i].tp == OP && lex[i + 1].s[0] == '-')
 			{
 				continue;
 			}
@@ -398,7 +402,7 @@ int Calculate::priority(char op)
 {
 	return
 		op == '+' || op == '-' ? 1 :
-		op == '*' || op == '/' || op == '%' ? 2 :
+		op == '*' || op == '/' ? 2 :
 		-1;
 }
 
