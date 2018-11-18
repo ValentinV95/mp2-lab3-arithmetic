@@ -63,6 +63,6 @@ void Error_checking(const vector<pair<TLexeme, int>>& v);
 bool Type_checking(const vector<pair<TLexeme, int>>& v, int type);
 string Error_output(pair<int, int> err);
 pair<bool, int> Check_unary_minus(const string& str, int &i);
-void Set_parameters(const map<char, int> &m, vector<pair<TLexeme, int>>& v, const vector<double>& input = vector<double>());
+void Set_parameters(const map<char, TStack<int>> &m, vector<pair<TLexeme, int>>& v, const vector<double>& input = vector<double>());
 
 #endif _ARITHMETIC_H_

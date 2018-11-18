@@ -359,9 +359,10 @@ pair<bool, int> Check_unary_minus(const string& s, int &i)
 	{
 		return make_pair(false, -1);
 	}
+	return make_pair(false, -1);
 }
 
-void Set_parameters(const map<char, int> &m, vector<pair<TLexeme, int>>& v, const vector<double>& input)
+void Set_parameters(const map<char, TStack<int>> &m, vector<pair<TLexeme, int>>& v, const vector<double>& input)
 {
 	if (!input.empty())
 	{
@@ -375,7 +376,19 @@ void Set_parameters(const map<char, int> &m, vector<pair<TLexeme, int>>& v, cons
 			for (auto it : m)
 			{
 				TLexeme p(input[i++]);
-				v[it.second] = make_pair(p, it.second);
+				if (it.second.CurrentSize() == 1)
+				{
+					v[it.second.front()] = make_pair(p, it.second.front());
+					it.second.pop();
+				}
+				else
+				{
+					while (!it.second.isEmpty())
+					{
+						v[it.second.front()] = make_pair(p, it.second.front());
+						it.second.pop();
+					}
+				}
 			}
 		}
 	}
@@ -391,12 +404,36 @@ void Set_parameters(const map<char, int> &m, vector<pair<TLexeme, int>>& v, cons
 			{
 				i++;
 				TLexeme p = Check_number(temp, i, negative);
-				v[it.second] = make_pair(p, it.second);
+				if (it.second.CurrentSize() == 1)
+				{
+					v[it.second.front()] = make_pair(p, it.second.front());
+					it.second.pop();
+				}
+				else
+				{
+					while (!it.second.isEmpty())
+					{
+						v[it.second.front()] = make_pair(p, it.second.front());
+						it.second.pop();
+					}
+				}
 			}
 			else
 			{
 				TLexeme p = Check_number(temp, i, positive);
-				v[it.second] = make_pair(p, it.second);
+				if (it.second.CurrentSize() == 1)
+				{
+					v[it.second.front()] = make_pair(p, it.second.front());
+					it.second.pop();
+				}
+				else
+				{
+					while (!it.second.isEmpty())
+					{
+						v[it.second.front()] = make_pair(p, it.second.front());
+						it.second.pop();
+					}
+				}
 			}
 		}
 	}
@@ -404,7 +441,7 @@ void Set_parameters(const map<char, int> &m, vector<pair<TLexeme, int>>& v, cons
 
 vector<pair<TLexeme, int>> Create_lexeme_array(const string& str, const vector<double>& input)
 {
-	map<char, int> parameters;
+	map<char, TStack<int>> parameters;
 	string s = New_line_without_spaces(str);
 	vector<pair<TLexeme, int>> v;
 	int i = 0;
@@ -442,13 +479,13 @@ vector<pair<TLexeme, int>> Create_lexeme_array(const string& str, const vector<d
 		{
 			TLexeme p0('-', unary_operation);
 			v.push_back(make_pair(p0, i - 1));
-			parameters[s[i]] = v.size();
+			parameters[s[i]].push(v.size());
 			TLexeme p(0.0);
 			v.push_back(make_pair(p, i));
 		}
 		else if (temp.second == 7)
 		{
-			parameters[s[i]] = v.size();
+			parameters[s[i]].push(v.size());
 			TLexeme p(0.0);
 			v.push_back(make_pair(p, i));
 		}
@@ -501,7 +538,7 @@ vector<pair<TLexeme, int>> Create_lexeme_array(const string& str, const vector<d
 			{
 				TLexeme p0('-', unary_operation);
 				v.push_back(make_pair(p0, i - 1));
-				parameters[s[i]] = v.size();
+				parameters[s[i]].push(v.size());
 				TLexeme p(0.0);
 				v.push_back(make_pair(p, i));
 			}
@@ -512,7 +549,7 @@ vector<pair<TLexeme, int>> Create_lexeme_array(const string& str, const vector<d
 					TLexeme p0('+');
 					v.push_back(make_pair(p0, i - 1));
 				}
-				parameters[s[i]] = v.size();
+				parameters[s[i]].push(v.size());
 				TLexeme p(0.0);
 				v.push_back(make_pair(p, i));
 			}
@@ -534,7 +571,7 @@ vector<pair<TLexeme, int>> Create_lexeme_array(const string& str, const vector<d
 			{
 				TLexeme p0('-');
 				v.push_back(make_pair(p0, i - 1));
-				parameters[s[i]] = v.size();
+				parameters[s[i]].push(v.size());
 				TLexeme p(0.0);
 				v.push_back(make_pair(p, i));
 			}
@@ -556,7 +593,7 @@ vector<pair<TLexeme, int>> Create_lexeme_array(const string& str, const vector<d
 		}
 		else if (s[i] >= 'a' && s[i] <= 'z')
 		{
-			parameters[s[i]] = v.size();
+			parameters[s[i]].push(v.size());
 			TLexeme p(0.0);
 			v.push_back(make_pair(p, i));
 		}

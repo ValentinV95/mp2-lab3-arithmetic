@@ -1003,6 +1003,31 @@ TEST(Calculate, can_calculate_with_parameters_10)
 	ASSERT_NEAR(Calculate("k + - x * - y / z", { 0.1, 0.2, 0.8, 0.4}), 0.5, eps);
 }
 
+TEST(Calculate, can_calculate_with_parameters_11)
+{
+	ASSERT_NEAR(Calculate("a - a + b", { 1, 2 }), 2, eps);
+}
+
+TEST(Calculate, can_calculate_with_parameters_12)
+{
+	ASSERT_NEAR(Calculate("a * a - a + a", { 2 }), 4, eps);
+}
+
+TEST(Calculate, can_calculate_with_parameters_13)
+{
+	ASSERT_NEAR(Calculate("(b - a) / (a - b)", { 2.1, 1.15 }), -1, eps);
+}
+
+TEST(Calculate, can_calculate_with_parameters_14)
+{
+	ASSERT_NEAR(Calculate("x * x - 2 * x + 1", { 13.0 }), 144.0, eps);
+}
+
+TEST(Calculate, can_calculate_with_parameters_15)
+{
+	ASSERT_NEAR(Calculate("a + -a * b", { 1.256, 0 }), 1.256, eps);
+}
+
 TEST(Calculate, can_not_incorrectly_initialize_1)
 {
 	ASSERT_ANY_THROW(Calculate("a + b", { 1, 15, 28, 64}));

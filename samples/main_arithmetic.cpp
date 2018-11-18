@@ -12,6 +12,8 @@ int main()
 	cout << "| 2) You can use such mathematical operations as +, -, *, /.     |" << endl;
 	cout << "| 3) You can write as many spaces as you like, they are ignored. |" << endl;
 	cout << "| 4) You can use 26 types of parameters as a, b, ... , z.        |" << endl;
+	cout << "| 5) You should set the parameters in alphabetical order when    |" << endl;
+	cout << "|    you use explicit initialization.                            |" << endl;
 	cout << "+----------------------------------------------------------------+" << endl;
 
 	bool key1 = false;
