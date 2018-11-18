@@ -1,4 +1,4 @@
-// объявление функций и классов для вычисления арифметических выражений
+п»ї// РѕР±СЉСЏРІР»РµРЅРёРµ С„СѓРЅРєС†РёР№ Рё РєР»Р°СЃСЃРѕРІ РґР»СЏ РІС‹С‡РёСЃР»РµРЅРёСЏ Р°СЂРёС„РјРµС‚РёС‡РµСЃРєРёС… РІС‹СЂР°Р¶РµРЅРёР№
 
 #ifndef _ARITHMETIC_
 #define _ARITHMETIC_
@@ -12,13 +12,13 @@ using namespace std;
 
 struct Lex
 {
-	int OpType; // 1-число,2-операция
+	int OpType; // 1-С‡РёСЃР»Рѕ,2-РѕРїРµСЂР°С†РёСЏ
 	double Value;
 	char *Op;
 	int Priority;
 };
 
-ostream &operator<<(ostream &ostr, const struct Lex &f) // вывод
+ostream &operator<<(ostream &ostr, const struct Lex &f) // РІС‹РІРѕРґ
 {
 	if (f.OpType == 1)
 		ostr << f.Value;
@@ -73,6 +73,9 @@ void Error(int i, int j)
 	case 11:
 		cout << "Too many opening brakets!" << endl;
 		break;
+	case 12:
+		cout << "Symbol number error " << i <<endl;
+		cout << "Expression inside brackets is expected!"<< endl;
 	default:
 		break;
 	}
@@ -114,8 +117,12 @@ public:
 				break;
 			case ')':
 				i++;
-				if((lex1.OpType == 1) || ((lex1.Op == ")")||(lex1.Op == "(")))
+				if((lex1.OpType == 1) || ((lex1.Op == ")")))
 				{
+				}
+				else if (lex1.Op == "(")
+				{
+					Error(i, 12); k++;
 				}
 				else {Error(i, 2);k++;/* throw "Operand expected! Closing bracket error.";*/}
 				Open--;
@@ -189,7 +196,7 @@ public:
 		}
 		if (Open != 0 )
 		{Error(i, 11);/*throw "Too many opening brakets!";*/ k++;}
-		if (k !=0) throw "";
+		if (k !=0) throw "Errors in the expression recording!";
 	}
 
 	char *Parse(char *f, char end)
@@ -229,10 +236,24 @@ public:
 				continue;
 
 			case '-':
+				if (*(f-1) == '(')
+				{
+					while ((strchr(" \n\r", *f)) && (*f) && (*f != end)) f++;
+					if(strchr ("0123456789", *(f+1)))
+					{
+						f++;
+						lex.OpType = 1;
+						lex.Value = (-1)*strtod(f, &f);
+						while ((strchr(" \n\r", *f)) && (*f) && (*f != end)) f++;
+					}
+				}
+				else 
+				{
 				lex.OpType = 2;
 				lex.Op = "-";
 				lex.Priority = 1;
 				f++;
+				}
 				break;
 
 			case '+':
@@ -281,20 +302,19 @@ public:
 	}
 
 	double Compute (){
-		double tmp;
+		double tmp,a,b, res;
 		TStack <struct Lex> In;
-		TStack <struct Lex> Res;
-		struct Lex lex, a, b, res;
+		TStack <double> Res;
+		struct Lex lex;
 
-		res.Value = 0;
+		res = 0;
 		while ( !Val.IsEmpty())
 			In.Push(Val.pop());
-
 		while( !In.IsEmpty())
 		{
 			lex = In.pop();
 			if (lex.OpType == 1)
-				Res.Push(lex);
+				Res.Push(lex.Value);
 			else
 			{
 				a = Res.pop();
@@ -302,36 +322,35 @@ public:
 				{
 				case '+':
 					b = Res.pop();
-					tmp =b.Value + a.Value;
+					tmp =b + a;
 					break;
 
 				case '-':
 					if (Res.IsEmpty())
-						b.Value = 0;
+						b = 0;
 					else b = Res.pop();
-					tmp = b.Value - a.Value;
+					tmp = b - a;
 					break;
 
 				case '*':
 					b = Res.pop();
-					tmp = b.Value * a.Value;
+					tmp = b * a;
 					break;
 
 				case '/':
 					b = Res.pop();
-					if (a.Value != 0)
+					if (a != 0)
 					{
-						tmp = b.Value / a.Value;
+						tmp = b/ a;
 					}
-					else throw "";
+					else throw "Division by zero is prohibited!";
 					break;
 				}
-				res.OpType = 1;
-				res.Value = tmp;
+				res= tmp;
 				Res.Push(res);
 			}
 		}
-		return res.Value;
+		return res;
 	}
 };
 #endif _ARITHMETIC_
