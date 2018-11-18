@@ -1,4 +1,4 @@
-// реализация пользовательского приложения
+
 #include <iostream>
 #include <string>
 #include "arithmetic.h"
