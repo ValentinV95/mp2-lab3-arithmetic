@@ -53,47 +53,50 @@ void priority_creation()
     priority["sqrt"] = 3;
 }
 
-vector<vector<int>> parameter(26);
+variable parameter;
 bool check_parameters()
 {
-    for(int i = 0; i < parameter.size(); i++)
-    {
-        if(!parameter[i].empty())
-        {
-            return true;
-        }
-    }
-    return false;
+	for (int i = 0; i < parameter.val.size(); i++)
+	{
+		if (!parameter.val[i].empty())
+		{
+			parameter.used = true;
+			return true;
+		}
+	}
+	return false;
 }
 void clear_parameters()
 {
-    for(int i = 0; i < parameter.size(); i++)
+    for(int i = 0; i < parameter.val.size(); i++)
     {
-        if(!parameter[i].empty()) {parameter[i].clear();}
+        if(!parameter.val[i].empty()) {parameter.val[i].clear();}
     }
+    parameter.used = false;
 }
 vector<double> enter_parameters()
 {
     vector<double> par;
     cout << "Please, enter parameter's value:" << endl;
-    for(int i = 0; i < parameter.size();)
+	cout << endl;
+    for(int i = 0; i < parameter.val.size();)
     {
 		bool check1;
 		do {
 			check1 = false;
 			try {
-				if (!parameter[i].empty())
+				if (!parameter.val[i].empty())
 				{
-					string val;
+					string value;
 					vector <Lexem> str;
 					cout << (char)(i + 'a') << " = ";
-					getline(cin, val);
-					if (val == "")
+					getline(cin, value);
+					if (value == "")
 					{
-						getline(cin, val);
+						getline(cin, value);
 					}
 					priority_creation();
-					from_string_to_vector(val, str);
+					from_string_to_vector(value, str);
 					str = RPN(str);
 					par.push_back(calc(str));
 				}
@@ -102,6 +105,7 @@ vector<double> enter_parameters()
 			{
 				cout << "Unacceptable parameter" << endl;
 				cout << "Re-enter parameter's value" << endl;
+				cout << endl;
 				check1 = true;
 			}
 		}
@@ -113,14 +117,15 @@ vector<double> enter_parameters()
 void set_parameters(vector<Lexem>& str, vector<double> par)
 {
     int k = -1;
-    for(int i = 0; i < parameter.size(); i++)
+    for(int i = 0; i < parameter.val.size(); i++)
     {
-        for(int j = 0; j < parameter[i].size(); j++)
+        for(int j = 0; j < parameter.val[i].size(); j++)
         {
             if(j == 0) {k++;}
-            str[parameter[i][j]].Set_Param(par[k]);
+            str[parameter.val[i][j]].Set_Param(par[k]);
         }
     }
+    parameter.used = true;
 }
 
 void Push_Double(vector<Lexem>& str, string& s, int& i)
@@ -175,7 +180,11 @@ void Push_Math_F(vector<Lexem>& str, string& s, int& i)
             throw(make_pair(4 + flag,i + 1));
         }
         --i;
-        parameter[int(s[i] - 'a')].push_back(str.size());
+        if(parameter.used)
+        {
+            throw("Unacceptable parameter");
+        }
+        parameter.val[int(s[i] - 'a')].push_back(str.size());
         str.push_back(curnum);
     }
     else if(f != i)//Check whether the math function was read

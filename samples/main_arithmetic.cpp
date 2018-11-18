@@ -2,11 +2,11 @@
 int main()
 {
 	string s;
-	int t = 0;
+	string t = "";
 	bool check;
 	priority_creation();
 	cout.precision(10);
-	cout << "Arithmetic_expressions_interpreter_3.5.1" << endl;
+	cout << "Arithmetic_expressions_interpreter_3.6" << endl;
 	cout << endl;
 	cout << "Expression may contain:" << endl;
 	cout << "Double numbers separated by point: 3.14" << endl;
@@ -18,6 +18,7 @@ int main()
 		vector <Lexem> str;
 		vector <Lexem> rpn;
 		cout << "Enter your data" << endl;
+		cout << endl;
 		do { 
 			check = true;
 			try{
@@ -27,6 +28,7 @@ int main()
 				{
 					getline(cin, s);
 				}
+				cout << endl;
 			    from_string_to_vector(s, str);
 			}
 			catch(int er)
@@ -47,6 +49,7 @@ int main()
 			if(!check)
 			{
 				cout << "Please, re-enter data" << endl;
+				cout << endl;
 				str.clear();
 			}
 		} while (!check);
@@ -71,17 +74,27 @@ int main()
 			{
 				cout << error_message(er.first) << er.second << ")" << endl;
 			}
-			cout << "New expression - 1    ";
-			if(check_parameters())
-			{
-				cout << "New parameters - 2    ";
-			}
-			cout << "Exit - 0" << endl;
-			cin >> t;
-			cout.flush();
-			cout << endl;
-		} while(t == 2 && check_parameters());
+			bool t_chk = false;
+			do {
+				cout << "New expression - 1    ";
+				if (check_parameters())
+				{
+					cout << "New parameters - 2    ";
+				}
+				cout << "Exit - 0" << endl;
+				cin >> t;
+				cout.flush();
+				cout << endl;
+				if (t != "0" && t != "1" && t != "2")
+				{
+					cout << "Nonexistent menu item" << endl;
+					cout << "Please, re-enter menu item" << endl;
+					cout << endl;
+					t_chk = true;
+				}
+			} while (t_chk);
+		} while(t == "2" && check_parameters());
     clear_parameters();
-	} while (t);
+	} while (t != "0");
 	return 0;
 }

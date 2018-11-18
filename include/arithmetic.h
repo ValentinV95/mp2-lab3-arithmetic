@@ -67,6 +67,15 @@ void Push_Double(vector<Lexem>& str, string& s, int& i);
 void Push_Math_F(vector<Lexem>& str, string& s, int& i);
 void Push_Unary_Minus(vector<Lexem>& str, string& s, int& i);
 
+struct variable{
+    vector<vector<int>> val;
+    bool used;
+	variable()
+	{
+		val.resize(26);
+		used = false;
+	}
+};
 bool check_parameters();
 void clear_parameters();
 vector<double> enter_parameters();
