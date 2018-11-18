@@ -256,121 +256,122 @@ TEST(Prover3, check16)
 
 TEST(Prover3, check17)
 {
-	Calculate t("sin10 x");
+	Calculate t("sin(10) x");
 	EXPECT_ANY_THROW(t.Prover3());
 }
 
 TEST(Prover3, check18)
 {
-	Calculate t("log3(");
+	Calculate t("log(3/)");
 	EXPECT_ANY_THROW(t.Prover3());
 }
 
 TEST(Prover3, check19)
 {
-	Calculate t("log3(");
+	Calculate t("log(3*)");
 	EXPECT_ANY_THROW(t.Prover3());
 }
+
 TEST(Prover3, check20)
 {
-	Calculate t("x log3");
+	Calculate t("x log(3)");
 	EXPECT_ANY_THROW(t.Prover3());
 }
 
 TEST(Prover3, check21)
 {
-	Calculate t("log3/x");
+	Calculate t("log(3)/x");
 	EXPECT_EQ(t.Prover3(), true);
 }
 
 TEST(Prover3, check22)
 {
-	Calculate t("log3 - x");
+	Calculate t("log(3) - x");
 	EXPECT_EQ(t.Prover3(), true);
 }
 
 TEST(Prover3, check23)
 {
-	Calculate t("log3 + 2");
+	Calculate t("log(3) + 2");
 	EXPECT_EQ(t.Prover3(), true);
 }
 
 TEST(Prover3, check24)
 {
-	Calculate t("log3 * 2");
+	Calculate t("log(3) * 2");
 	EXPECT_EQ(t.Prover3(), true);
 }
 
 TEST(Prover3, check25)
 {
-	Calculate t("log3 - x + 5 - (2*3) - 14");
+	Calculate t("log(3) - x + 5 - (2*3) - 14");
 	EXPECT_EQ(t.Prover3(), true);
 }
 
 TEST(is_fuction, check)
 {
-	Calculate t("sin10");
+	Calculate t("sin(10)");
 	EXPECT_EQ(t.is_function("sin"), true);
 }
 
 TEST(is_fuction, check1)
 {
-	Calculate t("sin10");
+	Calculate t("sin(10)");
 	EXPECT_EQ(t.is_function("sin10"), false);
 }
 
 TEST(is_fuction, check2)
 {
-	Calculate t("sin10");
+	Calculate t("sin(10)");
 	EXPECT_EQ(t.is_function("cos"), true);
 }
 
 TEST(is_fuction, check3)
 {
-	Calculate t("sin10");
+	Calculate t("sin(10)");
 	EXPECT_EQ(t.is_function("r"), false);
 }
 
 TEST(is_fuction, check4)
 {
-	Calculate t("sin10");
+	Calculate t("sin(10)");
 	EXPECT_EQ(t.is_function("tan"), true);
 }
 
 TEST(is_fuction, check5)
 {
-	Calculate t("sin10");
+	Calculate t("sin(10)");
 	EXPECT_EQ(t.is_function("log"), true);
 }
 
 TEST(is_fuction, check6)
 {
-	Calculate t("sin10");
+	Calculate t("sin(10)");
 	EXPECT_EQ(t.is_function("sqrt"), true);
 }
 
 TEST(is_fuction, check7)
 {
-	Calculate t("sin10");
+	Calculate t("sin(10)");
 	EXPECT_EQ(t.is_function(",fdsfs"), false);
 }
 
 TEST(val_func, check)
 {
 	Calculate t("1");
-	EXPECT_EQ(t.val_func("sin0", 0), 0);
+	EXPECT_EQ(t.val_func("sin(0)", 0), 0);
 }
 
 TEST(val_func, check1)
 {
 	Calculate t("1");
-	EXPECT_EQ(t.val_func("sqrt4", 0), 2);
+	EXPECT_EQ(t.val_func("sqrt(4)", 0), 2);
 }
 
 TEST(val_func, check2)
 {
 	Calculate t("1");
-	EXPECT_ANY_THROW(t.val_func("sqrt-4", 0));
+	EXPECT_ANY_THROW(t.val_func("sqrt(-4)", 0));
 }
 
 TEST(calc, check)
@@ -387,25 +388,25 @@ TEST(calc, check1)
 
 TEST(calc, check2)
 {
-	Calculate t("2 + 2*2 - 2 + (2 - 2*3)/4 + 2 + 2*sqrt4 + (2 - 7 + 5/5 + 1 - 98)");
+	Calculate t("2 + 2*2 - 2 + (2 - 2*3)/4 + 2 + 2*sqrt(4) + (2 - 7 + 5/5 + 1 - 98)");
 	EXPECT_EQ(t.calc(), -92);
 }
 
 TEST(calc, check3)
 {
-	Calculate t("2 + 2*2 - 2 + (2 - 2*3)/4 + 2 + 2*sqrt4 + (2 - 7 + 5/5 + 1 - 98) + sin0");
+	Calculate t("2 + 2*2 - 2 + (2 - 2*3)/4 + 2 + 2*sqrt(4) + (2 - 7 + 5/5 + 1 - 98) + sin(0)");
 	EXPECT_EQ(t.calc(), -92);
 }
 
 TEST(calc, check4)
 {
-	Calculate t("2 + 2*2 - 2 + (2 - 2*3)/4 + 2 + 2*sqrt4 + (2 - 7 + 5/5 + 1 - 98) + cos0");
+	Calculate t("2 + 2*2 - 2 + (2 - 2*3)/4 + 2 + 2*sqrt(4) + (2 - 7 + 5/5 + 1 - 98) + cos(0)");
 	EXPECT_EQ(t.calc(), -91);
 }
 
 TEST(calc, check5)
 {
-	Calculate t("2 + 2*2 - 2 + (2 - 2*3)/4 + 2 + 2*sqrt4 + (2 - 7 + 5/5 + 1 - 98) + cos0 + log1");
+	Calculate t("2 + 2*2 - 2 + (2 - 2*3)/4 + 2 + 2*sqrt(4) + (2 - 7 + 5/5 + 1 - 98) + cos0 + log(1)");
 	EXPECT_EQ(t.calc(), -91);
 }
 

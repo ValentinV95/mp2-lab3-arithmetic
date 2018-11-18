@@ -54,7 +54,7 @@ double Calculate::val_func(std::string c, int i)
 		}
 		else
 		{
-			if (is_digit(c[i])) temp1 += c[i];
+			if (is_digit(c[i]) || c[i] == '.') temp1 += c[i];
 		}
 	}
 	std::stringstream t;
@@ -359,16 +359,11 @@ void Calculate::Razb()
 			if (is_function(temp))
 			{
 				lex[size].tp = FUNC;
-				lex[size].may_unary = false;
+				lex[size].may_unary = true;
 				lex[size].pos = i;
 				unsigned k = j;
-				if (input[k] == '-')
-				{
-					temp += input[k];
-					k++;
-				}
 				while (k < input.size()) {
-					if (is_digit(input[k]) || input[k] == '.') {
+					if (is_digit(input[k]) || input[k] == '.' || input[k] == '(' || input[k] == ')' || input[k] == '-') {
 						temp += input[k];
 						k++;
 					}
@@ -512,7 +507,7 @@ double Calculate::calc()
 	Prover2();
 	Prover3();
 	PerevodVPol();
-	Stack <double> calc(size);
+	Stack <double> calculate(size);
 	for (int i = 0; i < size; i++)
 	{
 		Lex_Type v = lex[i].tp;
@@ -522,11 +517,7 @@ double Calculate::calc()
 			temp << lex[i].s;
 			double ans;
 			temp >> ans;
-			calc.push(ans);
-		}
-		else if (v == FUNC)
-		{
-			calc.push(val_func(lex[i].s, lex[i].pos));
+			calculate.push(ans);
 		}
 		else if (v == Perem)
 		{
@@ -535,33 +526,40 @@ double Calculate::calc()
 				std::cout << "Enter the variable value " << lex[i].s << " : ";
 				double x;
 				std::cin >> x;
-				calc.push(x);
+				calculate.push(x);
 				was.insert(lex[i].s);
 				perem[lex[i].s] = x;
 			}
 			else
 			{
-				calc.push(perem[lex[i].s]);
+				calculate.push(perem[lex[i].s]);
 			}
 		}
 		else
 		{
 			if (lex[i].may_unary)
 			{
-				double a = calc.front();
-				calc.pop();
-				calc.push((-1)*a);
+				if (v == FUNC)
+				{
+					calculate.push(val_func(lex[i].s, lex[i].pos));
+				}
+				else
+				{
+					double a = calculate.front();
+					calculate.pop();
+					calculate.push((-1)*a);
+				}
 			}
 			else {
-				double a = calc.front();
-				calc.pop();
-				double b = calc.front();
-				calc.pop();
+				double a = calculate.front();
+				calculate.pop();
+				double b = calculate.front();
+				calculate.pop();
 				char temp = lex[i].s[0];
-				calc.push(oper(b, a, temp, lex[i].pos));
+				calculate.push(oper(b, a, temp, lex[i].pos));
 			}
 		}
 	}
-	return calc.front();
+	return calculate.front();
 }
 
