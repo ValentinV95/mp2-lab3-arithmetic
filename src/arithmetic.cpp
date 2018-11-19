@@ -42,25 +42,38 @@ double Calculate::val_func(std::string c, int i)
 	std::string temp;
 	std::string temp1;
 	bool minus = false;
+	int k = 0;
 	for (unsigned i = 0; i < c.size(); i++)
 	{
 		if (c[i] >= 'a' && c[i] <= 'z')
 		{
 			temp += c[i];
 		}
-		else if (c[i] == '-')
-		{
-			minus = true;
-		}
-		else
-		{
-			if (is_digit(c[i]) || c[i] == '.') temp1 += c[i];
+		else if (c[i] == '(') {
+			k = i;
+			break;
 		}
 	}
-	std::stringstream t;
-	t << temp1;
 	double ans;
-	t >> ans;
+	bool perem = true;
+	for (unsigned i = k + 1; i < c.size(); i++) {
+		if (c[i] >= 'a' && c[i] <= 'z') {
+			std::cout << "Enter the variable value " << c[i] << " : ";
+			std::cin >> ans;
+		}
+		else if (c[i] == '-') {
+			minus = true;
+		}
+		else {
+			perem = false;
+			temp1 += c[i];
+		}
+	}
+	if (!perem) {
+		std::stringstream t;
+		t << temp1;
+		t >> ans;
+	}
 	if (minus) ans = (-1)*ans;
 	if (temp == "sin")
 	{
@@ -362,14 +375,35 @@ void Calculate::Razb()
 				lex[size].may_unary = true;
 				lex[size].pos = i;
 				unsigned k = j;
+				int temp1 = 0, pos1 = 0, temp2 = 0, pos2 = 0;
 				while (k < input.size()) {
-					if (is_digit(input[k]) || input[k] == '.' || input[k] == '(' || input[k] == ')' || input[k] == '-') {
+					if (is_digit(input[k]) || input[k] == '.') {
+						temp += input[k];
+						k++;
+						temp2++;
+						pos2 = k;
+					}
+					else if (input[k] == '(' || input[k] == ')' || input[k] == '-') {
+						temp += input[k];
+						k++;
+					}
+					else if (input[k] >= 'a' && input[k] <= 'z') {
+						temp1++;
+						pos1 = k;
 						temp += input[k];
 						k++;
 					}
 					else {
 						break;
 					}
+				}
+				if (temp1 > 1) {
+					std::pair <std::string, int> error = { "Incorect input", pos1};
+					throw(error);
+				}
+				else if (temp1 == 1 && temp2 != 0) {
+					std::pair <std::string, int> error = { "Incorect input", pos2};
+					throw(error);
 				}
 				lex[size].s = temp;
 				i = k - 1;
