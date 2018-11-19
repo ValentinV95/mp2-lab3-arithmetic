@@ -1,9 +1,15 @@
 // реализация функций и классов для вычисления арифметических выражений
 #include "arithmetic.h"
 
-void Lexem::Parsing(string a)
+
+map<char, int> priority;
+
+
+vector<Lexem> Parsing(string a)
 {
-	int i = 0, k=0;
+	vector<Lexem> PrePolish;
+
+	int i = 0;
 	
 	while (a[i]!='\0')
 	{
@@ -13,30 +19,33 @@ void Lexem::Parsing(string a)
 		{
 			double dd = 0.0;
 
+			while ((a[i] >= '0') && (a[i] <= '9'))
+			{
+				dd = dd * 10 + double(a[i] - '0');
+				i++;
+			}
 			PrePolish.push_back(dd);
-			i++;
+			
 		}
 
 		else if ((a[i] == '+') || (a[i] == '-') || (a[i] == '/') || (a[i] == '(') || (a[i] == ')'))
 		{
-
+			DoPriority();
 			PrePolish.push_back(a[i]);
 			Lexem A = PrePolish.back();
 			PrePolish.pop_back();
-			A.Putprior(2);
 
 			if (a[i] == '-')
 			{
 				if (!(PrePolish.empty()))
 				{
 					Lexem B = PrePolish.back();
-					if (!(B.GetType()))
-						A.Unar();
-					A.Putprior(0);
+					if (!B.GetType() && a[i-1]!=')')
+						A.IfUnar();
+					
 				}
 				else {
-					A.Unar();
-					A.Putprior(0);
+					A.IfUnar();
 				}
 
 			
@@ -44,30 +53,117 @@ void Lexem::Parsing(string a)
 				PrePolish.push_back(A);
 				i++;
 			}
-			if ((a[i] == '*') || (a[i] == '/'))
+			else if ((a[i] == '*') || (a[i] == '/') || (a[i] == '+') || (a[i] == '(') || (a[i] == ')'))
 
 			{
-				A.Putprior(1);
-				PrePolish.push_back(A);
+				PrePolish.push_back(a[i]);
 				i++;
 			}
-			if (a[i] == '+')
-			{
-				A.Putprior(2);
-			PrePolish.push_back(A);
-			i++;
-			}
+			
+			
 		
 		}
 		else if ((a[i] >= 'a') && (a[i] <= 'z'))
 		{
+
 			PrePolish.push_back(a[i]);
 			i++;
+		}
+	}
+	return PrePolish;
+}
+
+void Lexem::PutVal(double a, vector<Lexem> s)
+{
+	Lexem A(a);
+	for (int i = 0; i < s.size(); i++)
+	{
+		if (((s[i].GetOper()) >= 'a') && ((s[i].GetOper()) <= 'z'))
+		{
+			s[i]=A;
 		}
 	}
 }
 
 
+
+vector<Lexem> Calc(vector<Lexem> s)
+{
+	vector<Lexem> Polish;
+
+	TStack<double> Num;
+	TStack<char> Op;
+	for (int i = 0; i < s.size(); i++)
+	{
+		
+		if (s[i].GetType())
+		{
+			Polish.push_back(s[i]);
+		}
+		else 
+		{
+			if (!s[i].Binar())
+			{
+				while (!(s[i].GetType()))
+				i++;
+				double a = s[i].GetNum();
+				a = (-1)*a;
+				Polish.push_back(a);
+				
+			}
+			else if ((s[i].Binar())&&(Op.Empty()|| s[i].GetOper()=='(' || Op.CheckLast() == '(' || (priority[Op.CheckLast()] < priority[s[i].GetOper()])))
+			{
+				Op.Push(s[i].GetOper());
+			}
+			else if ((s[i].Binar()) && (priority[Op.CheckLast()] >= priority[s[i].GetOper()]))
+			{
+				if ((s[i].Binar()) && s[i].GetOper() == ')')
+				{
+					while (Op.CheckLast() != '(')
+						Polish.push_back(Op.Pop());
+					Op.Pop();
+				}
+				else
+				{
+					while (!Op.Empty() && (priority[Op.CheckLast()] < priority[s[i].GetOper()]))
+						Polish.push_back(Op.Pop());
+					Op.Push(s[i].GetOper());
+				}
+			}
+			 
+		}
+		
+		if (i == (s.size()-1))
+		{
+			while (!Op.Empty())
+				Polish.push_back(Op.Pop());
+		}
+	}
+	
+	return Polish;
+}
+
+
+bool Lexem::Binar()
+{
+	return binary;
+}
+double Lexem::GetNum()
+{
+	return num;
+}
+char Lexem::GetOper()
+{
+	return op;
+}
+bool Lexem::GetType()
+{
+	return notop;
+}
+void Lexem::IfUnar()
+{
+	binary = false;
+}
 
 bool Skobki(string s)
 {
@@ -117,6 +213,7 @@ bool CheckSequence(string s)
 			return false;
 		}
 	}
+	return true;
 }
 
 
@@ -142,3 +239,27 @@ bool ValisOne(string s)
 
 }
 
+void DoPriority()
+{
+	priority['('] = 0;
+	priority[')'] = 0;
+	priority['*'] = 2;
+	priority['/'] = 2;
+	priority['+'] = 1;
+	priority['-'] = 1;
+
+}
+
+ ostream& operator<<(ostream &out, vector<Lexem> &lex)
+{
+	for (int i = 0; i<lex.size(); i++)
+	 {
+		if (lex[i].GetType())
+		out << lex[i].GetNum();
+		else
+		out << lex[i].GetOper();
+		
+	 }
+	return out;
+
+ }

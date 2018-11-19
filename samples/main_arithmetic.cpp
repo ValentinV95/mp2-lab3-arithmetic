@@ -1,6 +1,14 @@
 // реализация пользовательского приложения
+#include "arithmetic.h"
 
-int main()
+
+void main()
 {
-  return 0;
+	vector<Lexem> Primer, Pol;
+	string s="2+((5-2)-10)";
+	Primer=Parsing(s);
+	cout << Primer<<endl;
+	Pol = Calc(Primer);
+	cout << Pol;
+	system("pause");
 }

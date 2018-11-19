@@ -8,6 +8,9 @@
 // - очистка стека
 // при вставке в полный стек должна перевыделяться память
 
+#ifndef stack_h
+#define stack_h
+
 template <class TType>
 class TStack
 {
@@ -102,3 +105,6 @@ int TStack<TType>::GetSize()
 {
 	return size;
 }
+
+
+#endif
