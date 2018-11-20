@@ -144,9 +144,9 @@ public:
 				break;
 			case '-':
 				i++;
-				if ((lex1.OpType == 0) || (lex1.OpType == 1)||(lex1.Op == ")") || (lex1.Op == "("))
-				{}
-				else {Error(i, 5);k++;/*throw "Operand expected!Statement '-' error.";*/ }
+				//if ((lex1.OpType == 0) || (lex1.OpType == 1)||(lex1.Op == ")") || (lex1.Op == "("))
+				//{}
+				//else {Error(i, 5);k++;/*throw "Operand expected!Statement '-' error.";*/ }
 				lex1.OpType = 2;
 				lex1.Op = "-";
 				f++;
@@ -203,6 +203,7 @@ public:
 	{ 
 		struct Lex lex;
 
+		lex.OpType = 0;
 		while (*f && (*f != end))
 		{
 			switch(*f)
@@ -212,7 +213,6 @@ public:
 			case'\n':
 				f++;
 				break;
-
 			case '(':
 				lex.OpType = 2;
 				lex.Op = "(";
@@ -236,7 +236,7 @@ public:
 				continue;
 
 			case '-':
-				if (*(f-1) == '(')
+				if (lex.OpType != 1)
 				{
 					while ((strchr(" \n\r", *f)) && (*f) && (*f != end)) f++;
 					if(strchr ("0123456789", *(f+1)))
@@ -246,13 +246,20 @@ public:
 						lex.Value = (-1)*strtod(f, &f);
 						while ((strchr(" \n\r", *f)) && (*f) && (*f != end)) f++;
 					}
+					else 
+					{
+						lex.OpType = 2;
+						lex.Op = "-";
+						lex.Priority = 1;
+						f++;
+					}
 				}
 				else 
 				{
-				lex.OpType = 2;
-				lex.Op = "-";
-				lex.Priority = 1;
-				f++;
+					lex.OpType = 2;
+					lex.Op = "-";
+					lex.Priority = 1;
+					f++;
 				}
 				break;
 
