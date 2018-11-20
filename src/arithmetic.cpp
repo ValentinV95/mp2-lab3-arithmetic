@@ -37,44 +37,9 @@ bool Calculate::is_digit(char c)
 	else return false;
 }
 
-double Calculate::val_func(std::string c, int i)
+double Calculate::val_func(std::string temp, double ans , int i)
 {
-	std::string temp;
-	std::string temp1;
-	bool minus = false;
-	int k = 0;
-	for (unsigned i = 0; i < c.size(); i++)
-	{
-		if (c[i] >= 'a' && c[i] <= 'z')
-		{
-			temp += c[i];
-		}
-		else if (c[i] == '(') {
-			k = i;
-			break;
-		}
-	}
-	double ans;
-	bool perem = true;
-	for (unsigned i = k + 1; i < c.size(); i++) {
-		if (c[i] >= 'a' && c[i] <= 'z') {
-			std::cout << "Enter the variable value " << c[i] << " : ";
-			std::cin >> ans;
-		}
-		else if (c[i] == '-') {
-			minus = true;
-		}
-		else {
-			perem = false;
-			temp1 += c[i];
-		}
-	}
-	if (!perem) {
-		std::stringstream t;
-		t << temp1;
-		t >> ans;
-	}
-	if (minus) ans = (-1)*ans;
+
 	if (temp == "sin")
 	{
 		return sin(ans);
@@ -240,16 +205,6 @@ bool Calculate::Prover3()
 			std::pair<std::string, int> error = { "Incorect input", lex[i].pos };
 			throw(error);
 		}
-		else if (lex[i].tp == FUNC && lex[i + 1].tp == OB)
-		{
-			std::pair<std::string, int> error = { "Incorect input", lex[i].pos };
-			throw(error);
-		}
-		else if (lex[i].tp == CB && lex[i + 1].tp == FUNC)
-		{
-			std::pair<std::string, int> error = { "Incorect input", lex[i].pos };
-			throw(error);
-		}
 		else if (lex[i].tp == Perem && lex[i + 1].tp == FUNC)
 		{
 			std::pair<std::string, int> error = { "Incorect input", lex[i].pos };
@@ -379,39 +334,8 @@ void Calculate::Razb()
 				lex[size].tp = FUNC;
 				lex[size].may_unary = true;
 				lex[size].pos = i;
-				unsigned k = j;
-				int temp1 = 0, pos1 = 0, temp2 = 0, pos2 = 0;
-				while (k < input.size()) {
-					if (is_digit(input[k]) || input[k] == '.') {
-						temp += input[k];
-						k++;
-						temp2++;
-						pos2 = k;
-					}
-					else if (input[k] == '(' || input[k] == ')' || input[k] == '-') {
-						temp += input[k];
-						k++;
-					}
-					else if (input[k] >= 'a' && input[k] <= 'z') {
-						temp1++;
-						pos1 = k;
-						temp += input[k];
-						k++;
-					}
-					else {
-						break;
-					}
-				}
-				if (temp1 > 1) {
-					std::pair <std::string, int> error = { "Incorect input", pos1};
-					throw(error);
-				}
-				else if (temp1 == 1 && temp2 != 0) {
-					std::pair <std::string, int> error = { "Incorect input", pos2};
-					throw(error);
-				}
 				lex[size].s = temp;
-				i = k - 1;
+				i = j - 1;
 				++size;
 			}
 			else if (temp.size() == 1)
@@ -435,7 +359,7 @@ void Calculate::Razb()
 int Calculate::priority(char op)
 {
 	return
-		op == '+' || op == '-' ? 1 :
+		op == '+' || op == '-' || op == 'l' || op == 's' || op == 'a' || op == 't' || op == 'c' ? 1 :
 		op == '*' || op == '/' ? 2 :
 		-1;
 }
@@ -462,11 +386,11 @@ void Calculate::PerevodVPol()
 		}
 		else if (t == FUNC)
 		{
-			s1.push(lex[i]);
+			s.push(lex[i]);
 		}
 		else if (t == Perem)
 		{
-			s1.push(lex[i]);
+			s.push(lex[i]);
 		}
 		else
 		{
@@ -580,7 +504,9 @@ double Calculate::calc()
 			{
 				if (v == FUNC)
 				{
-					calculate.push(val_func(lex[i].s, lex[i].pos));
+					double a = calculate.front();
+					calculate.pop();
+					calculate.push(val_func(lex[i].s, a, lex[i].pos));
 				}
 				else
 				{

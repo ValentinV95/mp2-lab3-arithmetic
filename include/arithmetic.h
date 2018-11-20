@@ -30,7 +30,7 @@ public:
 	bool Prover1();
 	bool Prover2();
 	bool Prover3();
-	double val_func(std::string c, int i);
+	double val_func(std::string c, double a, int i);
 	bool is_function(const std::string& c);
 	void Razb();
 	void PerevodVPol();

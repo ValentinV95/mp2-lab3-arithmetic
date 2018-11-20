@@ -356,24 +356,6 @@ TEST(is_fuction, check7)
 	EXPECT_EQ(t.is_function(",fdsfs"), false);
 }
 
-TEST(val_func, check)
-{
-	Calculate t("1");
-	EXPECT_EQ(t.val_func("sin(0)", 0), 0);
-}
-
-TEST(val_func, check1)
-{
-	Calculate t("1");
-	EXPECT_EQ(t.val_func("sqrt(4)", 0), 2);
-}
-
-TEST(val_func, check2)
-{
-	Calculate t("1");
-	EXPECT_ANY_THROW(t.val_func("sqrt(-4)", 0));
-}
-
 TEST(calc, check)
 {
 	Calculate t("2 + 2");
@@ -406,7 +388,7 @@ TEST(calc, check4)
 
 TEST(calc, check5)
 {
-	Calculate t("2 + 2*2 - 2 + (2 - 2*3)/4 + 2 + 2*sqrt(4) + (2 - 7 + 5/5 + 1 - 98) + cos0 + log(1)");
+	Calculate t("2 + 2*2 - 2 + (2 - 2*3)/4 + 2 + 2*sqrt(4) + (2 - 7 + 5/5 + 1 - 98) + cos(0) + log(1)");
 	EXPECT_EQ(t.calc(), -91);
 }
 
