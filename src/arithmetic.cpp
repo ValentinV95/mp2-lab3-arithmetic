@@ -1,4 +1,4 @@
-// реализация функций и классов для вычисления арифметических выражений
+п»ї// СЂРµР°Р»РёР·Р°С†РёСЏ С„СѓРЅРєС†РёР№ Рё РєР»Р°СЃСЃРѕРІ РґР»СЏ РІС‹С‡РёСЃР»РµРЅРёСЏ Р°СЂРёС„РјРµС‚РёС‡РµСЃРєРёС… РІС‹СЂР°Р¶РµРЅРёР№
 #include <arithmetic.h> 
 #include <string>
 #include <iostream>
@@ -9,7 +9,7 @@ int WhatPriority(string symbol)
 		if((symbol=="+")||(symbol=="-"))
 			return 1;
 		if((symbol=="*")||(symbol=="/"))
-			return 2;
+			return 3;
 		if((symbol==")")||(symbol=="("))
 			return 5;
 		return 0;
@@ -28,7 +28,7 @@ int WhatTip(string symbol)
 void firstcontrol(string str)
 {
 	int j=0;
-	for(int i=0; i<str.length(); i++)//проверка соответствия скобок
+	for(int i=0; i<str.length(); i++)//РїСЂРѕРІРµСЂРєР° СЃРѕРѕС‚РІРµС‚СЃС‚РІРёСЏ СЃРєРѕР±РѕРє
 	{
 		if(str[i]=='(')
 			j++;
@@ -52,7 +52,7 @@ void firstcontrol(string str)
 		throw"missing opening parentheses";
 
 	string a;
-	for(int i=0; i<str.length(); i++)//проверка некорректных символов
+	for(int i=0; i<str.length(); i++)//РїСЂРѕРІРµСЂРєР° РЅРµРєРѕСЂСЂРµРєС‚РЅС‹С… СЃРёРјРІРѕР»РѕРІ
 	{
 		a=str.substr(i, 1);
 		switch (WhatTip(a))
@@ -71,7 +71,7 @@ void firstcontrol(string str)
 void secondcontrol(Stack<TLexems> res)
 {
 	int k,z=0, j, m=res.GetSizeE()-1;
-	for(int i=res.GetSizeE()-1; i>=0 ;i--)//проверка на соответствие скобок
+	for(int i=res.GetSizeE()-1; i>=0 ;i--)//РїСЂРѕРІРµСЂРєР° РЅР° СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРµ СЃРєРѕР±РѕРє
 	{
 		k=0;
 		if(res.pStack[i].symbols=="(")
@@ -125,7 +125,7 @@ void secondcontrol(Stack<TLexems> res)
 				}
 				break;
 		case 0: {
-			for(int l=0;l<res.pStack[i].symbols.length()-1;l++)//проверяем числа на подобную ошибку 2.2.1
+			for(int l=0;l<res.pStack[i].symbols.length()-1;l++)//РїСЂРѕРІРµСЂСЏРµРј С‡РёСЃР»Р° РЅР° РїРѕРґРѕР±РЅСѓСЋ РѕС€РёР±РєСѓ 2.2.1
 				if(res.pStack[i].symbols[l]=='.')
 					k++;
 			if(k>1)
@@ -150,26 +150,39 @@ double interpreter(string str)
 	Stack<TLexems> res;
 	double answer=0.0;
 	int i = str.length()-1;
-	int k = 0;
+	int k = 0, un = 0;
 
 	firstcontrol(str);
 
 	while(i >= 0)
 	{
+		un=0;
 		k = 0;
-		if ((WhatPriority(str.substr(i, 1))==0))//выделение чисел
+
+		if((str.substr(i, 1)=="-")&&(str.substr(i+1, 1)=="("))//СѓС‡РёС‚С‹РІР°РµРј СѓРЅР°СЂРЅС‹Р№ РјРёРЅСѓСЃ
+			if((i==0)||((i!=0)&&(WhatTip(str.substr(i-1, 1))==2)))
+			{
+				k = 1;
+				i--;
+				un=1;
+			}
+
+		if(i>=0)
+		if ((WhatPriority(str.substr(i, 1))==0))//РІС‹РґРµР»РµРЅРёРµ С‡РёСЃРµР»
 		{
 			k = 1;
 			i--;
 			
-			while((i>=0)&&((WhatPriority(str.substr(i, 1))==0)||((str.substr(i, 1)=="-")&&((i==0)||(str.substr(i-1, 1)=="(")||(WhatTip(str.substr(i-1, 1))==2)))))//учитываем, что минус может стоять перед числом и это будет отриц. число
+			while((i>=0)&&((WhatPriority(str.substr(i, 1))==0)||((str.substr(i, 1)=="-")&&((i==0)||(str.substr(i-1, 1)=="(")||(WhatTip(str.substr(i-1, 1))==2)))))//СѓС‡РёС‚С‹РІР°РµРј, С‡С‚Рѕ РјРёРЅСѓСЃ РјРѕР¶РµС‚ СЃС‚РѕСЏС‚СЊ РїРµСЂРµРґ С‡РёСЃР»РѕРј Рё СЌС‚Рѕ Р±СѓРґРµС‚ РѕС‚СЂРёС†. С‡РёСЃР»Рѕ
 			{
 				k++;
 				i--;
 			}
 		} 
 
-		if ((i>=0)&&(WhatPriority(str.substr(i, 1))!=0)&&(k==0)&&(WhatPriority(str.substr(i, 1))!=5))//Выделение лексем
+		
+		
+		if ((i>=0)&&(WhatPriority(str.substr(i, 1))!=0)&&(k==0)&&(WhatPriority(str.substr(i, 1))!=5))//Р’С‹РґРµР»РµРЅРёРµ Р»РµРєСЃРµРј
 		{
 			k = 1;
 			i--;
@@ -181,7 +194,7 @@ double interpreter(string str)
 			}
 		}
 
-		if ((i>=0)&&(WhatPriority(str.substr(i, 1))==5)&&(k==0))//выделение скобок
+		if ((i>=0)&&(WhatPriority(str.substr(i, 1))==5)&&(k==0))//РІС‹РґРµР»РµРЅРёРµ СЃРєРѕР±РѕРє
 		{
 			k = 1;
 			i--;
@@ -189,6 +202,13 @@ double interpreter(string str)
 		
 		TLexems a(str.substr(i+1, k));
 
+		if(un==1)//СѓС‡РёС‚С‹РІР°РµРј СѓРЅР°СЂРЅС‹Р№ РјРёРЅСѓСЃ
+		{
+			a.UnOrBinOrDig=1;
+			a.priority=4;
+		}
+
+		//cout<<a.symbols<<"  ";
 		res.Push(a);
 			
 
@@ -231,7 +251,34 @@ double notation(Stack<TLexems> res)
 					if(lex.IsEmpty())
 						lex.Push(res.Pop());
 					else
+					{
+						
 						if((lex.Check().priority<1)||(lex.Check().symbols=="("))
+							lex.Push(res.Pop());
+						else
+						{
+							while(!lex.IsEmpty())
+							{
+								if(lex.Check().symbols=="(")
+									break;
+								not.Push(lex.Pop());
+							}
+							lex.Push(res.Pop());
+						}
+
+						
+					}
+
+
+				}
+				break;
+
+			case 4:
+				{
+					if(lex.IsEmpty())
+						lex.Push(res.Pop());
+					else
+						if((lex.Check().priority<4)||(lex.Check().symbols=="("))
 							lex.Push(res.Pop());
 						else
 						{
@@ -245,13 +292,13 @@ double notation(Stack<TLexems> res)
 						}
 				}
 				break;
-
-			case 2:
+				
+			case 3:
 				{
 					if(lex.IsEmpty())
 						lex.Push(res.Pop());
 					else
-						if((lex.Check().priority<2)||(lex.Check().symbols=="("))
+						if((lex.Check().priority<3)||(lex.Check().symbols=="("))
 							lex.Push(res.Pop());
 						else
 						{
@@ -265,13 +312,14 @@ double notation(Stack<TLexems> res)
 						}
 				}
 		}
-		
 	}
 	while(!lex.IsEmpty())
 		not.Push(lex.Pop());
 	
+	cout<<endl;
+	/*while(!not.IsEmpty())
+		cout<<not.Pop().symbols<<"  ";*/
 	
-
 	return calculate(not);
 }
 
@@ -308,16 +356,28 @@ double calculate(Stack<TLexems> not)
 					double b= result.Pop();
 					result.Push(a+b);
 				}
-				if((invert.IsEmpty()!=1)&&(invert.Check().symbols=="-"))
-				{	
-					invert.ClrElem();			
+				if((invert.IsEmpty()!=1)&&(invert.Check().symbols=="-")&&(invert.Check().priority==1))
+				{				
+					invert.ClrElem();
 					double a= result.Pop();
 					double b= result.Pop();
-					result.Push(b-a);
+					result.Push(b-a);					
 				}
 			}
 			break;
-		case 2:
+		case 4:
+			{
+				
+				if((invert.IsEmpty()!=1)&&(invert.Check().symbols=="-"))
+				{				
+					invert.ClrElem();
+					double a= result.Pop();
+					
+					result.Push(-1*a);					
+				}
+			}
+			break;
+		case 3:
 			{
 				if((invert.IsEmpty()!=1)&&(invert.Check().symbols=="*"))
 				{	
@@ -340,5 +400,6 @@ double calculate(Stack<TLexems> not)
 		}
 	}
 
-	return  result.Pop();
+	double a = result.Pop();
+	return  a;
 }

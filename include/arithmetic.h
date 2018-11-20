@@ -1,4 +1,4 @@
-// объявление функций и классов для вычисления арифметических выражений
+п»ї// РѕР±СЉСЏРІР»РµРЅРёРµ С„СѓРЅРєС†РёР№ Рё РєР»Р°СЃСЃРѕРІ РґР»СЏ РІС‹С‡РёСЃР»РµРЅРёСЏ Р°СЂРёС„РјРµС‚РёС‡РµСЃРєРёС… РІС‹СЂР°Р¶РµРЅРёР№
 
 
 #include "stack.h"
@@ -23,13 +23,13 @@ class TLexems
 	TLexems (string sym)
 	{
 		symbols=sym;
-		priority = WhatPriority(sym);
-		UnOrBinOrDig = WhatTip(sym);
+		priority = WhatP(sym);
+		UnOrBinOrDig = WhatT(sym);
 	}
 	
 	
 
-	int WhatTip(string symbol)
+	int WhatT(string symbol)
 	{
 		if((symbol=="+")||(symbol=="-")||(symbol=="*")||(symbol=="/"))
 			return 2;
@@ -39,12 +39,12 @@ class TLexems
 		return 0;
 	}
 
-	int WhatPriority(string symbol)
+	int WhatP(string symbol)
 		{
 		if((symbol=="+")||(symbol=="-"))
 			return 1;
 		if((symbol=="*")||(symbol=="/"))
-			return 2;
+			return 3;
 		if((symbol==")")||(symbol=="("))
 			return 5;
 		return 0;
