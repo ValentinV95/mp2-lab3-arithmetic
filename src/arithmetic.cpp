@@ -162,14 +162,14 @@ bool Calculate::Prover2()
 			}
 			else
 			{
-				std::pair<std::string, int> error = {"not enough close bracket", temp.front().second };
+				std::pair<std::string, int> error = {"not enough open bracket", lex[i].pos};
 				throw(error);
 			}
 		}
 	}
 	if (!temp.IsEmpty())
 	{
-		std::pair<std::string, int> error = { "too many open bracket", temp.front().second };
+		std::pair<std::string, int> error = { "too many close bracket", temp.front().second };
 		throw(error);
 	}
 	return true;
@@ -200,6 +200,11 @@ bool Calculate::Prover3()
 			throw(error);
 		}
 		else if (lex[i].tp == OB && lex[i + 1].tp == OP && lex[i + 1].s[0] != '-')
+		{
+			std::pair<std::string, int> error = { "Incorect input", lex[i].pos };
+			throw(error);
+		}
+		else if (lex[i].tp == OB && lex[i + 1].tp == CB)
 		{
 			std::pair<std::string, int> error = { "Incorect input", lex[i].pos };
 			throw(error);
@@ -326,9 +331,9 @@ void Calculate::Razb()
 		else if (v == ')')
 		{
 			lex[size].tp = CB;
-			++size;
 			lex[size].may_unary = false;
 			lex[size].pos = i;
+			++size;
 		}
 		else if (is_digit(v))
 		{
