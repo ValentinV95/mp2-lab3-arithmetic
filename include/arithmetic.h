@@ -103,7 +103,7 @@ public:
 			case'\n':
 				f++;
 				i++;
-				break;
+				continue;
 
 			case '(':
 				i++;
@@ -212,7 +212,7 @@ public:
 			case '\r':
 			case'\n':
 				f++;
-				break;
+				continue;
 			case '(':
 				lex.OpType = 2;
 				lex.Op = "(";

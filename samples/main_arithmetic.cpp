@@ -1,21 +1,28 @@
 // реализация пользовательского приложения
 #include <arithmetic.h>
 #include <iostream>
+#include <string>
 using namespace std;
 
 int main()
 {
 	double value;
 	int i;
-	char func [100000], end = '=';
+	char end = '=';
+	string af;
 	cout << "Hello!Welcome to Calculator!" << endl;
-l: cout << "Some rules for entering expression:" << endl;
+ cout << "Some rules for entering expression:" << endl;
 	cout << "1. Expression may begin wiht a minus (example: -7+8)" << endl;
 	cout << "2.Graps are allowed in the expression" << endl;
 	cout << "3.Real nunmbers are entered through a dot (example 1.2, not 1,2)" << endl;
-	cout << "Enter expression:" << endl;
+l:	cout << "Enter expression:" << endl;
 	cout << endl;
-	cin >> func;
+
+	cin.sync();
+	getline(cin,af);
+
+	char *func = new char[af.length()];
+	strcpy( func, af.c_str() );
 	cout<< endl;
 	Computer a ;
 	a.Check(func,end);

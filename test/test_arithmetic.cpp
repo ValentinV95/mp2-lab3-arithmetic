@@ -129,3 +129,11 @@ TEST(Computer, correctly_calculates_expression_with_unary_minus)
 	a.Parse("--2*-(-6/--3)=", '=');
 	EXPECT_EQ(4, a.Compute());
 }
+
+TEST(Computer, correctly_calculates_expression_with_space)
+{
+	Computer a ;
+	a.Check("2  +  2=", '=' );
+	a.Parse("2  +  2=", '=');
+	EXPECT_EQ(4, a.Compute());
+}
