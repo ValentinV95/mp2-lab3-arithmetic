@@ -250,7 +250,7 @@ public:
 					{
 						lex.OpType = 2;
 						lex.Op = "-";
-						lex.Priority = 1;
+						lex.Priority = 3;
 						f++;
 					}
 				}
@@ -333,10 +333,17 @@ public:
 					break;
 
 				case '-':
+					if (lex.Priority == 1)
+					{
 					if (Res.IsEmpty())
 						b = 0;
 					else b = Res.pop();
 					tmp = b - a;
+					}
+					else 
+					{
+						tmp = 0 - a;
+					}
 					break;
 
 				case '*':
@@ -357,7 +364,7 @@ public:
 				Res.Push(res);
 			}
 		}
-		return res;
+		return Res.pop();
 	}
 };
 #endif _ARITHMETIC_

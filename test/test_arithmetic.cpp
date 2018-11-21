@@ -105,3 +105,27 @@ TEST (Computer, throw_when_invalid_character_after_the_closing_bracket)
 	Computer a;
 	ASSERT_ANY_THROW(a.Check("7+(9+7)7",'='));
 }
+
+TEST(Computer, unary_minus_works_correctly_with_number)
+{
+	Computer a ;
+	a.Check("--5+5=", '=' );
+	a.Parse("--5+5=", '=');
+	EXPECT_EQ(10, a.Compute());
+}
+
+TEST(Computer, unary_minus_works_correctly_with_brackets)
+{
+	Computer a ;
+	a.Check("5+5*-(5+5)=", '=' );
+	a.Parse("5+5*-(5+5)=", '=');
+	EXPECT_EQ(-45, a.Compute());
+}
+
+TEST(Computer, correctly_calculates_expression_with_unary_minus)
+{
+	Computer a ;
+	a.Check("--2*-(-6/--3)=", '=' );
+	a.Parse("--2*-(-6/--3)=", '=');
+	EXPECT_EQ(4, a.Compute());
+}
