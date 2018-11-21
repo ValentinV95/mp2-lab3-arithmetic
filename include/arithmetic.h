@@ -28,22 +28,23 @@ public:
 	double GetNum();
 	char GetOper();
 	bool GetType();
-	void PutVal(double a, vector<Lexem> s);
-
+	void IfVal();
 
 
 	~Lexem() {};
 	friend ostream& operator<<(ostream &out, vector<Lexem> &lex); 
 
 };
+vector<Lexem> PutVal(double a, vector<Lexem> &s);
 
 
 vector<Lexem> Parsing(string a);
-vector<Lexem> Calc(vector<Lexem> s);
-
+vector<Lexem> Polish(vector<Lexem> s);
+double Calc(vector<Lexem> s);
 
 // checking block
- 
+bool Checking_Block(string s, int valhere);
+
 bool Skobki(string s);
 bool CheckSequence(string s);
 bool ValisOne(string s);

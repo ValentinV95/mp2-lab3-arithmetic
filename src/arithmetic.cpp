@@ -28,7 +28,7 @@ vector<Lexem> Parsing(string a)
 			
 		}
 
-		else if ((a[i] == '+') || (a[i] == '-') || (a[i] == '/') || (a[i] == '(') || (a[i] == ')'))
+		else if ((a[i] == '+') || (a[i] == '-') || (a[i] == '/') || (a[i] == '(') || (a[i] == ')') || (a[i] == '*'))
 		{
 			DoPriority();
 			PrePolish.push_back(a[i]);
@@ -65,34 +65,38 @@ vector<Lexem> Parsing(string a)
 		}
 		else if ((a[i] >= 'a') && (a[i] <= 'z'))
 		{
-
-			PrePolish.push_back(a[i]);
+			
+			Lexem A(a[i]);
+			A.IfVal();
+			PrePolish.push_back(A);
 			i++;
 		}
+		else i++;
+
 	}
 	return PrePolish;
 }
 
-void Lexem::PutVal(double a, vector<Lexem> s)
+vector<Lexem> PutVal(double a, vector<Lexem> &s)
 {
 	Lexem A(a);
 	for (int i = 0; i < s.size(); i++)
 	{
-		if (((s[i].GetOper()) >= 'a') && ((s[i].GetOper()) <= 'z'))
+		if (s[i].GetType() && ((s[i].GetOper() >= 'a') && (s[i].GetOper() <= 'z')))
 		{
 			s[i]=A;
 		}
 	}
+	return s;
 }
 
 
 
-vector<Lexem> Calc(vector<Lexem> s)
+vector<Lexem> Polish(vector<Lexem> s)
 {
 	vector<Lexem> Polish;
-
-	TStack<double> Num;
 	TStack<char> Op;
+
 	for (int i = 0; i < s.size(); i++)
 	{
 		
@@ -123,9 +127,11 @@ vector<Lexem> Calc(vector<Lexem> s)
 						Polish.push_back(Op.Pop());
 					Op.Pop();
 				}
+				//тут добавить условие, где приходит операция с мельшим приоритетом до скобки 
+				
 				else
 				{
-					while (!Op.Empty() && (priority[Op.CheckLast()] < priority[s[i].GetOper()]))
+					while (!Op.Empty() && (priority[Op.CheckLast()] >= priority[s[i].GetOper()]))
 						Polish.push_back(Op.Pop());
 					Op.Push(s[i].GetOper());
 				}
@@ -137,10 +143,53 @@ vector<Lexem> Calc(vector<Lexem> s)
 		{
 			while (!Op.Empty())
 				Polish.push_back(Op.Pop());
+			
 		}
 	}
 	
 	return Polish;
+}
+
+
+
+double Calc(vector<Lexem> s)
+{
+	TStack<double> Num;
+	double Rez;
+	for (int i = 0; i < s.size(); i++)
+	{
+		if (s[i].GetType())
+			Num.Push(s[i].GetNum());
+		else if(!Num.Empty())
+		{
+			double frst=Num.Pop();
+			switch (s[i].GetOper())
+			{
+			case '+':
+				Rez = Num.Pop()+frst;
+				Num.Push(Rez);
+				break;
+			case '-':
+				Rez = Num.Pop()-frst;
+				Num.Push(Rez);
+
+				break;
+			case '*':
+				Rez = Num.Pop()*frst;
+				Num.Push(Rez);
+
+				break;
+			case '/':
+				Rez = Num.Pop()/frst;
+				Num.Push(Rez);
+
+				break;
+			
+			}
+		}
+	}
+	return Rez;
+
 }
 
 
@@ -164,6 +213,11 @@ void Lexem::IfUnar()
 {
 	binary = false;
 }
+void Lexem::IfVal()
+{
+	notop = true;
+}
+
 
 bool Skobki(string s)
 {
@@ -190,7 +244,7 @@ bool Skobki(string s)
 
 bool CheckSequence(string s)
 {
-	if ((s[1] == '*') || (s[1] == '/') || (s[1] == '+'))
+	if ((s[0] == '*') || (s[0] == '/') || (s[0] == '+'))
 	{
 		cout << "Wrong first element" << endl;
 		return false;
@@ -255,11 +309,27 @@ void DoPriority()
 	for (int i = 0; i<lex.size(); i++)
 	 {
 		if (lex[i].GetType())
-		out << lex[i].GetNum();
+		out << lex[i].GetNum()<< " ";
 		else
-		out << lex[i].GetOper();
+		out << lex[i].GetOper()<<" ";
 		
 	 }
 	return out;
+
+ }
+ bool Checking_Block(string s, int valhere)
+ {
+	 if (!Skobki(s))
+		 cout << "Error parentheses" << endl;
+	 if (!CheckSequence(s))
+		 cout << "Wrong syntax" << endl;
+	 if (valhere == 1)
+	 {
+		 if (!ValisOne(s))
+			 cout << "Please, use one value" << endl;
+		 else  return (Skobki(s) && CheckSequence(s) && ValisOne(s));
+	 }
+		 
+	 return (Skobki(s) && CheckSequence(s));
 
  }
