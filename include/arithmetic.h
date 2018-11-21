@@ -8,7 +8,8 @@
 
 using namespace std;
 
-
+int WhatPriority(string symbol);
+int WhatTip(string symbol);
 
 class TLexems
 {
@@ -23,31 +24,8 @@ class TLexems
 	TLexems (string sym)
 	{
 		symbols=sym;
-		priority = WhatP(sym);
-		UnOrBinOrDig = WhatT(sym);
-	}
-	
-	
-
-	int WhatT(string symbol)
-	{
-		if((symbol=="+")||(symbol=="-")||(symbol=="*")||(symbol=="/"))
-			return 2;
-		if((symbol=="(")||(symbol==")"))
-			return 3;
-
-		return 0;
-	}
-
-	int WhatP(string symbol)
-		{
-		if((symbol=="+")||(symbol=="-"))
-			return 1;
-		if((symbol=="*")||(symbol=="/"))
-			return 3;
-		if((symbol==")")||(symbol=="("))
-			return 5;
-		return 0;
+		priority = WhatPriority(sym);
+		UnOrBinOrDig = WhatTip(sym);
 	}
 };
 
