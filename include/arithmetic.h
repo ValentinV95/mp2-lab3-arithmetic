@@ -40,6 +40,7 @@ public:
 		else if (o == "/") {return 3;}
 		else if (o == "(") {return 1;}
 		else if (o == ")") {return 0;}
+		else if (o == "un-") {return 4;}
 		else if (o == "sin") {return 4;}
 		else if (o == "cos") {return 4;}
 		else if (o == "ln") {return 4;}

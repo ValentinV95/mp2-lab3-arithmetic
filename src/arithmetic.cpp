@@ -5,9 +5,9 @@
 
   double solve( string s) { // разбор строки
 	 int i = 0,j=0;
-	 double temp, x, d, tx;
+	 double temp, x, d, t1, t2, t3, t4, t5;
 	 lexem arr[1000];
-	 
+	 bool f1=true, f2=true, f3=true, f4=true, f5=true;
 	 if(s[i] == '-') {
 		
 		 arr[j++]= -1;
@@ -67,10 +67,49 @@
 			 arr[j++]="exp";
 			 i=i+3;
 		 }
-		 else if(s[i]=='x'&& ((s[i+1] >= '1') && (s[i+1]<='9'))) {
-			 cout<<"Ведите  x"<<s[i+1]<<endl;
-			 cin>> tx;
-			 arr[j++]= tx;
+		 else if(s[i]=='x'&& (s[i+1] == '1')) {
+			 if(f1){
+			 cout<<"Ведите  x1"<<endl;
+			 cin>> t1;
+			 f1=false;
+			 }
+			 arr[j++]= t1;
+			 i=i+2;
+		 }
+		  else if(s[i]=='x'&& (s[i+1] == '2')) {
+			  if(f2){
+			 cout<<"Ведите  x2"<<endl;
+			 cin>> t2;
+			 f2=false;
+			  }
+			 arr[j++]= t2;
+			 i=i+2;
+		 }
+		  else if(s[i]=='x'&& (s[i+1] == '3')) {
+			  if(f3){
+			 cout<<"Ведите  x3"<<endl;
+			 cin>> t3;
+			 f3=false;
+			  }
+			 arr[j++]= t3;
+			 i=i+2;
+		 }
+		  else if(s[i]=='x'&& (s[i+1] == '4')) {
+			  if(f4){
+			 cout<<"Ведите  x4"<<endl;
+			 cin>> t4;
+			 f4=false;
+			  }
+			 arr[j++]= t4;
+			 i=i+2;
+		 }
+		    else if(s[i]=='x'&& (s[i+1] == '5')) {
+				if(f5) {
+			 cout<<"Ведите  x5"<<endl;
+			 cin>> t5;
+			 f5 = false;
+				}
+			 arr[j++]= t5;
 			 i=i+2;
 		 }
 		 else  if(s[i] == '+') {
@@ -95,10 +134,8 @@
 		 }
 
 		 else if(s[i] == '-') {
-			 if(arr[j-1].isop()&&arr[j-1].getop()!=")") {
-				 
-					 arr[j++]=-1;
-					 arr[j++]="*";
+			 if(arr[j-1].isop()&&arr[j-1].getop()!=")") {					 
+					 arr[j++]="un-";
 					 i++;
 				 
 			 } else {
@@ -123,7 +160,7 @@
 			 i++;
 		 }		 
 		 else {cout<<"Недопустимый символ "<< s[i]<<endl;
-		 return 0;
+		 throw (0);		 		 
 		 }		
 	 }	 	
 	 //массив лексем
@@ -136,28 +173,32 @@
 		 break;}
 	 case 1: {
 		 cout << "После числа  стоит не бинарный оператор или )" << endl;
-		 return 0;}
+		throw (0);}
 	 case 2: {
-		 cout << "После ( стоит не номер или (" << endl;
-		return 0;}
+		 cout << "После ( стоит бинарный оператор" << endl;
+		throw (0);}
 	 case 3: {
 		 cout << "После )  стоит не  бинарный  оператор или )" << endl;
-		 return 0;}
+		 throw (0);}
 	 case 4: {
 		 cout << "После оператора стоит не  число или (" << endl;
-		 return 0;}
+		 throw (0);}
 	 case 5: {
 		 cout << ") стоит раньше чем (" << endl;
-		 return 0;}
+		 throw (0);}
 	 case 6: {
 		 cout << "Количество ( и ) не совпадает" << endl;
-		 return 0;}
+		 throw (0);}
 	 case 7: {
 		 cout << "Недопустимый знак в конце выражения" << endl;
-		 return 0;}
+		 throw (0);}
+	 case 8: {
+		 cout << "Аргумент математической функции не заключен в скобки" << endl;
+		 throw (0);}
+
 	 }
 	 
-
+	 
 	
 	 lexem *arr2; // перевод в ОПЗ
 	  arr2 = new lexem[j];
@@ -202,7 +243,7 @@
 		  }
 		   
 	  }
-	     
+	  
 	   while(!(t.isempty())){
 		   
 		arr2[l]=t.pop();
@@ -226,17 +267,21 @@
 			 if(arr[i].getop()=="(") {	
 				 j++;
 				 if(i==n-1) {return 7;}
-				 if ((arr[i+1].isop()) && (arr[i+1].getop() !="(")) {return 2;}				
+				 if ((arr[i+1].isop()) && ((arr[i+1].getop() !="(")&&(arr[i+1].getop()!="sin")&&(arr[i+1].getop()!="cos")&&(arr[i+1].getop()!="ln")&&(arr[i+1].getop()!="exp")&&(arr[i+1].getop() !="un-"))) {return 2;}				
 			 }
 			 else if(arr[i].getop()==")") {
 				 j--;
 				 if(i!=n-1){
 					 if ((arr[i+1].isnum()) || ((arr[i+1].getop() != "+")&&(arr[i+1].getop() != "-")&&(arr[i+1].getop() != "*")&&(arr[i+1].getop() != "/")&&(arr[i+1].getop() != ")"))) {return 3;} 
 				 }
-			 }			 
+			 }	
+			 else if ((arr[i].getop()=="sin")||arr[i].getop()=="cos"||arr[i].getop()=="ln"||arr[i].getop()=="exp") {
+				 if(i==n-1){return 7;}
+				 else if(arr[i+1].isnum() || (arr[i+1].getop() !="(") ) {return 8;}
+			 }
 			 else {
 				 if(i==n-1) {return 7;}
-				 else if ((arr[i+1].isop()) && ((arr[i+1].getop() !="(") && (arr[i+1].getop() !="cos")&& (arr[i+1].getop() !="sin")&& (arr[i+1].getop() !="ln")&& (arr[i+1].getop() !="exp"))) {return 4;}
+				 else if ((arr[i+1].isop()) && ((arr[i+1].getop() !="(") && (arr[i+1].getop() !="un-") && (arr[i+1].getop() !="cos")&& (arr[i+1].getop() !="sin")&& (arr[i+1].getop() !="ln")&& (arr[i+1].getop() !="exp"))) {return 4;}
 			 }
 			 if (j<0){return 5;}
 		 }
@@ -275,7 +320,9 @@
 				 x2 = (s.pop()).getnum();
 				 x1 = (s.pop()).getnum();
 				 t = x1 / x2;}
-
+			 if(arr[i].getop() == "un-"){ 
+				 x2 = (s.pop()).getnum();
+				 t =  -1*x2;}
 			 if(arr[i].getop() == "sin"){ 
 				 x2 = (s.pop()).getnum();
 				 t =  sin(x2);}
