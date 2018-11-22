@@ -398,7 +398,7 @@ double calcFunc(const double& arg, const Token& tok)
     }
 }
 
-double computeResult(const Lexems& rpn)
+double computeResult(Lexems rpn)
 {
     TStack<double> operands; // стэк значений операндов
 
