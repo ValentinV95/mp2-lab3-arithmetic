@@ -18,13 +18,29 @@ vector<Lexem> Parsing(string a)
 		else if ((a[i] >= '0') && (a[i] <= '9'))
 		{
 			double dd = 0.0;
-
+			double ff = 0.0;
 			while ((a[i] >= '0') && (a[i] <= '9'))
 			{
 				dd = dd * 10 + double(a[i] - '0');
 				i++;
 			}
-			PrePolish.push_back(dd);
+			if (a[i] == '.')
+			{
+				++i;
+				int raz = i;
+				double rezerv = 1;
+				while ((a[i] >= '0') && (a[i] <= '9'))
+				{
+					ff = ff * 10 + double(a[i] - '0');
+					i++;
+				}
+				for (int j = 0; j < i - raz; j++)
+				{
+				rezerv *= 10;
+				}
+				ff /= rezerv;
+			}
+			PrePolish.push_back(dd+ff);
 			
 		}
 
@@ -40,7 +56,7 @@ vector<Lexem> Parsing(string a)
 				if (!(PrePolish.empty()))
 				{
 					Lexem B = PrePolish.back();
-					if (!B.GetType() && a[i-1]!=')')
+					if (!B.IsNum() && (B.GetOper()!=')'))
 						A.IfUnar();
 					
 				}
@@ -82,7 +98,7 @@ vector<Lexem> PutVal(double a, vector<Lexem> &s)
 	Lexem A(a);
 	for (int i = 0; i < s.size(); i++)
 	{
-		if (s[i].GetType() && ((s[i].GetOper() >= 'a') && (s[i].GetOper() <= 'z')))
+		if (s[i].IsNum() && ((s[i].GetOper() >= 'a') && (s[i].GetOper() <= 'z')))
 		{
 			s[i]=A;
 		}
@@ -100,7 +116,7 @@ vector<Lexem> Polish(vector<Lexem> s)
 	for (int i = 0; i < s.size(); i++)
 	{
 		
-		if (s[i].GetType())
+		if (s[i].IsNum())
 		{
 			Polish.push_back(s[i]);
 		}
@@ -108,7 +124,7 @@ vector<Lexem> Polish(vector<Lexem> s)
 		{
 			if (!s[i].Binar())
 			{
-				while (!(s[i].GetType()))
+				while (!(s[i].IsNum()))
 				i++;
 				double a = s[i].GetNum();
 				a = (-1)*a;
@@ -141,7 +157,9 @@ vector<Lexem> Polish(vector<Lexem> s)
 		if (i == (s.size()-1))
 		{
 			while (!Op.Empty())
-				Polish.push_back(Op.Pop());
+				if (Op.CheckLast() == '(' || Op.CheckLast() == ')')
+					Op.Pop();
+				else Polish.push_back(Op.Pop());
 			
 		}
 	}
@@ -157,7 +175,7 @@ double Calc(vector<Lexem> s)
 	double Rez;
 	for (int i = 0; i < s.size(); i++)
 	{
-		if (s[i].GetType())
+		if (s[i].IsNum())
 			Num.Push(s[i].GetNum());
 		else if(!Num.Empty())
 		{
@@ -179,8 +197,12 @@ double Calc(vector<Lexem> s)
 
 				break;
 			case '/':
-				Rez = Num.Pop()/frst;
-				Num.Push(Rez);
+				if (frst != 0)
+				{
+					Rez = Num.Pop() / frst;
+					Num.Push(Rez);
+				}
+				else throw ("Division by null");
 
 				break;
 			
@@ -204,7 +226,7 @@ char Lexem::GetOper()
 {
 	return op;
 }
-bool Lexem::GetType()
+bool Lexem::IsNum()
 {
 	return notop;
 }
@@ -229,12 +251,12 @@ bool Skobki(string s)
 		}
 		else if (s[i] == ')')
 		{
-			if(rez.Empty() || ((s[i] == ')') ^ (rez.CheckLast() == '(')))
+			if(rez.Empty())
 			{
 				cout << "Wrong sintaxis" << endl;
 				return false;
 			}
-			rez.Pop();
+			else rez.Pop();
 		}
 	}
 
@@ -255,14 +277,9 @@ bool CheckSequence(string s)
 	}
 	for (int i = 0; i < (int)s.length(); i++)
 	{
-		if ((s[i] == '+' || s[i] == '-' || s[i] == '*' || s[i] == '/' || s[i]=='(') && (s[i + 1] == '+' || s[i + 1] == '*' || s[i + 1] == '/' || s[i+1]==')')) {
-			cout << "operation after operation" << endl;
-			return false;
-
-		}
-		if ((s[i] == '/') && (s[i + 1] == '0'))
+		if ((s[i] == '+' || s[i] == '-' || s[i] == '*' || s[i] == '/' || s[i]=='(') && (s[i + 1] == '+' || s[i + 1] == '*' || s[i + 1] == '/' || s[i+1]==')')) 
 		{
-			cout << "division by 0" << endl;
+			cout << "operation after operation" << endl;
 			return false;
 		}
 	}
@@ -307,7 +324,7 @@ void DoPriority()
 {
 	for (int i = 0; i<lex.size(); i++)
 	 {
-		if (lex[i].GetType())
+		if (lex[i].IsNum())
 		out << lex[i].GetNum()<< " ";
 		else
 		out << lex[i].GetOper()<<" ";

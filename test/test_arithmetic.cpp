@@ -48,7 +48,15 @@ TEST(Lexem, can_lexeme_value)
 	string a = "z";
 	vector<Lexem> A;
 	A = Parsing(a);
-	EXPECT_EQ(A[0].GetType(), true);
+	EXPECT_EQ(A[0].IsNum(), true);
+}
+TEST(Lexem, unary_minus)
+{
+	string a = "-12+5";
+	vector<Lexem> A;
+	A = Parsing(a);
+	A = Polish(A);
+	EXPECT_EQ(A[0].GetNum(), -12);
 }
 TEST(Lexem, parsing_acting1)
 {
@@ -62,7 +70,7 @@ TEST(Lexem, parsing_acting2)
 	string a = "4+2+4";
 	vector<Lexem> A;
 	A = Parsing(a);
-	EXPECT_EQ(A[1].GetType(), false);
+	EXPECT_EQ(A[1].IsNum(), false);
 }
 
 //polish block
@@ -101,6 +109,18 @@ TEST(Lexem, do_polish3)
 	a1 = Calc(A);
 	EXPECT_EQ(a1, b1);
 }
+TEST(Lexem, division)
+{
+	string a = "4+5/0";
+	vector<Lexem> A;
+	double a1;
+	A = Parsing(a);
+	A = PutVal(2, A);
+	A = Polish(A);
+	
+	EXPECT_ANY_THROW(a1 = Calc(A));
+}
+
 
 //checing block
 TEST(string, can_check_syntax)

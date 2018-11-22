@@ -1,4 +1,4 @@
-#ifndef arif_H
+﻿#ifndef arif_H
 #define arif_H
 
 #include "stack.h"
@@ -27,7 +27,7 @@ public:
 	void IfUnar();
 	double GetNum();
 	char GetOper();
-	bool GetType();
+	bool IsNum();
 	void IfVal();
 
 

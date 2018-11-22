@@ -6,20 +6,21 @@ void main()
 {
 	vector<Lexem> Primer, Pol;
 	double Rezz, value;
-	string s;
+	std::string s;
+
 	int react2, react1;
-	cout << "Welcome to RPN! Tap 1 for typing your own string\nTap any key for running test block " << endl;
+	cout << "Welcome to RPN! Please type your execushion" << endl;
+	std::getline(std::cin, s);
+	cout << "Tap 1 for typing your own string\nTap any key for running test block " << endl;
 	cin >> react1;
-	
 	if (react1 == 1)
 	{
 		cout << "Do you use values? Press 1 if true" << endl;
 		cin >> react2;
-		cin >> s;
 		while (!Checking_Block(s,react2))
 		{
 			cout << "Wrong syntaxis, check your string" << endl;
-			cin >> s;
+			getline(cin, s);
 		} 
 		
 
@@ -71,7 +72,7 @@ void main()
 			cout << "test value 4" << endl;
 			Pol = Polish(Primer);
 			Rezz = Calc(Pol);
-			cout << "test 4 answer:" << Rezz << endl;
+			cout << "test 4 answer:     " << Rezz << endl;
 		}
 	}
 	
