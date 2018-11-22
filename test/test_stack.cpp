@@ -96,5 +96,5 @@ TEST(TStack, can_clear_stack)
 	a.push(32);
 	a.push(4);
 	a.clear();
-	EXPECT_EQ(a.is_empty, true);
+	EXPECT_EQ(a.is_empty(), true);
 }
