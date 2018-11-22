@@ -56,8 +56,11 @@ vector<Lexem> Parsing(string a)
 				if (!(PrePolish.empty()))
 				{
 					Lexem B = PrePolish.back();
-					if (!B.IsNum() && (B.GetOper()!=')'))
+					if (!B.IsNum() && (B.GetOper() != ')'))
+					{
 						A.IfUnar();
+						
+					}
 					
 				}
 				else {
@@ -112,6 +115,7 @@ vector<Lexem> Polish(vector<Lexem> s)
 {
 	vector<Lexem> Polish;
 	TStack<char> Op;
+	int k = 0;
 
 	for (int i = 0; i < s.size(); i++)
 	{
@@ -125,9 +129,16 @@ vector<Lexem> Polish(vector<Lexem> s)
 			if (!s[i].Binar())
 			{
 				while (!(s[i].IsNum()))
-				i++;
+				{
+					i++; k++;
+				}
+
 				double a = s[i].GetNum();
-				a = (-1)*a;
+				while (k != 0)
+				{
+					a = (-1)*a;
+					k--;
+				}
 				Polish.push_back(a);
 				
 			}
