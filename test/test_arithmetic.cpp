@@ -130,4 +130,3 @@ TEST(Result, can_solve_expression_3)
 	Lexeme *c = Polish(s, k);
 	EXPECT_DOUBLE_EQ(result(c, k), 25.2);
 }
-

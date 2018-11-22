@@ -70,7 +70,6 @@ Lexeme* Polish(string s, int & k) {
 	int g = 0;
 	Lexeme *c;
 	c = new Lexeme[size(s)];
-	char b[21] = { 0,1,2,3,4,5,6,7,8,9,'+','-','*','/',':','.',',','(',')' ,'=','\0' };
 	char *d;
 	Stack<char> a(size(s));
 	for (int i = 0; i < size(s); i++)
@@ -83,8 +82,9 @@ Lexeme* Polish(string s, int & k) {
 				d[n] = s[j];
 			d[m] = { '\0' };
 			double f = atof(d);
-			if (g > 1)
+			for(int i=1;i<g;i++)
 				f = -f;
+			
 			g = 0;
 			c[k++].Set(f, 2);
 			i += m - 1;
@@ -137,7 +137,7 @@ Lexeme* Polish(string s, int & k) {
 
 	while (!(a.IsEmpty()))
 		c[k++].Set(a.Pop(), 1);
-
+	
 	return c;
 }
 
@@ -173,9 +173,11 @@ double result(Lexeme *c, int k) {
 				break;
 
 			}
+			
 			a.Push(res);
 		}
 	}
+	if (k == 1)res = a.Pop();
 
 	return res;
 }
@@ -196,18 +198,35 @@ bool mistake(string s) {
 			f = false;
 		}g = 0;
 	}
-
-	int l = 0;
-	for (int i = 0; i < size(s); i++) {
-		if (s[i] == ')')
-			l++;
+	Stack<char> a(size(s));
+	
+	int t = 0;
+	char br;
+	for (int i = 0; i < size(s); i++)
+	{
 		if (s[i] == '(')
-			l--;
-	}
-	if (l != 0) {
+			a.Push('(');
+		else
+			if (s[i] == ')')
+			{
+				if (!(a.IsEmpty()))
+				{
+					br = a.Pop();
+					
+				}
+				else
+				{
+					
+					t++;
+				}
+			}
+	}	if (t != 0) {
 		f = false;
-		cout << '\n' << "Unequal number of brackets";
+		cout << '\n' << "Wrong sequence of brackets";
 	}
+
+
+
 	for (int j = 11; j < 17; j++)
 		if ((s[0] == b[j]) || (s[0] == ')')) {
 			f = false;
@@ -223,16 +242,11 @@ bool mistake(string s) {
 			if (s[i] == b[j])
 				if ((i + 1) < size(s)) {
 					for (int l = 11; l < 16; l++)
-						if (((s[i + 1] == b[l]) || ((s[i + 1] == '-') && (s[i + 2] == '('))) && (s[i] != ')')) {
+						if (((s[i + 1] == b[l])||((s[i+1]=='-') &&(s[i + 2])=='(' ))&&(s[i]!=')')) {
 							f = false;
 							cout << '\n' << "This is not right sequence of symbols in the expression";
 						}
-					if (s[i + 1] == '-')
-						for (int l = 0; l < 10; l++)
-							if ((s[i + 1] != b[l]) && (s[i] != ')')) {
-								f = false;
-								cout << '\n' << "This is not right sequence of symbols in the expression";
-							}
+						
 				}
 	}
 	for (int i = 1; i < size(s); i++) {
