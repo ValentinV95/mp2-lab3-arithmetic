@@ -253,6 +253,10 @@ void Solver::convert_to_RPN()
 	}
 
 	//syntax check
+	if (d[0].is_op() && !d[0].is_op_br())
+	{
+		throw "Expression can not start with operations such as '+','*','/',')'";
+	}
 	for (int i = 0;i < d.size() - 1;i++)
 	{
 		if (!d[i].can_go_next(d, i))
@@ -360,9 +364,16 @@ double Solver::solve()
 				}
 				case '/':
 				{
-					Lexeme temp(c.get_number() / a.get_number());
-					b.push(temp);
-					break;
+					if (a.get_number() == 0.0) // compare with eps. probably??
+					{
+						throw "Division by zero";
+					}
+					else
+					{
+						Lexeme temp(c.get_number() / a.get_number());
+						b.push(temp);
+						break;
+					}
 				}
 			}
 		}
