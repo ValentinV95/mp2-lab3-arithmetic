@@ -61,6 +61,10 @@ int prt(char _op) {
 	return prt;
 }
 
+
+
+
+
 Lexeme* Polish(string s, int & k) {
 	k = 0;
 	int l = 0;
@@ -110,7 +114,7 @@ Lexeme* Polish(string s, int & k) {
 				}
 				else {
 
-					if ((prt(a.Value()) < prt(s[i])) || (s[i] == '(')) {
+					if ((!a.IsEmpty())&&((prt(a.Value()) < prt(s[i])) || (s[i] == '('))) {
 						if ((g == 0) || (s[i] == '('))
 							a.Push(s[i]);
 						if (s[i] != '(')
