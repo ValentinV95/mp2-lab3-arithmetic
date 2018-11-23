@@ -60,7 +60,7 @@ bool Lexeme::can_go_next(vector <Lexeme>& a, int i)
 		}
 		else // clear operation:'+','-','*','/'
 		{
-			return !a[i + 1].is_cl_br();
+			return a[i + 1].is_op_br() || a[i+1].is_number() || a[i+1].is_unary();
 		}
 	}
 
@@ -88,7 +88,10 @@ void Solver::convert_string_to_lexeme(string& s)
 			{
 				if (s[i] == '.' && dot)
 				{
-					throw "1";
+					string err;
+					err = "Number has two or more dots in it";
+					d.clear();
+					throw err;
 				}
 				if (s[i] == '.')
 				{
@@ -196,7 +199,10 @@ void Solver::convert_string_to_lexeme(string& s)
 					{
 						if (s[i] == '.' && dot)
 						{
-							throw "1";
+							string err;
+							err = "Number has two or more dots in it";
+							d.clear();
+							throw err;
 						}
 						if (s[i] == '.')
 						{
@@ -210,23 +216,29 @@ void Solver::convert_string_to_lexeme(string& s)
 					d.push_back(a);
 					continue;
 				}
-				else
+				else 
 				{
-					throw "1"; // 2---- or 2----/
+					string err;
+					err = "Wrong operation order after minus (no number or bracket)";
+					d.clear();
+					throw err ; // 2---- or 2----/
 				}
 			}
-			else
-			{
-				// throw actually
-				Lexeme a('-');
-				d.push_back(a);
-				i++;
-				continue;
-			}
+			//else
+			//{
+			//	// throw actually
+			//	Lexeme a('-');
+			//	d.push_back(a);
+			//	i++;
+			//	continue;
+			//}
 		}
 		else
 		{
-			throw "Incorrect symbol";
+			string err;
+			err = "Incorrect symbol";
+			d.clear();
+			throw err;
 		}
 	}
 }
@@ -249,19 +261,59 @@ void Solver::convert_to_RPN()
 	}
 	if (count != 0)
 	{
-		throw "Wrong amount of brackets";
+		string err;
+		err = "Wrong amount of brackets";
+		d.clear();
+		throw err;
 	}
 
 	//syntax check
-	if (d[0].is_op() && !d[0].is_op_br())
+	if (d[0].is_op() && !d[0].is_op_br() && !d[0].is_unary())
 	{
-		throw "Expression can not start with operations such as '+','*','/',')'";
+		string err;
+		err = "Expression can not start with operations such as '+','*','/',')'";
+		d.clear();
+		throw err;
+	}
+	if (d.back().is_op())
+	{
+		if (!d.back().is_cl_br())
+		{
+			string err;
+			err = "Binary operation in the end of the expression";
+			d.clear();
+			throw err;
+		}
 	}
 	for (int i = 0;i < d.size() - 1;i++)
 	{
 		if (!d[i].can_go_next(d, i))
 		{
-			throw "Wrong syntax";
+			string err = "";
+			if (d[i].is_number())
+			{
+				err += d[i].get_number();
+				err += " can't go before ";
+				err += d[i + 1].get_oper();
+				d.clear();
+				throw err;
+			}
+			else if (d[i].is_op())
+			{
+				err += d[i].get_oper();
+				err += " can't go before ";
+				if (d[i + 1].is_number())
+				{
+					err += d[i + 1].get_number();
+				}
+				else if (d[i+1].is_op())
+				{
+					err += d[i + 1].get_oper();
+				}
+				d.clear();
+				throw err;
+			}
+			
 		}
 	}
 
@@ -288,7 +340,7 @@ void Solver::convert_to_RPN()
 				b.pop();  //pop '('
 			}
 			gh:
-			if (b.is_empty() || b.front().get_prior() < d[i].get_prior())
+			if (b.is_empty() || b.front().get_prior() < d[i].get_prior() || d[i].is_unary())
 			{
 				if (!d[i].is_cl_br())
 				{
@@ -301,7 +353,7 @@ void Solver::convert_to_RPN()
 				{
 					input.push_back(b.pop());
 				}
-				goto gh; //change later
+				goto gh; 
 			}
 		}
 	}
@@ -366,7 +418,10 @@ double Solver::solve()
 				{
 					if (a.get_number() == 0.0) // compare with eps. probably??
 					{
-						throw "Division by zero";
+						string err;
+						err = "Division by zero";
+						d.clear();
+						throw err;
 					}
 					else
 					{
@@ -379,6 +434,7 @@ double Solver::solve()
 		}
 	}
 	return b.pop().get_number();
+	d.clear();
 }
 
 

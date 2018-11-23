@@ -85,7 +85,7 @@ TEST(arithmetic, unary_minus_with_division)
 	EXPECT_EQ(-1.0, a.solve());
 }
 
-TEST(arithmetic, unary_minus_with_division_with_brackets)
+TEST(arithmetic, unary_minus_with_division_with_brackets_1)
 {
 	Solver a;
 	string s;
@@ -93,6 +93,16 @@ TEST(arithmetic, unary_minus_with_division_with_brackets)
 	a.convert_string_to_lexeme(s);
 	a.convert_to_RPN();
 	EXPECT_EQ(-1.0, a.solve());
+}
+
+TEST(arithmetic, unary_minus_with_division_with_brackets_2)
+{
+	Solver a;
+	string s;
+	s = "1/-(4+6)";
+	a.convert_string_to_lexeme(s);
+	a.convert_to_RPN();
+	EXPECT_EQ(-0.1, a.solve());
 }
 
 TEST(arithmetic, unary_minus_with_brackets_more_complex_1)
@@ -184,15 +194,6 @@ TEST(arithmetic, throw_when_first_character_is_operation)
 	ASSERT_ANY_THROW(a.convert_to_RPN(););
 }
 
-TEST(arithmetic, throw_when_expression_is_missing_operations)
-{
-	Solver a;
-	string s;
-	s = "1 1 1 + 1"; // ????
-	a.convert_string_to_lexeme(s);
-	ASSERT_ANY_THROW(a.convert_to_RPN(););
-}
-
 TEST(arithmetic, throw_when_closing_bracket_goes_after_number)
 {
 	Solver a;
@@ -207,8 +208,7 @@ TEST(arithmetic, throw_wrong_operation_order_1)
 	Solver a;
 	string s;
 	s = "-+3"; 
-	a.convert_string_to_lexeme(s);
-	ASSERT_ANY_THROW(a.convert_to_RPN(););
+	ASSERT_ANY_THROW(a.convert_string_to_lexeme(s););
 }
 
 TEST(arithmetic, throw_wrong_operation_order_2)
@@ -217,7 +217,7 @@ TEST(arithmetic, throw_wrong_operation_order_2)
 	string s;
 	s = "17*/3";
 	a.convert_string_to_lexeme(s);
-	ASSERT_ANY_THROW(a.convert_to_RPN(););
+	ASSERT_ANY_THROW(a.convert_to_RPN());
 }
 
 TEST(arithmetic, throw_wrong_operation_order_3)
@@ -226,7 +226,7 @@ TEST(arithmetic, throw_wrong_operation_order_3)
 	string s;
 	s = "-9*+4";
 	a.convert_string_to_lexeme(s);
-	ASSERT_ANY_THROW(a.convert_to_RPN(););
+	ASSERT_ANY_THROW(a.convert_to_RPN());
 }
 
 TEST(arithmetic, throw_wrong_amounts_of_brackets)
@@ -235,7 +235,7 @@ TEST(arithmetic, throw_wrong_amounts_of_brackets)
 	string s;
 	s = "(8.0))";
 	a.convert_string_to_lexeme(s);
-	ASSERT_ANY_THROW(a.convert_to_RPN(););
+	ASSERT_ANY_THROW(a.convert_to_RPN());
 }
 
 TEST(arithmetic, throw_no_operations_or_numbers_between_brackets)
@@ -244,7 +244,7 @@ TEST(arithmetic, throw_no_operations_or_numbers_between_brackets)
 	string s;
 	s = "3+1*()";
 	a.convert_string_to_lexeme(s);
-	ASSERT_ANY_THROW(a.convert_to_RPN(););
+	ASSERT_ANY_THROW(a.convert_to_RPN());
 }
 
 TEST(arithmetic, throw_no_operations_between_closing_and_opening_brackets)
@@ -253,7 +253,7 @@ TEST(arithmetic, throw_no_operations_between_closing_and_opening_brackets)
 	string s;
 	s = "(4+1)(4/5)";
 	a.convert_string_to_lexeme(s);
-	ASSERT_ANY_THROW(a.convert_to_RPN(););
+	ASSERT_ANY_THROW(a.convert_to_RPN());
 }
 
 TEST(arithmetic, throw_operation_after_opening_bracket)
@@ -262,7 +262,7 @@ TEST(arithmetic, throw_operation_after_opening_bracket)
 	string s;
 	s = "3+1*(/4)";
 	a.convert_string_to_lexeme(s);
-	ASSERT_ANY_THROW(a.convert_to_RPN(););
+	ASSERT_ANY_THROW(a.convert_to_RPN());
 }
 
 TEST(arithmetic, no_throw_unary_minus_after_opening_bracket)
@@ -271,7 +271,7 @@ TEST(arithmetic, no_throw_unary_minus_after_opening_bracket)
 	string s;
 	s = "3+1*(-4)";
 	a.convert_string_to_lexeme(s);
-	ASSERT_NO_THROW(a.convert_to_RPN(););
+	ASSERT_NO_THROW(a.convert_to_RPN());
 }
 
 TEST(arithmetic, throw_last_character_is_operation)
@@ -280,7 +280,7 @@ TEST(arithmetic, throw_last_character_is_operation)
 	string s;
 	s = "3+1*";
 	a.convert_string_to_lexeme(s);
-	ASSERT_ANY_THROW(a.convert_to_RPN(););
+	ASSERT_ANY_THROW(a.convert_to_RPN());
 }
 
 TEST(arithmetic, throw_last_character_is_opening_bracket)
@@ -289,7 +289,25 @@ TEST(arithmetic, throw_last_character_is_opening_bracket)
 	string s;
 	s = "3+1*(";
 	a.convert_string_to_lexeme(s);
-	ASSERT_ANY_THROW(a.convert_to_RPN(););
+	ASSERT_ANY_THROW(a.convert_to_RPN());
+}
+
+TEST(arithmetic, division_by_zero)
+{
+	Solver a;
+	string s;
+	s = "5.1234/0.0 + 6*(-9+3)";
+	a.convert_string_to_lexeme(s);
+	a.convert_to_RPN();
+	ASSERT_ANY_THROW(a.solve());
+}
+
+TEST(arithmetic, too_many_dots)
+{
+	Solver a;
+	string s;
+	s = "6 / 3.2.1 + 4.98" ;
+	ASSERT_ANY_THROW(a.convert_string_to_lexeme(s););
 }
 
 
