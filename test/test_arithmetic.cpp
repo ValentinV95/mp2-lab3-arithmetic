@@ -52,11 +52,13 @@ TEST(Lexem, can_lexeme_value)
 }
 TEST(Lexem, unary_minus)
 {
-	string a = "-12+5";
+	string a = "-(12+2)";
 	vector<Lexem> A;
+	double a1;
 	A = Parsing(a);
 	A = Polish(A);
-	EXPECT_EQ(A[0].GetNum(), -12);
+	a1 = Calc(A);
+	EXPECT_EQ(a1,-14);
 }
 TEST(Lexem, parsing_acting1)
 {
@@ -120,8 +122,36 @@ TEST(Lexem, division)
 	
 	EXPECT_ANY_THROW(a1 = Calc(A));
 }
-
-
+TEST(Lexem, megaminus)
+{
+	string a = "1--------1";
+	vector<Lexem> A;
+	double a1;
+	A = Parsing(a);
+	A = Polish(A);
+	a1 = Calc(A);
+	EXPECT_EQ(a1, 2);
+}
+TEST(Lexem, dbl_minus_ex)
+{
+	string a = "--(6+1)";
+	vector<Lexem> A;
+	double a1;
+	A = Parsing(a);
+	A = Polish(A);
+	a1 = Calc(A);
+	EXPECT_EQ(a1, 7);
+}
+TEST(Lexem, ordinary_nums_with_minus)
+{
+	string a = "-5+7-2";
+	vector<Lexem> A;
+	double a1;
+	A = Parsing(a);
+	A = Polish(A);
+	a1 = Calc(A);
+	EXPECT_EQ(a1, 0);
+}
 //checing block
 TEST(string, can_check_syntax)
 {

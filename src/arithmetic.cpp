@@ -122,25 +122,26 @@ vector<Lexem> Polish(vector<Lexem> s)
 		
 		if (s[i].IsNum())
 		{
-			Polish.push_back(s[i]);
+			Polish.push_back(s[i].GetNum());
+			
 		}
 		else 
 		{
 			if (!s[i].Binar())
 			{
-				while (!(s[i].IsNum()))
+				while (s[i].GetOper()=='-')
 				{
-					i++; k++;
+					k++; ++i;
 				}
+				--i;
+				if (k % 2 == 1)
+			{
+					Lexem A('u');
+					A.IfUnar();
+					Op.Push(A.GetOper());
+				k = 0;
+			}
 
-				double a = s[i].GetNum();
-				while (k != 0)
-				{
-					a = (-1)*a;
-					k--;
-				}
-				Polish.push_back(a);
-				
 			}
 			else if ((s[i].Binar())&&(Op.Empty()|| s[i].GetOper()=='(' || Op.CheckLast() == '(' || (priority[Op.CheckLast()] < priority[s[i].GetOper()])))
 			{
@@ -198,8 +199,9 @@ double Calc(vector<Lexem> s)
 				Num.Push(Rez);
 				break;
 			case '-':
-				Rez = Num.Pop()-frst;
-				Num.Push(Rez);
+				Rez = Num.Pop() - frst;
+					Num.Push(Rez);
+				
 
 				break;
 			case '*':
@@ -216,10 +218,14 @@ double Calc(vector<Lexem> s)
 				else throw ("Division by null");
 
 				break;
-			
+			case 'u':
+					double a = -frst;
+					Num.Push(a);
+					break;
 			}
 		}
 	}
+	Rez = Num.Pop();
 	return Rez;
 
 }
@@ -322,6 +328,7 @@ bool ValisOne(string s)
 
 void DoPriority()
 {
+	priority['u'] = 3;
 	priority['('] = 0;
 	priority[')'] = 0;
 	priority['*'] = 2;
