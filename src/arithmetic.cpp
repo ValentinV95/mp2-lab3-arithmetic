@@ -398,15 +398,18 @@ double calcFunc(const double& arg, const Token& tok)
     }
 }
 
-double computeResult(Lexems rpn)
+double computeResult(const Lexems& rpn)
 {
     TStack<double> operands; // стэк значений операндов
+    Lexems lexemRpn;                
+    lexemRpn.tokens = rpn.tokens;  
+    lexemRpn.values = rpn.values;
 
-    for (auto it : rpn.tokens) {
+    for (auto it : lexemRpn.tokens) {
         if (it == NUMBER) {
             // извлекаем операнд из очереди значений и помещаем его в стек
-            double val = rpn.values.front();
-            rpn.values.pop();
+            double val = lexemRpn.values.front();
+            lexemRpn.values.pop();
             operands.push(val);
         }
         else if (isFunction(it)) {

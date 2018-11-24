@@ -64,6 +64,6 @@ bool isCorrect(const Lexems& lexemsArray); // функция проверяет 
 
 Lexems convertToRpn(const Lexems& lexemArray); // функция преобразует массив лексем в обратную польскую запись
 
-double computeResult(Lexems rpn); // функция вычисляет результат выражения по обратной пользой записи
+double computeResult(const Lexems& rpn); // функция вычисляет результат выражения по обратной пользой записи
 
 #endif
