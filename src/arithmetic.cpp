@@ -117,8 +117,8 @@ Lexems convertToArrayLexem(string str)
 
             if (str[i] == '-' && !lexemsArray.tokens.empty()) {
                 // обрабатываем случай унарного минуса
-                if (lexemsArray.tokens.back() == LP) {
-                    // унарный минус идёт только после '('
+                if (lexemsArray.tokens.back() == LP || isOperation(lexemsArray.tokens.back())) {
+                    // унарный минус идёт только после '(' или операции
                     tok = UNARY_MINUS;
                 }
             }
@@ -245,9 +245,6 @@ bool isCorrect(const Lexems& lexemsArray)
         // после операции не может идти унарный минус, операция или '('
         if (isOperation(curr) && (next == RP)) {
             throw Exception("')' cannot be after operation");
-        }
-        else if (isOperation(curr) && (next == UNARY_MINUS)) {
-            throw Exception("unary minus cannot be after");
         }
         else if (isOperation(curr) && isOperation(next)) {
             throw Exception("operation cannot be after operation");

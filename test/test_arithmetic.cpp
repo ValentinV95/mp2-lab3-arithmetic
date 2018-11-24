@@ -186,14 +186,6 @@ TEST(IsCorrect, throw_when_closing_bracket_is_after_unary_minus)
     ASSERT_ANY_THROW(isCorrect(expression));
 }
 
-TEST(IsCorrect, throw_when_unary_minus_is_after_operation)
-{
-    string str = "8*-1";
-    Lexems expression = convertToArrayLexem(str);
-
-    ASSERT_ANY_THROW(isCorrect(expression));
-}
-
 TEST(IsCorrect, throw_when_operation_is_after_operation)
 {
     string str = "8*/9";
