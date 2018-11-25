@@ -1,4 +1,4 @@
-// объ€вление функций и классов дл€ вычислени€ арифметических выражений
+
 #include <string>
 #include "stack.h"
 enum type{oper,num,o_b,c_b};
