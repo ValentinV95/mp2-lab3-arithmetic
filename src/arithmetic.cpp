@@ -305,14 +305,14 @@ Lexeme::Lexeme( char* c1)
 				k = 1;
 				t--;
 				kind[i] = c_b;
-				if ((kind[i - 1] == num) && (a < 0))
+				if ((kind[i - 1] == num) && (a < 0)&&(c[i-1]!=')'))
 					kind[i] = num;
 				break;
 			}
 			case('.'):
 			{
-				if ((kind[i - 1] != num) && (kind[i + 1] != num))
-					throw "Point out of number";
+				if ((kind[i - 1] != num) || (k!=1))
+					throw "Point out of number or some points in one number";
 				else
 				{
 					k *= 0.1;
@@ -332,6 +332,7 @@ Lexeme::Lexeme( char* c1)
 	}
 	if (t!=0)
 		throw "Not equal open and close brackets";
+	//std::cout << kind[1];
 }
 Oper_or_numb* Lexeme::RPN()
 {
@@ -351,6 +352,7 @@ Oper_or_numb* Lexeme::RPN()
 	for (int i = 0;i < v;i++)
 	{
 		S.Set(TStack.Get());
+		//std::cout << strlen(c);
 	}
 	for (int i = 0;i < strlen(c);i++)
 	{
@@ -372,12 +374,15 @@ Oper_or_numb* Lexeme::RPN()
 			{
 				i++;
 			}
-
+			
 		
 			
 				if ((c[i] != '-')||(kind[i]==oper))
 				{
+					
 					o[j].Set(S.Get());
+					
+					//std::cout << i;
 					j++;
 					s++;
 				}
@@ -423,6 +428,11 @@ Oper_or_numb* Lexeme::RPN()
 		case o_b:
 		{
 			t++;
+			if (S1.IsEmpty())
+			{
+				S1.Set(o1);
+
+			}
 			if ((i > 0) && (c[i - 1] == '-') && (c[i - 2] == '('))
 			{
 				
@@ -477,12 +487,13 @@ Oper_or_numb* Lexeme::RPN()
 		}
 		}
 	}
+	if (j>1)
 	for (;j <= s;j++)
 	{
 		o[j].Set(S1.Get().Get_op());
 	}
 	
-	
+	//std::cout << o[0].Get_value();
 
 	n = j+1;
 	return(o);
