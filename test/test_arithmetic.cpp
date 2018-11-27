@@ -1,5 +1,3 @@
-// тесты для вычисления арифметических выражений
-
 #include <gtest.h>
 #include "arithmetic.h"
 
@@ -43,6 +41,13 @@ TEST(exp, Correct6)
 	string s = "-1*-7+(-12)";
 	string str = error_checking(s);
 	EXPECT_EQ(-5, calculate(convertPpn(str)));
+}
+
+TEST(exp, Correct7)
+{
+	string s = "1/-(4+6))";
+	string str = error_checking(s);
+	EXPECT_EQ(-0.1, calculate(convertPpn(str)));
 }
 
 TEST(exp, THROW1)

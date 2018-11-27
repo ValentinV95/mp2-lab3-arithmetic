@@ -1,4 +1,3 @@
-// объ€вление функций и классов дл€ вычислени€ арифметических выражений
 #ifndef __ARITHMETIC___H
 #define __ARITHMETIC___H
 
@@ -16,127 +15,72 @@ struct Lex
 	char symbol;
 };
 
+double calculate(Stack<Lex>);
+
 inline void error(char c, int place_error)
 {
-	try
+	switch (c)
 	{
-		switch(c)
-		{
-		    case 1:
-		    {
-				throw 1;
-		    }
-			case 2:
-			{
-				throw 2;
-			}
-			case 3:
-			{
-				throw 3;
-			}
-			case 4:
-			{
-				throw 4;
-			}
-			case 5:
-			{
-				throw 5;
-			}
-			case 6:
-			{
-				throw 6;
-			}
-			case 7:
-			{
-				throw 7;
-			}
-			case 8:
-			{
-				throw 8;
-			}
-			case 9:
-			{
-				throw 9;
-			}
-			case 10:
-			{
-				throw 10;
-			}
-			case 11:
-			{
-				throw 11;
-			}
-			case 12:
-			{
-				throw 12;
-			}
-		}
+	case 1:
+	{
+		cout << "Space in position " << place_error << endl;
+		break;
 	}
-	catch (int i)
+	case 2:
 	{
-		switch (i)
-		{
-		case 1:
-		{
-			cout << "Space in position " << place_error << endl;
-			break;
-		}
-		case 2:
-		{
-			cout << "The digit cannot be in position " << place_error << endl;
-			break;
-		}
-		case 3:
-		{
-			cout << "The fractional part of the number is not initialized  on the position " << place_error << endl;
-			break;
-		}
-		case 4:
-		{
-			cout << "Division by zero by position " << place_error << endl;
-			break;
-		}
-		case 5:
-		{
-			cout << "The opening bracket cannot be positioned " << place_error << endl;
-			break;
-		}
-		case 6:
-		{
-			cout << "The closing bracket cannot be positioned " << place_error << endl;
-			break;
-		}
-		case 7:
-		{
-			cout << "The number cannot be positioned " << place_error << endl;
-			break;
-		}
-		case 8:
-		{
-			cout << "Error at the end of an expression " << endl;
-			break;
-		}
-		case 9:
-		{
-			cout << "Unary minus cannot be positioned " << place_error << endl;
-			break;
-		}
-		case 10:
-		{
-			cout << "The number of opening brackets is not equal to the number of closing brackets" << endl;
-			break;
-		}
-		case 11:
-		{
-			cout << ", cannot be positioned " << place_error << endl;
-			break;
-		}
-		case 12:
-		{
-			cout << ": cannot be positioned " << place_error << endl;
-			break;
-		}
-		}
+		cout << "The digit cannot be in position " << place_error << endl;
+		break;
+	}
+	case 3:
+	{
+		cout << "The fractional part of the number is not initialized  on the position " << place_error << endl;
+		break;
+	}
+	case 4:
+	{
+		cout << "Division by zero by position " << place_error << endl;
+		break;
+	}
+	case 5:
+	{
+		cout << "The opening bracket cannot be positioned " << place_error << endl;
+		break;
+	}
+	case 6:
+	{
+		cout << "The closing bracket cannot be positioned " << place_error << endl;
+		break;
+	}
+	case 7:
+	{
+		cout << "The number cannot be positioned " << place_error << endl;
+		break;
+	}
+	case 8:
+	{
+		cout << "Error at the end of an expression " << endl;
+		break;
+	}
+	case 9:
+	{
+		cout << "Unary minus cannot be positioned " << place_error << endl;
+		break;
+	}
+	case 10:
+	{
+		cout << "The number of opening brackets is not equal to the number of closing brackets" << endl;
+		break;
+	}
+	case 11:
+	{
+		cout << ", cannot be positioned " << place_error << endl;
+		break;
+	}
+	case 12:
+	{
+		cout << ": cannot be positioned " << place_error << endl;
+		break;
+	}
 	}
 }
 
@@ -549,6 +493,21 @@ inline Stack<Lex> convertPpn(string str_in)
 			}
 			case '-':
 			{
+				if (str_in[i + 1] == '(')
+				{
+					int j = i + 2;
+					string temp;
+					while (str_in[j] != ')')
+					{
+						temp = temp + str_in[j];
+						str_in.erase(str_in.begin() + j);
+					}
+					str_in.erase(str_in.begin() + j);
+					str_in.erase(str_in.begin() + i + 1);
+					double res = calculate(convertPpn(temp));
+					temp = to_string(res);
+					str_in.replace(str_in.begin() + i + 1, str_in.begin() + i + 2, temp);
+				}
 				if (str_in[i + 1] >= '0' && str_in[i + 1] <= '9' && (str_in[i - 1] == '+' || str_in[i - 1] == '-' || str_in[i - 1] == '*' || str_in[i - 1] == '/' || str_in[i - 1] == '('))
 				{
 					string d = "-";
