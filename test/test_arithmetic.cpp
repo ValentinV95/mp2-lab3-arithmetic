@@ -76,6 +76,13 @@ TEST(Lexeme, can_simple_operation_in_brackets)
 	EXPECT_EQ(c.Answer(c.RPN()), 2);
 
 }
+TEST(Lexeme, can_some_simple_operation_in_brackets)
+{
+	Lexeme c("(1+1*2)");
+
+	EXPECT_EQ(c.Answer(c.RPN()), 3);
+
+}
 TEST(Lexeme, can_simple_operation_with_different_numbers)
 {
 	Lexeme c("12+11.2");
@@ -102,5 +109,12 @@ TEST(Lexeme, can_unar_minus)
 	Lexeme c("(-(12+11.2))*2");
 
 	EXPECT_EQ(c.Answer(c.RPN()), -46.4);
+
+}
+TEST(Lexeme, can_some_unar_minus)
+{
+	Lexeme c("(-(12+11.2))*2*(-(1+0))");
+
+	EXPECT_EQ(c.Answer(c.RPN()), 46.4);
 
 }
