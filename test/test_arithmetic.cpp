@@ -56,6 +56,11 @@ TEST(Lexeme, can_not_create_with_point_outside_number)
 
 	ASSERT_ANY_THROW(Lexeme c("12+2*.2+3"));
 }
+TEST(Lexeme, can_not_create_with_some_points)
+{
+
+	ASSERT_ANY_THROW(Lexeme c("12+2*1.2.3+3"));
+}
 TEST(Lexeme, can_simple_operation)
 {
 	Lexeme c("1+1");
@@ -64,6 +69,13 @@ TEST(Lexeme, can_simple_operation)
 
 }
 
+TEST(Lexeme, can_simple_operation_in_brackets)
+{
+	Lexeme c("(1+1)");
+
+	EXPECT_EQ(c.Answer(c.RPN()), 2);
+
+}
 TEST(Lexeme, can_simple_operation_with_different_numbers)
 {
 	Lexeme c("12+11.2");
@@ -76,6 +88,13 @@ TEST(Lexeme, can_complex_operation_with_different_numbers)
 	Lexeme c("(12+11.2)*2");
 
 	EXPECT_EQ(c.Answer(c.RPN()), 46.4);
+
+}
+TEST(Lexeme, can_negative_numbers)
+{
+	Lexeme c("(-12)*2");
+
+	EXPECT_EQ(c.Answer(c.RPN()), -24);
 
 }
 TEST(Lexeme, can_unar_minus)
