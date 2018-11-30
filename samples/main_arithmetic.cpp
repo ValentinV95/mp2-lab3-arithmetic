@@ -1,16 +1,27 @@
 // реализация пользовательского приложения
-#include <iostream>
 #include <arithmetic.h>
+
+using namespace std;
 
 int main()
 {
-	string s = "12.34+4.56+(7+8*(9.+5))";
-	vector <string> vect;
-	vect = stringToVector(s);
 
-	for (unsigned i = 0; i < vect.size(); i++) {
-		std::cout << vect[i] << " ";
+	try {
+		string s = "1+2+3";
+		isCorrect(s);
+		Arithmetic res;
+		res.stringToTerm(s);
+		res.print();
+		cout << endl;
+		res.termToPostfix();
+		res.print();
+		cout << endl;
+		res.calculate();
+		res.print();
+		cout << endl;
 	}
-
+	catch (string smth) {
+		cout << smth << endl;
+	}
 	return 0;
 }

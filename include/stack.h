@@ -24,11 +24,13 @@ public:
 	T getTop();
 	T getSize();
 	T pop();
+	T front();
 	void push(const T &x);
 	void clear();
 	bool isEmpty();
 	bool isFull();
 	void resize();
+	
 };
 
 template <class T>
@@ -58,11 +60,18 @@ void Stack <T>::push(const T &x) {
 	else this->resize();
 }
 
+template <class T> 
+T Stack<T>::front() {
+	if (!isEmpty())
+		return data[top];
+	else throw (string)"Stack is empty";
+}
+
 template <class T>
 T Stack <T>::pop() {
 	if (!isEmpty())
 		return data[top--];
-	else throw "Stack is empty";
+	else throw (string)"Stack is empty";
 }
 
 template <class T>
