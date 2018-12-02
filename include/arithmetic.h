@@ -157,7 +157,7 @@ inline bool brackets_error(string str_in)
 	}
 }
 
-inline bool isvar(string str_in)
+inline int isvar(string str_in)
 {
 	string s = "abcde";
 	for (int i = 0; i < str_in.size(); i++)
@@ -166,11 +166,19 @@ inline bool isvar(string str_in)
 		{
 			if (str_in[i] == s[j])
 			{
-				return true;
+				for (int k = 0; k < 5; k++)
+				{
+					if (str_in[i + 1] == str_in[k])
+					{
+						cout << "variables are next" << endl;
+						return 2;
+					}
+				}
+				return 0;
 			}
 		}
 	}
-	return false;
+	return 1;
 }
 
 inline string initvar(string str_in)
@@ -503,9 +511,9 @@ inline Stack<Lex> convertPpn(string str_in)
 						str_in.erase(str_in.begin() + j);
 					}
 					str_in.erase(str_in.begin() + j);
-					str_in.erase(str_in.begin() + i + 1);
 					double res = calculate(convertPpn(temp));
 					temp = to_string(res);
+					const char *s = temp.c_str();
 					str_in.replace(str_in.begin() + i + 1, str_in.begin() + i + 2, temp);
 				}
 				if (str_in[i + 1] >= '0' && str_in[i + 1] <= '9' && (str_in[i - 1] == '+' || str_in[i - 1] == '-' || str_in[i - 1] == '*' || str_in[i - 1] == '/' || str_in[i - 1] == '('))

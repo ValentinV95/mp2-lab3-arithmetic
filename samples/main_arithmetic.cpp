@@ -17,7 +17,8 @@ int main()
 	string s;
 	cin >> s;
 
-	if (isvar(s))
+	int k = isvar(s);
+	if (k == 0)
 	{
 		cout << " You entered an expression with variables      " << endl;
 		while (true)
@@ -46,6 +47,10 @@ int main()
 	}
 	else
 	{
+		if (k == 2)
+		{
+			return 0;
+		}
 		string str = error_checking(s);
 		if (brackets_error(s) || str == "0")
 		{

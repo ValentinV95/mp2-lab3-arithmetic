@@ -45,7 +45,7 @@ TEST(exp, Correct6)
 
 TEST(exp, Correct7)
 {
-	string s = "1/-(4+6))";
+	string s = "1/-(4+6)";
 	string str = error_checking(s);
 	EXPECT_EQ(-0.1, calculate(convertPpn(str)));
 }
