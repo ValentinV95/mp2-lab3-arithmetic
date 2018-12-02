@@ -8,7 +8,8 @@ using std::vector;
 
 const string allowedTerms = "0123456789.()+-/* ";
 
-class Term {
+class Term
+{
 private:
 	char operation;
 	double value;
@@ -36,10 +37,10 @@ public:
 	bool getType() { return type; }
 
 	int priority();
-
 };
 
-class Arithmetic {
+class Arithmetic 
+{
 private:
 	vector<Term> terms;
 public:

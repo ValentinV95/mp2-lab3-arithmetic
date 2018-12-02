@@ -1,95 +1,82 @@
-// объявление и реализация шаблонного стека
-// стек поддерживает операции: 
-// - вставка элемента // push
-// - извлечение элемента // pop
-// - просмотр верхнего элемента (без удаления) // getTop
-// - проверка на пустоту, // isEmpty
-// - получение количества элементов в стеке // getSize
-// - очистка стека // clear
-// при вставке в полный стек должна перевыделяться память // resize
-
-
-const int N = 3;
 template <class T>
 class Stack {
 
 private:
+	int stackSize;
 	int top;
 	T *data;
 public:
 	// constructors
-	Stack() { data = new T[N]; top = -1; }
-	Stack(int n) { data = new T[n]; top = -1; }
+	Stack() { stackSize = 100; data = new T[stackSize]; top = -1; }
+	Stack(int _size) 
+	{ 
+		if (!_size) throw "Stack can't have null size";
+		stackSize = _size; data = new T[stackSize]; top = -1;
+	}
 	// methods
 	T getTop();
 	T getSize();
 	T pop();
-	T front();
 	void push(const T &x);
 	void clear();
 	bool isEmpty();
 	bool isFull();
-	void resize();
-	
 };
 
 template <class T>
-void Stack<T>::clear() {
+void Stack<T>::clear()
+{
 	top = -1;
+	delete[] data;
+	data = new T[stackSize];
 }
 
 template<class T> 
-T Stack<T>::getSize() {
+T Stack<T>::getSize() 
+{
 	return top + 1;
 }
 
 template <class T> 
-T Stack<T>::getTop() {
+T Stack<T>::getTop() 
+{
+	if (isEmpty())
+		throw "Stack is empty, can't get top";
 	return data[top];
 }
 
 template <class T>
-bool Stack<T>::isEmpty() {
+bool Stack<T>::isEmpty() 
+{
 	return top == -1;
 }
 
 template <class T>
-void Stack <T>::push(const T &x) {
-	if (!isFull())
-		data[++top] = x;
-	else this->resize();
-}
-
-template <class T> 
-T Stack<T>::front() {
-	if (!isEmpty())
-		return data[top];
-	else throw (string)"Stack is empty";
-}
-
-template <class T>
-T Stack <T>::pop() {
-	if (!isEmpty())
-		return data[top--];
-	else throw (string)"Stack is empty";
-}
-
-template <class T>
-bool Stack<T>::isFull() {
-	return top >= N - 1;
-}
-
-template <class T>
-void Stack <T>::resize() {
+void Stack <T>::push(const T &x) 
+{
 	if (isFull()) {
-		T* tmp = new T[N];
-		for (int i = 0; i < N; i++) {
+		stackSize = (stackSize+1) * 2;
+		T* tmp = new T[stackSize];
+		for (int i = 0; i < top + 1; i++) {
 			tmp[i] = data[i];
 		}
-		data = new T[2 * N];
-		for (int i = 0; i < N; i++) {
-			data[i] = tmp[i];
-		}
-		delete[] tmp;
+		delete[] data;
+		data = tmp;
 	}
+	top++;
+	data[top] = x;
+}
+
+template <class T>
+T Stack <T>::pop() 
+{
+	if (!isEmpty())
+		return data[top--];
+	else throw "Stack is empty";
+}
+
+template <class T>
+bool Stack<T>::isFull() 
+{
+	return top >= stackSize - 1;
 }
