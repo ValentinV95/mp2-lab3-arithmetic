@@ -1,4 +1,4 @@
-#include "../include/arithmetic.h"
+ï»¿#include "../include/arithmetic.h"
 
 void Arithmetic::stringToTerm(string &expression) 
 {
@@ -7,15 +7,15 @@ void Arithmetic::stringToTerm(string &expression)
 	double doubleNumber;
 	unsigned i = 0; 
 	while (i < length) {
-		if (expression[i] == ' ') i++; // ïðîïóñêàåì ïðîáåëû
-		if (expression[i] == '+' || expression[i] == '*' || expression[i] == '/') { // îáðàáîòêà ïëþñ, ìèíóñ, äåëåíèå
+		if (expression[i] == ' ') i++; // Ð¿Ñ€Ð¾Ð¿ÑƒÑÐºÐ°ÐµÐ¼ Ð¿Ñ€Ð¾Ð±ÐµÐ»Ñ‹
+		if (expression[i] == '+' || expression[i] == '*' || expression[i] == '/') { // Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚ÐºÐ° Ð¿Ð»ÑŽÑ, Ð¼Ð¸Ð½ÑƒÑ, Ð´ÐµÐ»ÐµÐ½Ð¸Ðµ
 			Term operation(expression[i]);
 			terms.push_back(operation);
 			i++;
 		}
-		else if (expression[i] == '-') { // îáðàáîòêà ìèíóñîâ
+		else if (expression[i] == '-') { // Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚ÐºÐ° Ð¼Ð¸Ð½ÑƒÑÐ¾Ð²
 			bool unary = false;
-			int count = 1; // äëÿ ïîäñ÷åòà ìèíóñîâ, îäèí ìèíóñ óæå òî÷íî åñòü â expression[i]
+			int count = 1; // Ð´Ð»Ñ Ð¿Ð¾Ð´ÑÑ‡ÐµÑ‚Ð° Ð¼Ð¸Ð½ÑƒÑÐ¾Ð², Ð¾Ð´Ð¸Ð½ Ð¼Ð¸Ð½ÑƒÑ ÑƒÐ¶Ðµ Ñ‚Ð¾Ñ‡Ð½Ð¾ ÐµÑÑ‚ÑŒ Ð² expression[i]
 			string number; 
 
 			if (i == 0) unary = true;
@@ -27,14 +27,14 @@ void Arithmetic::stringToTerm(string &expression)
 			
 			if (i + 1 < length)	{
 
-				if (expression[i + 1] == '(') { // óíàðíûé ìèíóñ ïåðåä ñêîáêîé îáîçíà÷àåì "_"
+				if (expression[i + 1] == '(') { // ÑƒÐ½Ð°Ñ€Ð½Ñ‹Ð¹ Ð¼Ð¸Ð½ÑƒÑ Ð¿ÐµÑ€ÐµÐ´ ÑÐºÐ¾Ð±ÐºÐ¾Ð¹ Ð¾Ð±Ð¾Ð·Ð½Ð°Ñ‡Ð°ÐµÐ¼ "_"
 					Term unary_minus('_');
 					terms.push_back(unary_minus);
 					i++;
 					continue;
 				}
 
-				while (expression[i + 1] == '-') { // îáðàáîòêà íåñêîëüêèõ ìèíóñîâ ïîäðÿä
+				while (expression[i + 1] == '-') { // Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚ÐºÐ° Ð½ÐµÑÐºÐ¾Ð»ÑŒÐºÐ¸Ñ… Ð¼Ð¸Ð½ÑƒÑÐ¾Ð² Ð¿Ð¾Ð´Ñ€ÑÐ´
 					count++;
 					i++;
 				}
@@ -59,7 +59,7 @@ void Arithmetic::stringToTerm(string &expression)
 
 				if (expression[i + 1] >= '0' && expression[i + 1] <= '9') {
 					i++;
-					while (expression[i] >= '0' && expression[i] <= '9' || (expression[i] == '.')) { // îáðàáîòêà íåöåëûõ îòðèöàòåëüíûõ ÷èñåë
+					while (expression[i] >= '0' && expression[i] <= '9' || (expression[i] == '.')) { // Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚ÐºÐ° Ð½ÐµÑ†ÐµÐ»Ñ‹Ñ… Ð¾Ñ‚Ñ€Ð¸Ñ†Ð°Ñ‚ÐµÐ»ÑŒÐ½Ñ‹Ñ… Ñ‡Ð¸ÑÐµÐ»
 						number += expression[i];
 						i++;
 					}
@@ -69,13 +69,13 @@ void Arithmetic::stringToTerm(string &expression)
 					number.clear();
 				}
 			}
-			else if (expression[i + 1] >= '0' && expression[i + 1] <= '9' || (expression[i + 1] == '.')) { // åñëè ïîñëå ìèíóñà èäåò ÷èñëî 
+			else if (expression[i + 1] >= '0' && expression[i + 1] <= '9' || (expression[i + 1] == '.')) { // ÐµÑÐ»Ð¸ Ð¿Ð¾ÑÐ»Ðµ Ð¼Ð¸Ð½ÑƒÑÐ° Ð¸Ð´ÐµÑ‚ Ñ‡Ð¸ÑÐ»Ð¾ 
 				Term operation('-');
 				terms.push_back(operation);
 				i++;
 			}
 		}
-		else if (expression[i] >= '0' && expression[i] <= '9' || (expression[i] == '.')) { // îáðàáîòêà ÷èñåë
+		else if (expression[i] >= '0' && expression[i] <= '9' || (expression[i] == '.')) { // Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚ÐºÐ° Ñ‡Ð¸ÑÐµÐ»
 			int pointCounter = 0;
 			while (expression[i] >= '0' && expression[i] <= '9' || (expression[i] == '.')) {
 				stringForNumber += expression[i];
@@ -90,7 +90,7 @@ void Arithmetic::stringToTerm(string &expression)
 			doubleNumber = stof(stringForNumber);
 			Term number(doubleNumber);
 			terms.push_back(number);
-			stringForNumber.clear(); // î÷èùàåì ñòðîêó äëÿ áóäóùèõ çíà÷åíèé
+			stringForNumber.clear(); // Ð¾Ñ‡Ð¸Ñ‰Ð°ÐµÐ¼ ÑÑ‚Ñ€Ð¾ÐºÑƒ Ð´Ð»Ñ Ð±ÑƒÐ´ÑƒÑ‰Ð¸Ñ… Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ð¹
 		}
 		else if (expression[i] == ')' || expression[i] == '(') {
 			Term bracket(expression[i]);
@@ -106,10 +106,10 @@ void Arithmetic::termToPostfix()
 	vector <Term> postfix;
 	Stack <Term> operations;
 	for (unsigned i = 0; i < size; i++) {
-		if (terms[i].getType() == true) { // åñëè íàì âñòðåòèëîñü ÷èñëî
-			postfix.push_back(terms[i]); // ïîìåùàåì ÷èñëî â âûõîäíóþ ñòðîêó â âèäå Term
+		if (terms[i].getType() == true) { // ÐµÑÐ»Ð¸ Ð½Ð°Ð¼ Ð²ÑÑ‚Ñ€ÐµÑ‚Ð¸Ð»Ð¾ÑÑŒ Ñ‡Ð¸ÑÐ»Ð¾
+			postfix.push_back(terms[i]); // Ð¿Ð¾Ð¼ÐµÑ‰Ð°ÐµÐ¼ Ñ‡Ð¸ÑÐ»Ð¾ Ð² Ð²Ñ‹Ñ…Ð¾Ð´Ð½ÑƒÑŽ ÑÑ‚Ñ€Ð¾ÐºÑƒ Ð² Ð²Ð¸Ð´Ðµ Term
 		}
-		else if (terms[i].getType() == false) { // åñëè âñòðåòèëàñü îïåðàöèÿ
+		else if (terms[i].getType() == false) { // ÐµÑÐ»Ð¸ Ð²ÑÑ‚Ñ€ÐµÑ‚Ð¸Ð»Ð°ÑÑŒ Ð¾Ð¿ÐµÑ€Ð°Ñ†Ð¸Ñ
 			if (terms[i].getOperation() == '(') {
 				operations.push(terms[i]);
 				continue;
@@ -123,7 +123,7 @@ void Arithmetic::termToPostfix()
 		compare:
 			if (operations.isEmpty() || operations.getTop().priority() < terms[i].priority()) {
 				if (terms[i].getOperation() != ')') {
-					operations.push(terms[i]); //  ïîìåùàåì îïåðàöèþ â ñòýê â âèäå Term
+					operations.push(terms[i]); //  Ð¿Ð¾Ð¼ÐµÑ‰Ð°ÐµÐ¼ Ð¾Ð¿ÐµÑ€Ð°Ñ†Ð¸ÑŽ Ð² ÑÑ‚ÑÐº Ð² Ð²Ð¸Ð´Ðµ Term
 				}
 			}
 			else {
