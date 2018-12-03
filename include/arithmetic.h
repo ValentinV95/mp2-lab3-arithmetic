@@ -9,7 +9,7 @@
 #define arithmetic_H
 
 
-//#include "cstdio"
+#include "cstdio"
 #include "Stack.h"
 
 

@@ -61,9 +61,9 @@ TEST(TFormula, can_do_operation_unarny_minus_with_operation)
 
 TEST(TFormula, can_do_operation_unarny_minus_with_operation_and_braces)
 {
-	TFormula A("(((1+1)*1+1)*1+1)/-1.5");
+	TFormula A("(((1+1)*1+1)*1+1)*-1.5");
 
-	EXPECT_DOUBLE_EQ(A.Calculator(), -8);
+	EXPECT_DOUBLE_EQ(A.Calculator(), -6);
 }
 
 TEST(TFormula, false_when_first_lecsem_is_closing_brace)
