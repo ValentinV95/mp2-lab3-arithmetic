@@ -27,20 +27,54 @@ void TFormula::Write()
 	cout << formula << endl;
 }
 
+bool TFormula::isAllowedSymbols()
+{
+	string a = " 0123456789.()+-*/";
+	bool indicator= false;
+	int k=0;
+	for (int i = 0; i < formula.size(); i++)
+	{
+		for (int j = 0; j < a.size(); j++)
+		{
+			if (formula[i] == a[j])
+			{
+				//indicator = true;
+				k = 1;
+				//cout << "Выражение содержит недопустимый символ";
+				//return indicator;
+			}
+		}
+		if (k)
+			indicator = true;
+		else break;
+	}
+	return indicator;
+}
+
 bool TFormula::Checker()
 {
 	int n_brace = 0;//количество скобок
 	int i = 0;
-	int indicator=1;//индикатор корректности выражения
+	bool indicator=true;//индикатор корректности выражения
+
+	//проверка строки на недопустимые символы
+	if (isAllowedSymbols())
+		;
+	else
+	{
+		return false;
+	}
 	while (i < lecs.size()-1)
 	{
+
+		//if(lecs[)
 		//если текущая лексема число, то следующая лексема либо унарный минус, либо открывающая скобка
 		if (lecs[i].isNum)
 			if((!lecs[i + 1].isNum) && (lecs[i + 1].b != UN_MINUS) && (lecs[i + 1].b != O_BRACE))
 			;
 			else
 			{
-				indicator = 0;
+				indicator = false;
 				cout << "Введен недопустимый символ после числа!" << endl;
 			}
 
@@ -51,7 +85,7 @@ bool TFormula::Checker()
 				;
 			else
 			{
-				indicator = 0;
+				indicator = false;
 				cout<<"Ввведен недопустимый символ после открывающей скобки!" << endl;
 			}
 			n_brace++;
@@ -64,7 +98,7 @@ bool TFormula::Checker()
 				;
 			else
 			{
-				indicator = 0;
+				indicator = false;
 				cout<< "Введен недопустимый символ после закрывающей скобки!" << endl;
 			}
 			n_brace--;
@@ -77,7 +111,7 @@ bool TFormula::Checker()
 				;
 			else
 			{
-				indicator = 0;
+				indicator = false;
 				cout<<"Введен недопусимый символ после операции!" << endl;
 			}
 		}
@@ -87,7 +121,7 @@ bool TFormula::Checker()
 			;
 		else
 		{
-			indicator = 0;
+			indicator = false;
 			cout<< "Введен неправильный порядок скобок!" << endl;
 		}
 		i++;
@@ -103,17 +137,16 @@ bool TFormula::Checker()
 	else
 	{
 		cout << "Введено некорректное число скобок!" << endl;
-		indicator = 0;
+		indicator = false;
 	}
 
 	if (indicator)
 	{
-		return true;
+		return indicator;
 	}	
 	else
 	{
-		this->~TFormula();
-		return false;
+		return indicator;
 	}
 }
 
@@ -187,8 +220,12 @@ void TFormula::Converter()
 					number.push_back(formula[i]); i++;
 				}
 				i--;
+				number.push_back('\n');
 				temp.isNum = true;
-				temp.a = stod(number);
+				const char *s = number.c_str();
+				sscanf(s, "%lf", &temp.a);
+
+				//temp.a = atof(s);
 				lecs.push_back(temp);
 				number.clear();
 			}
