@@ -388,23 +388,22 @@ bool Checking_correctness(vector<Lexeme> exp)
 			if (exp[i + 1].GetType() == NUMBER || exp[i + 1].GetType() == VARIABLE || exp[i + 1].GetName() == "unar-" ||
 				exp[i + 1].GetName() == "(")
 			{
-				throw Error("Unresolved lexeme after number/variable.");
+				throw Error("Unresolved lexeme after number/variable");
 			}
 		}
 
-		if (exp[i].GetType() == OPERATION && exp[i].GetName() != "unar-")
-		{
-			if ( (exp[i+1].GetType() == OPERATION  && exp[i+1].GetName() != "unar-") || exp[i + 1].GetName() == ")")
-			{
-				throw Error("Unresolved lexeme after binary operation.");
-			}
-		}
-
-		if (exp[i].GetName() == "unar-")
+		if (exp[i].GetType() == OPERATION)
 		{
 			if ((exp[i + 1].GetType() == OPERATION && exp[i + 1].GetName() != "unar-") || exp[i + 1].GetName() == ")")
 			{
-				throw Error("Unresolved lexeme after unary operation.");
+				if (exp[i].GetName() == "unar-")
+				{
+					throw Error("Unresolved lexeme after unary operation.");
+				}
+				else
+				{
+					throw Error("Unresolved lexeme after binary operation.");
+				}
 			}
 		}
 
@@ -432,12 +431,42 @@ bool Checking_correctness(vector<Lexeme> exp)
 
  void Set_values(vector<Lexeme>& exp)
 {
-	 for (int i = 0; i < exp.size(); i++)
+	 /*for (int i = 0; i < exp.size(); i++)
 		 if (exp[i].GetType() == VARIABLE)
 		 {
 			 double temp;
 			 cout << "Enter variable value " << exp[i].GetName() << " = ";
 			 cin >> temp;
 			 exp[i].SetValue(temp);
+		 }*/
+
+	 vector<Lexeme> var;
+	 bool key = true;
+
+	 for (int i = 0; i < exp.size(); i++)
+	 {
+		 if (exp[i].GetType() == VARIABLE)
+		 {
+			 for (int j = 0; j < var.size(); j++)
+			 {
+				 if (exp[i].GetName() == var[j].GetName())
+				 {
+					 exp[i].SetValue(var[j].GetValue());
+					 key = false; 
+					 break;
+				 }	
+			 }
+
+			 if (key)
+			 {
+				 double temp;
+				 cout << "Enter variable value " << exp[i].GetName() << " = ";
+				 cin >> temp;
+				 exp[i].SetValue(temp);
+				 var.push_back(exp[i]);
+			 }
+
+			 key = true;
 		 }
+	 }
 }
