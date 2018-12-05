@@ -3,6 +3,7 @@
 #include <gtest.h>
 #include "arithmetic.h"
 
+
 TEST(Lexem, can_get_value)
 {
 	Lexem l("12.45", Token::NUM);
@@ -114,4 +115,10 @@ TEST(Expression, can_get_eval)
 	EXPECT_EQ(e.eval(e.toRPN()), 24.5);
 	e.parse("-((((-1+1)*1-1)*1+-1)*1+1)/2.5");
 	EXPECT_EQ(e.eval(e.toRPN()), 0.4);
+	e.parse("8/-1");
+	EXPECT_EQ(e.eval(e.toRPN()), -8);
+	e.parse("1/-(4+6)");
+	EXPECT_EQ(e.eval(e.toRPN()), -0.1);
+	e.parse("2*-(48-56)");
+	EXPECT_EQ(e.eval(e.toRPN()), 16);
 }

@@ -24,16 +24,16 @@ int Expression::priority(char op)
 {
 	switch (op)
 	{
-		case '(': // У открывающей скобки наименьший приоритет
-			return 1;
-		case '+': // У + и - выше
-		case '-':
-			return 2;
-		case '*': // У * и / самый высокий приоритет
-		case '/':
-			return 3;
-		default:
-			return 0;
+	case '(': // У открывающей скобки наименьший приоритет
+		return 1;
+	case '+': // У + и - выше
+	case '-':
+		return 2;
+	case '*': // У * и / самый высокий приоритет
+	case '/':
+		return 3;
+	default:
+		return 0;
 	}
 }
 
@@ -48,8 +48,8 @@ void Expression::input(std::map<std::string, double>& vars, std::string& op, dou
 			std::cin >> vars[op]; // Ввод значения в ассоциативный массив
 			if (op[0] == '-') // Если вначале минус
 				vars[op] *= -1; // То умножаем на -1
-			d = vars[op]; // Запись в переменную
 		}
+		d = vars[op]; // Запись в переменную
 	}
 	else // Иначе
 		d = std::atof(op.c_str()); // Преобразование строки в число
@@ -130,23 +130,23 @@ double Expression::eval(std::string rpn)
 
 			switch (rpn[cur]) // Выполняем текущую операцию
 			{
-				case '+':
-					st.push(std::to_string(d1 + d2));
-					break;
-				case '-':
-					st.push(std::to_string(d1 - d2));
-					break;
-				case '*':
-					st.push(std::to_string(d1 * d2));
-					break;
-				case '/':
-					st.push(std::to_string(d1 / d2));
-					break;
+			case '+':
+				st.push(std::to_string(d1 + d2));
+				break;
+			case '-':
+				st.push(std::to_string(d1 - d2));
+				break;
+			case '*':
+				st.push(std::to_string(d1 * d2));
+				break;
+			case '/':
+				st.push(std::to_string(d1 / d2));
+				break;
 			}
 			cur++;
 		}
 	}
-	
+
 	if (isalpha(st.Value()[0]))
 	{
 		double d;
@@ -168,6 +168,7 @@ bool Expression::parse(std::string expr, bool print)
 	std::string number; // Строка для числа и переменной
 	Stack<int> indexes; // Стек индексов
 	bool isParsed = true; // Корректна ли строка
+	int parCount = -1;
 	while (cur < expr.size()) // Пока строка не закончилась
 	{
 		if (expr[cur] == '(' || expr[cur] == ')'
@@ -175,6 +176,8 @@ bool Expression::parse(std::string expr, bool print)
 		{
 			if (expr[cur] == '(') // Если прочитана открывающая скобка
 			{
+				if (parCount != -1)
+					parCount++;
 				// Если начало строки или предыдущий токен - оператор или (
 				if (lexems.size() == 0 || lexems[lexems.size() - 1].token() == Token::OP
 					|| lexems[lexems.size() - 1].token() == Token::LP)
@@ -191,6 +194,8 @@ bool Expression::parse(std::string expr, bool print)
 			}
 			else if (expr[cur] == ')') // Если прочитана закрывающая скобка
 			{
+				if (parCount != -1)
+					parCount--;
 				// Если не начало строки и предыдущий токен - число, переменная или )
 				if (lexems.size() > 0 && (lexems[lexems.size() - 1].token() == Token::NUM
 					|| lexems[lexems.size() - 1].token() == Token::VAR
@@ -207,6 +212,11 @@ bool Expression::parse(std::string expr, bool print)
 					{
 						indexes.pop(); // Удаление из стека
 						lexems.push_back(Lexem(")", Token::RP));
+						if (parCount == 0)
+						{
+							lexems.push_back(Lexem(")", Token::RP));
+							parCount = -1;
+						}
 					}
 				}
 				else // Иначе сообщение об ошибке
@@ -234,15 +244,18 @@ bool Expression::parse(std::string expr, bool print)
 		{
 			if (cur < expr.size() - 1 && expr[cur + 1] == '(')
 			{
+				parCount = 0;
+				lexems.push_back(Lexem("(", Token::LP));
 				lexems.push_back(Lexem("-1", Token::NUM));
 				lexems.push_back(Lexem("*", Token::OP));
 			}
-			else if (lexems[lexems.size() - 1].token() == OP || lexems[lexems.size() - 1].token() == LP)
+			else if (lexems.size() == 0 ||
+				lexems[lexems.size() - 1].token() == OP || lexems[lexems.size() - 1].token() == LP)
 				number.push_back('-');
 			else
 				lexems.push_back(Lexem(std::string() + expr[cur], Token::OP));
 			cur++;
-			
+
 			while (cur < expr.size() - 1 && expr[cur] == '-' && expr[cur + 1] == '-')
 				cur += 2;
 		}
