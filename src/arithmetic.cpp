@@ -34,6 +34,8 @@ bool TFormula::isAllowedSymbols()
 	int k=0;
 	for (int i = 0; i < formula.size(); i++)
 	{
+		k = 0;
+		indicator = false;
 		for (int j = 0; j < a.size(); j++)
 		{
 			if (formula[i] == a[j])

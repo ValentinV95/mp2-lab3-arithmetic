@@ -1,4 +1,4 @@
-// тесты для вычисления арифметических выражений
+п»ї// С‚РµСЃС‚С‹ РґР»СЏ РІС‹С‡РёСЃР»РµРЅРёСЏ Р°СЂРёС„РјРµС‚РёС‡РµСЃРєРёС… РІС‹СЂР°Р¶РµРЅРёР№
 
 #include "arithmetic.h"
 #include <gtest.h>
@@ -113,4 +113,25 @@ TEST(TFormula, false_when_closing_brace_after_operations)
 	TFormula A("(6+5)(+)");
 
 	EXPECT_EQ(A.Checker(), false);
+}
+
+TEST(TFormula, irregular_characters_in_the_middle)
+{
+	TFormula A("5+d*8");
+
+	EXPECT_EQ(A.isAllowedSymbols(), false);
+}
+
+TEST(TFormula, irregular_characters_first)
+{
+	TFormula A("5+d*8");
+
+	EXPECT_EQ(A.isAllowedSymbols(), false);
+}
+
+TEST(TFormula, there_are_not_irregular_characters)
+{
+	TFormula A("-5+9");
+
+	EXPECT_EQ(A.isAllowedSymbols(), true);
 }
