@@ -26,10 +26,10 @@ public:
 	}
 	void printTerm() {
 		if (type) {
-			std::cout << value;
+			std::cout << value << " ";
 		}
 		else {
-			std::cout << operation;
+			std::cout << operation << " ";
 		}
 	}
 	double getValue() { return value; }
