@@ -369,7 +369,9 @@ Oper_or_numb* Lexeme::RPN()
 		S1.Set(o1);
 		o[0].Set(S.Get());
 		j++;
+		if(c[1]=='(')
 		s ++;
+		s++;
 		i++;
 	}
 	for (i;i < strlen(c);i++)
