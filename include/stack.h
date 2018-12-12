@@ -14,81 +14,58 @@ const int MaxStackSize = 100;
 
 
 //Первый вошел - последний вышел
-template <class Type>
+template <class T>
 class TStack
 {
-	Type *pMem;
+	T *pMem;
 	int size;
 	int top;
 public:
-	TStack(int _size) : size(_size) {
-		if (size < 1 || (size > MaxStackSize)) {
-			throw size;
-		}
+	TStack(int _size = MaxStackSize)
+	{
+		if ((_size < 1) || (_size > MaxStackSize))
+			throw "data is not correct";
+		size = _size;
 		top = -1;
-		pMem = new Type[size];
+		pMem = new T[size];
 	}
-	TStack(TStack& c) : size(c.size), top(c.top) {
-		pMem = new Type[size];
-		for (size_t i = 0; i < size; i++) {
-			pMem[i] = c.pMem[i];
-		}
-	}
-	bool IsEmpty() {
-		return (top == -1);
-	}
-	bool IsFull() {
-		return (top == size - 1);
-	}
-	Type Pop() {
-		return pMem[top--];
-	}
-	void Push(Type v) {
-		if (IsFull()) {
-			return;
-		}
-		pMem[++top] = v;
-	}
-	int Size() {
-		return size;
-	}
-	int Top() {
-		return top;
-	}
-	Type GetTop() {
-		return pMem[top];
-	}
-	TStack& operator=(TStack &c) {
-		if (size != c.size) {
-			size = c.size;
-			delete[] pMem;
-			pMem = new Type[size];
-		}
-		top = c.top;
-		for (size_t i = 0; i < size; i++) {
-			pMem[i] = c.pMem[i];
-		}
-		return (*this);
-	}
-	bool operator==(const TStack &c) const {
-		if (size != c.size) {
-			return false;
-		}
-		if (top != c.top) {
-			return false;
-		}
-		for (size_t i = 0; i < size; i++) {
-			if (pMem[i] != c.pMem[i]) {
-				return false;
-			}
-		}
-		return true;
-	}
-	bool operator!=(const TStack &c) const {
-		return !(*this == c);
-	}
-	~TStack() {
+	~TStack()
+	{
 		delete[] pMem;
 	}
+	bool IsEmpty()
+	{
+		return top == -1;
+	}
+	bool IsFull()
+	{
+		return top == size - 1;
+	}
+	void Clear()
+	{
+		top = -1;
+	}
+	void Erase()
+	{
+		if (!IsEmpty())
+			top--;
+	}
+	T Pop()
+	{
+		return pMem[top--];
+	}
+	T PopWithoutDelete()
+	{
+		return pMem[top];
+	}
+	void Push(T v)
+	{
+		pMem[++top] = v;
+	}
+	int Length() 
+	{
+		return top + 1;
+	}
 };
+
 #endif
