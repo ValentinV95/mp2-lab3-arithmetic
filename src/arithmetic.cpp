@@ -86,6 +86,7 @@ Lexem* PolishRecord(string stroka, int & k) {
 				if ((stroka[i] == '-') && (i == 0)) {
 					с = 2;
 				}
+
 				else{
 					stc.push(stroka[i]);
 					a++;
@@ -108,7 +109,7 @@ Lexem* PolishRecord(string stroka, int & k) {
 					}
 					else {
 						if (с == 0) {
-							while ((stc.IsEmpty()==false)  && (stc.Front() != '(')) {
+							while ((stc.IsEmpty()==false)  && (stc.Front() != '(') ) {
 								x[k++].set(stc.pop(), 1);
 							}
 							stc.push(stroka[i]);
@@ -215,7 +216,7 @@ bool errors(string stroka) {
 	for (int i = 1; i < size(stroka); i++) {
 		if (stroka[i] == '(') {
 			for (int j = 10; j < 14; j++)
-				if ((stroka[i - 1] == c[j]) || (stroka[i] == '(')) {
+				if ((stroka[i - 1] == c[j]) || (stroka[i - 1] == '(')) {
 					b++;
 				}
 			if (b == 0) {
