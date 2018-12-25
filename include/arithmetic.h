@@ -1,88 +1,214 @@
 // объявление функций и классов для вычисления арифметических выражений
-#ifndef __ARITHMETIC_H__
-#define __ARITHMETIC_H__
-
+# pragma once
 #include <string>
+#include <iostream>
 #include "stack.h"
-
 using namespace std;
 
-class TArithmetic
+class TPostfix
 {
 	string infix;
-	string arithmetic;
+	string postfix;
+	int Priority(char c);
+	bool CheckOp(char c);
 public:
-	TArithmetic(string str)
+
+	TPostfix(string _infix) // Конструктор
 	{
-		int ind1[255] = {}, k = 0, h = 0, j = 0, operand = 0;
-		int ind2[255] = {};
-		int ind3[255] = {};
-		int ind4[255] = {};
-		infix = str;
-		for (int i = 0; i < str.length(); i++)
+		infix = _infix;
+	}
+	int FormulaChecker(int bracket[], int &Size); // Проверка правильности;	
+	string GetInfix() { return infix; }
+	string ToPostfix();
+	double Calculate(const string& str);
+
+};
+
+int TPostfix::FormulaChecker(int bracket[], int &Size) // Проверка правильности скобок
+{
+	TStack<char> stack(MaxStackSize);
+	int index = 1, CountError = 0;
+	Size = 0;
+	for (unsigned int i = 0; i < infix.length(); i++)
+	{
+		if (infix[i] == '(')
+			stack.Put(index++);
+		else
+			if (infix[i] == ')')
+			{
+				if (!(stack.IsEmpty()))
+				{
+					bracket[Size++] = stack.Get();
+					bracket[Size++] = index++;
+				}
+				else
+				{
+					bracket[Size++] = 0;
+					bracket[Size++] = index++;
+					CountError++;
+				}
+			}
+	}
+	while (!(stack.IsEmpty()))
+	{
+		CountError++;
+		bracket[Size++] = stack.Get();
+		bracket[Size++] = 0;
+	}
+	cout << "Count of error = " << CountError << endl;
+	if (CountError != 0)
+		for (int i = 0; i < Size - 1; i++, i++)
+			cout << bracket[i] << "  " << bracket[i + 1] << endl;
+	return CountError;
+}
+
+bool TPostfix::CheckOp(char c)
+{
+	return c == '+' || c == '-' || c == '*' || c == '/';
+}
+
+int TPostfix::Priority(char ch)
+{
+	if (ch < 0)
+		return 3;
+	if (ch == '*' || ch == '/')
+	{
+		return 2;
+	}
+	if (ch == '+' || ch == '-')
+	{
+		return 1;
+	}
+	return 0;
+}
+
+string TPostfix::ToPostfix()
+{
+	string postfix = "";
+	bool may_unary = true;
+	TStack <char> oper(MaxStackSize);
+	for (size_t i = 0; i < infix.length(); ++i)
+	{
+		if (infix[i] != ' ')
 		{
-			if (str[i] == '(')
+			if (infix[i] == '(')
 			{
-				ind1[k++] = i;
-				continue;
-			}
-			if (str[i] == ')')
-			{
-				ind2[j++] = i;
-				continue;
-			}
-			if ((str[i] == '+') || (str[i] == '-') || (str[i] == '/') || (str[i] == '*'))
-			{
-				ind3[h++] = i;
+				oper.Put('(');
+				may_unary = true;
 			}
 			else
 			{
-				ind4[operand] = i;
-				operand++;
-			}
-		}
-		if (j != k)
-		{
-			throw "wrong infix";
-		}
-		else
-		{
-			for (int g = 0; g < j; g++)
-			{
-				if (ind1[g] >= ind2[g])
+				if (infix[i] == ')')
 				{
-					throw "wrong infix";
+					while (oper.Get() != '(')
+					{
+						if (oper.Get() == -'-')
+						{
+							postfix += "@";
+						}
+						else
+						{
+							postfix += oper.Get();
+						}
+						oper.Pop();
+					}
+					oper.Pop();
+					may_unary = false;
+				}
+				else
+				{
+					if (CheckOp(infix[i]))
+					{
+						char curop = infix[i];
+						if (may_unary && curop == '-')
+						{
+							curop = -curop;
+						}
+						while (!oper.IsEmpty() && (curop >= 0 && Priority(oper.Get()) >= Priority(curop) || curop < 0 && Priority(oper.Get()) > Priority(curop)))
+						{
+
+							if (oper.Get() == -'-')
+							{
+								postfix += "@";
+							}
+							else
+							{
+								postfix += oper.Get();
+							}
+							oper.Pop();
+						}
+						oper.Put(curop);
+						may_unary = true;
+					}
+					else
+					{
+						while (i < infix.length() && isdigit(infix[i]))
+						{
+							postfix += infix[i];
+							i++;
+						}
+						postfix += " ";
+						i--;
+						may_unary = false;
+					}
 				}
 			}
 		}
-		int a = ind3[0];
-		if ((operand - h) < 1)
+	}
+	while (!oper.IsEmpty())
+	{
+		if (oper.Get() == -'-')
 		{
-			throw "wrond infix";
+			postfix += "@";
 		}
-		for (int g = 1; g < h; g++)
+		else
 		{
-			if ((ind3[g] - a) <= 1)
-			{
-				throw "wrong infix";
-			}
-			a = ind3[g];
+			postfix += oper.Get();
 		}
-		int a1 = ind4[0];
-		for (int b = 1; b < operand; b++)
+		oper.Pop();
+	}
+	return postfix;
+}
+
+double TPostfix::Calculate(const string& str)
+{
+	TStack<double> st(MaxStackSize);
+	string operand;
+	double left;
+	double right;
+	for (int i = 0; i < str.length(); i++)
+	{
+		if (isdigit(str[i]))
 		{
-			if ((ind4[b] - a1) == 1)
+			operand = "";
+			while (i < str.length() && str[i] != ' ')
 			{
-				throw "wrong infix";
+				operand += str[i];
+				i++;
 			}
-			a1 = ind4[b];
+			st.Put(atoi(operand.c_str()));
+		}
+		if (str[i] == '@') // унарный минус
+		{
+			left = st.Get();
+			st.Pop();
+			left = -left;
+			st.Put(left);
+		}
+		if (CheckOp(str[i]) == true)
+		{
+			right = st.Get();
+			st.Pop();
+			left = st.Get();
+			st.Pop();
+			switch (str[i])
+			{
+			case '+':  st.Put(left + right);  break;
+			case '-':  st.Put(left - right);  break;
+			case '*':  st.Put(left * right);  break;
+			case '/':  st.Put(left / right);  break;
+			}
 		}
 	}
-	string GetInfix() { return infix; }
-	string GetArithmetic() { return arithmetic; }
-	string ToArithmetic();
-	double Calculate(); // Ввод переменных, вычисление по постфиксной форме
-	int Priority(char c);
-};
-
-#endif
+	return st.Get();
+}

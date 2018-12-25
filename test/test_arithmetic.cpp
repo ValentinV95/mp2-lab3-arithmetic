@@ -1,82 +1,42 @@
 // тесты для вычисления арифметических выражений
-#include "arithmetic.h"
+
 #include <gtest.h>
+#include "arithmetic.h"
 
-TEST(TArithmetic, can_create_arithmetic)
+TEST(TPostfix, can_create_postfix)
 {
-	ASSERT_NO_THROW(TArithmetic p("a+b"));
+	TPostfix p();
+	ASSERT_NO_THROW(p);
 }
 
-TEST(TArithmetic, can_get_infix)
+TEST(TPostfix, can_get_infix)
 {
-	TArithmetic p("a+b");
-	EXPECT_EQ("a+b", p.GetInfix());
+	TPostfix p("2+5");
+	EXPECT_EQ("2+5", p.GetInfix());
 }
 
-TEST(TArithmetic, cant_start_infix_with_operation)
+TEST(TCalculator, can_setInfix_void_postfix)
 {
-	ASSERT_ANY_THROW(TArithmetic p("+a+b"));
+	TPostfix p("");
+	ASSERT_NO_THROW(p.GetInfix());
 }
 
-TEST(TArithmetic, cant_end_infix_with_operation)
+TEST(TPostfix, cant_create_infix_with_wrong_parentheses)
 {
-	ASSERT_ANY_THROW(TArithmetic p("a+b+"));
+	ASSERT_NO_THROW(TPostfix p("(5+6)"));
 }
 
-TEST(TArithmetic, cant_create_infix_with_two_operation_next_to_each_other)
+
+
+TEST(TPostfix, can_create_right_postfix)
 {
-	ASSERT_ANY_THROW(TArithmetic p("a++b"));
+	TPostfix p("2+5");
+	EXPECT_EQ("2 5 +", p.ToPostfix());
 }
 
-TEST(TArithmetic, cant_create_infix_with_two_operands_next_to_each_other)
+TEST(TPostfix, can_calculate_postfix)
 {
-	ASSERT_ANY_THROW(TArithmetic p("ac+b"));
-}
-
-TEST(TArithmetic, cant_create_infix_only_with_operands)
-{
-	ASSERT_ANY_THROW(TArithmetic p("acb"));
-}
-
-TEST(TArithmetic, cant_create_infix_only_with_operations)
-{
-	ASSERT_ANY_THROW(TArithmetic p("+++"));
-}
-
-TEST(TArithmetic, cant_create_infix_with_wrong_parentheses)
-{
-	ASSERT_ANY_THROW(TArithmetic p("(a+b))"));
-}
-
-TEST(TArithmetic, can_create_infix_with_right_parentheses)
-{
-	ASSERT_NO_THROW(TArithmetic p("((a+b))"));
-}
-
-TEST(TArithmetic, can_create_right_arithmetic)
-{
-	TArithmetic p("(a+b)+(f*h+c+d)");
-	p.ToArithmetic();
-	EXPECT_EQ(" a b + f h * c + d + +", p.GetArithmetic());
-}
-
-TEST(TArithmetic, can_calculate_arithmetic)
-{
-	TArithmetic p("(1+2)+(3*4+1+1)");
-	p.ToArithmetic();
-	EXPECT_EQ(17, p.Calculate());
-}
-
-TEST(TArithmetic, can_calculate_arithmetic_with_parametres)
-{
-	TArithmetic p("(a+b)+(c*d+e+j)");
-	cout << endl << "Enter a=1,b=2,c=3,d=4,e=1,j=1" << endl << endl;
-	p.ToArithmetic();
-	EXPECT_EQ(17, p.Calculate());
-}
-
-TEST(TArithmetic, can_get_right_priority_of_the_operations)
-{
-	TArithmetic p("a+b");
-	EXPECT_TRUE(p.Priority('*') > p.Priority('+'));
+	TPostfix p("2+5");
+	p.ToPostfix();
+	EXPECT_EQ(7, p.Calculate(p.ToPostfix()));
 }

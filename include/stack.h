@@ -7,124 +7,126 @@
 // - получение количества элементов в стеке
 // - очистка стека
 // при вставке в полный стек должна перевыделяться память
-#ifndef __STACK_H__
-#define __STACK_H__
+#pragma once
 
 const int MaxStackSize = 100;
 
-template <class T>
+template <typename T>
 class TStack
 {
-	T *pMem;
-	int size;
-	int top;
-	int dataCount;
+	T*pMem; //указатель на массив элементов
+	int size; // размер памяти для стека
+	int top; // указатель на вершину стека
+	int DataCount; // Количество элементов в стеке
 public:
-	TStack(int _size)// конструктор
-	{
-		dataCount = 0;
-		size = _size;
-		top = -1;
-		if ((size < 1) || (size > MaxStackSize))
-		{
-			throw "wrong size of the stack";
-		}
-		pMem = new T[size];
-	}
-	~TStack()// деструктор
-	{
-		delete[] pMem;
-	}
-	TStack(const TStack &stack)// конструктор копирования
-	{
-		pMem = new T[stack.size];
-		size = stack.size;
-		top = stack.top;
-		dataCount = stack.dataCount;
-		for (int i = 0; i < stack.size; i++)
-		{
-			pMem[i] = stack.pMem[i];
-		}
-	}
-	TStack& operator=(const TStack &stack)// оператор присваивания
-	{
-		this->size = stack.size;
-		this->pMem = new T[size];
-		for (int i = 0; i < size; i++)
-		{
-			this->pMem[i] = stack.pMem[i];
-		}
-		this->top = stack.top;
-		this->dataCount = stack.dataCount;
-		return *this;
-	}
-	int GetNextIndex()// получить следующий индекс 
-	{
-		return dataCount;
-	}
-	bool IsEmpty()// проверка на пустоту стэка
-	{
-		if (dataCount == 0)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	bool IsFull()//проверка на полноту стэка
-	{
-		if (dataCount == MaxStackSize)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	void Put(const T &elem)// добавить значение
-	{
-		if (!IsFull())
-		{
-			if (dataCount >= size)
-			{
-				dataCount++;
-				size = dataCount;
-				top = (dataCount - 1);
-				T *pMem1;
-				pMem1 = new T[size];
-				for (int i = 0; i < dataCount - 1; i++)
-				{
-					pMem1[i] = pMem[i];
-				}
-				pMem = pMem1;
-				pMem[top] = elem;
-			}
-			else
-			{
-				pMem[dataCount] = elem;
-				top = (dataCount);
-				dataCount++;
-			}
-		}
-		else
-		{
-			throw "the stack is full";
-		}
-	}
-	T Get()// извлечь значение 
-	{
-		if (!IsEmpty())
-		{
-			dataCount--;
-			return pMem[top--];
-		}
-		else
-		{
-			throw "the stack is empty";
-		}
-	}
+
+	TStack(int _size);
+	TStack(const TStack & st); //копирование
+	~TStack();
+	int GetNextIndex(int index);// Получить следующий индекс
+	void Put(const T&val); //Добавление элемента
+	T Get(void); // получение элемента	
+	void Pop(); // удаление верхнего элемента
+	bool IsEmpty(); //Проверка на пустоту
+	bool IsFull(); //Проверка на полноту
+	void Print(void); //Вывод
 };
-#endif
+
+
+template <typename T>
+TStack<T>::TStack(int _size)
+{
+	DataCount = 0;
+	size = _size;
+	top = -1;
+	if ((size < 1) || (size > MaxStackSize))
+		throw "size";
+	pMem = new T[size];
+}
+
+template <typename T>
+TStack<T>::TStack(const TStack & st) //копирование
+{
+	DataCount = 0;
+	size = st.size;
+	pMem = new T[size];
+	for (int i = 0; i < size; i++)
+	{
+		pMem[i] = st.pMem[i];
+	}
+}
+
+template <typename T>
+TStack<T>::~TStack()
+{
+	delete[] pMem;
+}
+
+template <typename T>
+int TStack<T>::GetNextIndex(int index)// Получить следующий индекс
+{
+	int res = index + 1;
+	if (res > size)
+		throw "error";
+	return res;
+}
+
+template <typename T>
+void TStack<T>::Put(const T&val) //Добавление элемента
+{
+	if (!IsFull())
+	{
+		top = GetNextIndex(top);
+		pMem[top] = val;
+		DataCount++;
+	}
+	else
+		throw "error";
+}
+
+template <typename T>
+T TStack<T>::Get(void)
+{
+	if (!IsEmpty())
+	{
+		return pMem[top];
+	}
+	else
+		throw"error";
+}
+template <typename T>
+void TStack<T>::Pop()
+{
+	if (!IsEmpty())
+	{
+		DataCount--;
+		top--;
+	}
+	else
+		throw"error";
+}
+
+template <typename T>
+bool TStack<T>::IsEmpty()
+{
+	if (DataCount == 0)
+		return true;
+	else
+		return false;
+}
+
+template <typename T>
+bool TStack<T>::IsFull() //Проверка на полноту
+{
+	if (DataCount == MaxStackSize)
+		return true;
+	else
+		return false;
+}
+
+template <typename T>
+void TStack<T>::Print(void) //Вывод
+{
+	for (int i = 0; i < DataCount; i++)
+		std::cout << "Stack[" << i << "]= " << pMem[i] << std::endl;
+}
