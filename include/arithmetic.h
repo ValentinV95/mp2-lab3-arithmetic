@@ -31,6 +31,14 @@ int TPostfix::FormulaChecker(int bracket[], int &Size) // Проверка правильности 
 	Size = 0;
 	for (unsigned int i = 0; i < infix.length(); i++)
 	{
+		if ((isdigit(infix[i]) == 0) && (infix[i] != '+') && (infix[i] != '-') && (infix[i] != '*') && (infix[i] != '/') && (infix[i] != '.') && (infix[i] != '(') && (infix[i] != ')')) 
+		{
+			cout << "incorrect simbols" << endl;
+			return CountError++;
+		}
+	}
+	for (unsigned int i = 0; i < infix.length(); i++)
+	{
 		if (infix[i] == '(')
 			stack.Put(index++);
 		else

@@ -18,8 +18,8 @@ int main()
 	//expression = "1/---5*6";
 	string expr_p;
 	TPostfix P(expression);
-	//int counter = P.FormulaChecker(bracket, Size);
-	//if (!counter)
+	int counter = P.FormulaChecker(bracket, Size);
+	if (!counter)
 	{
 		//P.Process();
 		cout << "Expression: " << P.GetInfix() << endl;
@@ -27,10 +27,10 @@ int main()
 		cout << "Postfix form: " << expr_p << endl;
 		cout << "Rezult: " << P.Calculate(expr_p) << endl;
 	}
-	/*else
+	else
 	{
 	cout << "Brackets error!" << endl;
-	}*/
+	}
 	system("pause");
 	return 0;
 }
