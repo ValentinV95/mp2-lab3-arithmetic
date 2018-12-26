@@ -24,21 +24,37 @@ public:
 
 };
 
-int TPostfix::FormulaChecker(int bracket[], int &Size) // Проверка правильности скобок
+int TPostfix::FormulaChecker(int bracket[], int &Size) 
 {
 	TStack<char> stack(MaxStackSize);
 	int index = 1, CountError = 0;
 	Size = 0;
+	bool point_flag = false;
 	for (unsigned int i = 0; i < infix.length(); i++)
 	{
-		if ((isdigit(infix[i]) == 0) && (infix[i] != '+') && (infix[i] != '-') && (infix[i] != '*') && (infix[i] != '/') && (infix[i] != '.') && (infix[i] != '(') && (infix[i] != ')')) 
+		if ((isdigit(infix[i]) == 0) && (infix[i] != '+') && (infix[i] != '-') && (infix[i] != '*') && (infix[i] != '/') && (infix[i] != '.') && (infix[i] != '(') && (infix[i] != ')'))
 		{
 			cout << "incorrect simbols" << endl;
 			return ++CountError;
 		}
-		if(i<infix.length()-1)
+		if (infix[i] == '.')
 		{
-			if(infix[i] == '.' && (isdigit(infix[i+1]) == 0))
+			if (point_flag == true)
+			{
+				cout << "incorrect simbols" << endl;
+				return ++CountError;
+			}
+			point_flag = true;
+		}
+		if ((infix[i] == '+') || (infix[i] == '-') || (infix[i] == '*') || (infix[i] == '/') || (infix[i] == '(') || (infix[i] == ')'))
+		{
+			point_flag = false;
+		}
+
+
+		if (i < infix.length() - 1)
+		{
+			if (infix[i] == '.' && (isdigit(infix[i + 1]) == 0))
 			{
 				cout << "incorrect simbols" << endl;
 				return ++CountError;
