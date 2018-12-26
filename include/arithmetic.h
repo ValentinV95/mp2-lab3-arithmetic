@@ -34,14 +34,14 @@ int TPostfix::FormulaChecker(int bracket[], int &Size) // Проверка правильности 
 		if ((isdigit(infix[i]) == 0) && (infix[i] != '+') && (infix[i] != '-') && (infix[i] != '*') && (infix[i] != '/') && (infix[i] != '.') && (infix[i] != '(') && (infix[i] != ')')) 
 		{
 			cout << "incorrect simbols" << endl;
-			return CountError++;
+			return ++CountError;
 		}
 		if(i<infix.length()-1)
 		{
 			if(infix[i] == '.' && (isdigit(infix[i+1]) == 0))
 			{
 				cout << "incorrect simbols" << endl;
-				return CountError++;
+				return ++CountError;
 			}
 		}
 	}
