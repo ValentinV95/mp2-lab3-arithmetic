@@ -1,90 +1,129 @@
-// тесты для вычисления арифметических выражений
-
 #include <gtest.h>
 #include "arithmetic.h"
+#include <gtest.h>
+#include <string>
+using namespace std;
 
-TEST(TPostfix, can_create_postfix)
+
+
+TEST(Lexeme, can_create_double)
 {
-	ASSERT_NO_THROW(TPostfix p("0"));
+	Lexeme l(10.05, 2);
+	EXPECT_DOUBLE_EQ(l.Number(), 10.05);
 }
-TEST(TPostfix, can_change_infix)
+TEST(Lexeme, can_create_binary_operation)
 {
-	TPostfix p("a+b*c");
-	p.ChangeInfix("a+0.5-1");
-	EXPECT_EQ("a+0.5-1", p.GetInfix());
+	Lexeme l('+', 1);
+	EXPECT_EQ(l.Op(), '+');
 }
-TEST(TPostfix, can_not_start_infix_the_operation)
-{
-	TPostfix p("+a+1");
-	EXPECT_EQ(false, p.IsCorrect());
+TEST(Priority, can_determine_priority_of_operation) {
+	EXPECT_EQ(3, prt('*'));
+	EXPECT_EQ(3, prt('/'));
+	EXPECT_EQ(3, prt(':'));
+	EXPECT_EQ(2, prt('+'));
+	EXPECT_EQ(2, prt('-'));
 }
-TEST(TPostfix, can_not_finish_infix_the_operation)
+TEST(Polish_notation, can_create_right_sequence_of_calculations)
 {
-	TPostfix p("a+1+");
-	EXPECT_EQ(false, p.IsCorrect());
+	string s = "5+(4*7-8)";
+	int k = 0;
+	Lexeme *c = Polish(s, k);
+
+	int i = 0;
+	EXPECT_EQ(c[i++].Number(), 5);
+	EXPECT_EQ(c[i++].Number(), 4);
+	EXPECT_EQ(c[i++].Number(), 7);
+	EXPECT_EQ(c[i++].Op(), '*');
+	EXPECT_EQ(c[i++].Number(), 8);
+	EXPECT_EQ(c[i++].Op(), '-');
+	EXPECT_EQ(c[i++].Op(), '+');
+
 }
-TEST(TPostfix, infix_has_not_two_operation_in_a_row)
+TEST(Polish_notation, can_create_right_sequence_of_calculations_with_unary_minus)
 {
-	TPostfix p("a+*1");
-	EXPECT_EQ(false, p.IsCorrect());
+	string s = "-5+(4*-7-8)";
+	int k = 0;
+	Lexeme *c = Polish(s, k);
+
+	int i = 0;
+	EXPECT_EQ(c[i++].Number(), -5);
+	EXPECT_EQ(c[i++].Number(), 4);
+	EXPECT_EQ(c[i++].Number(), -7);
+	EXPECT_EQ(c[i++].Op(), '*');
+	EXPECT_EQ(c[i++].Number(), 8);
+	EXPECT_EQ(c[i++].Op(), '-');
+	EXPECT_EQ(c[i++].Op(), '+');
+
 }
-TEST(TPostfix, parentheses_is_not_correct)
+TEST(Polish_notation, can_create_right_sequence_of_calculations_with_double_numbers)
 {
-	TPostfix p("(a+1))");
-	EXPECT_EQ(false, p.IsCorrect());
+	string s = "5.7+(4*7-8.5)";
+	int k = 0;
+	Lexeme *c = Polish(s, k);
+
+	int i = 0;
+	EXPECT_DOUBLE_EQ(c[i++].Number(), 5.7);
+	EXPECT_DOUBLE_EQ(c[i++].Number(), 4);
+	EXPECT_DOUBLE_EQ(c[i++].Number(), 7);
+	EXPECT_DOUBLE_EQ(c[i++].Op(), '*');
+	EXPECT_DOUBLE_EQ(c[i++].Number(), 8.5);
+	EXPECT_DOUBLE_EQ(c[i++].Op(), '-');
+	EXPECT_DOUBLE_EQ(c[i++].Op(), '+');
+
 }
-TEST(TPostfix, parentheses_is_correct)
+TEST(Polish_notation, can_not_count_the_wrong_expression)
 {
-	TPostfix p("(a+1)*(b+1)");
-	EXPECT_EQ(true, p.IsCorrect());
+	string s = "5.7+-(4*7-8.5)";
+	int k = 0;
+
+	EXPECT_EQ(mistake(s), false);
 }
-TEST(TPostfix, expression_is_correct_when_change_infix)
+TEST(Polish_notation, can_not_count_the_expression_with_wrong_symbols)
 {
-	TPostfix p("(a+1)*(b+1)");
-	p.ChangeInfix("(a+b)/(e-f)");
-	EXPECT_EQ(true, p.IsCorrect());
+	string s = "5.7!+(4*7-8.5)";
+	int k = 0;
+
+	EXPECT_EQ(mistake(s), false);
 }
-TEST(TPostfix, postfix_change_when_change_infix)
+TEST(Polish_notation, can_not_count_the_expression_with_wrong_symbols_2)
 {
-	TPostfix p("(a+1)*(b+1)");
-	p.ChangeInfix("(a+b)/(e-f)");
-	p.ToPostfix();
-	EXPECT_EQ("a b + e f - /", p.GetPostfix());
+	string s = "5.7A+(4*7-8.5)";
+	int k = 0;
+
+	EXPECT_EQ(mistake(s), false);
 }
-TEST(TPostfix, transformation_infix_in_postfix_is_true_only_numbers)
+TEST(Polish_notation, can_not_count_the_expression_with_wrong_symbols_3)
 {
-	TPostfix p("(5+1)*(7+1)");
-	p.ToPostfix();
-	EXPECT_EQ("5 1 + 7 1 + *", p.GetPostfix());
+	string s = "*5.7+(4*7-8.5)";
+	int k = 0;
+
+	EXPECT_EQ(mistake(s), false);
 }
-TEST(TPostfix, transformation_infix_in_postfix_is_true_only_variables)
+TEST(Polish_notation, can_not_count_the_expression_with_wrong_symbols_4)
 {
-	TPostfix p("(a+b*c)-(k*d-p)");
-	p.ToPostfix();
-	EXPECT_EQ("a b c * + k d * p - -", p.GetPostfix());
+	string s = "5.7+(4*7-8.5)-";
+	int k = 0;
+
+	EXPECT_EQ(mistake(s), false);
 }
-TEST(TPostfix, transformation_infix_in_postfix_is_true_variables_and_numbers_mixed)
+TEST(Result, can_solve_expression)
 {
-	TPostfix p("(5+4*v)/5.0");
-	p.ToPostfix();
-	EXPECT_EQ("5 4 v * + 5.0 /", p.GetPostfix());
+	string s = "5+(4*7-8)";
+	int k = 0;
+	Lexeme *c = Polish(s, k);
+	EXPECT_EQ(result(c, k), 25);
 }
-TEST(TPostfix, can_use_only_long_variables)
+TEST(Result, can_solve_expression_2)
 {
-	TPostfix p("(alpha+1)*(betta+1)");
-	p.ToPostfix();
-	EXPECT_EQ("alpha 1 + betta 1 + *", p.GetPostfix());
+	string s = "-5+(4*-7-8)";
+	int k = 0;
+	Lexeme *c = Polish(s, k);
+	EXPECT_EQ(result(c, k), -41);
 }
-TEST(TPostfix, can_use_variables_short_and_long)
+TEST(Result, can_solve_expression_3)
 {
-	TPostfix p("(num*c+5.0)/denominator");
-	p.ToPostfix();
-	EXPECT_EQ("num c * 5.0 + denominator /", p.GetPostfix());
-}
-TEST(TPostfix, can_calculate_expression)
-{
-	TPostfix p("(5+1)*(10+1)");
-	p.ToPostfix();
-	p.ReadArguments();
-	EXPECT_EQ(66, p.Calculate());
+	string s = "5.7+(4*7-8.5)";
+	int k = 0;
+	Lexeme *c = Polish(s, k);
+	EXPECT_DOUBLE_EQ(result(c, k), 25.2);
 }

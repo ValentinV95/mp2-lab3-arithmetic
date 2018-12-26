@@ -7,65 +7,106 @@
 // - получение количества элементов в стеке
 // - очистка стека
 // при вставке в полный стек должна перевыдел€тьс€ пам€ть
-#ifndef __STACK_H__
-#define __STACK_H__
-
-const int MaxStackSize = 100;
-
-
-//ѕервый вошел - последний вышел
-template <class T>
-class TStack
+#pragma once
+#include <iostream>
+template <class ValType>
+class Stack
 {
-	T *pMem;
-	int size;
-	int top;
+private:
+	ValType * stack;
+	int n;
+	int end;
+
+
 public:
-	TStack(int _size = MaxStackSize)
-	{
-		if ((_size < 1) || (_size > MaxStackSize))
-			throw "data is not correct";
-		size = _size;
-		top = -1;
-		pMem = new T[size];
-	}
-	~TStack()
-	{
-		delete[] pMem;
-	}
-	bool IsEmpty()
-	{
-		return top == -1;
-	}
-	bool IsFull()
-	{
-		return top == size - 1;
-	}
-	void Clear()
-	{
-		top = -1;
-	}
-	void Erase()
-	{
-		if (!IsEmpty())
-			top--;
-	}
-	T Pop()
-	{
-		return pMem[top--];
-	}
-	T PopWithoutDelete()
-	{
-		return pMem[top];
-	}
-	void Push(T v)
-	{
-		pMem[++top] = v;
-	}
-	int Length() 
-	{
-		return top + 1;
-	}
+	Stack(int _n = 100);
+	~Stack();
+	ValType Pop();
+	void Push(double elem);
+	bool IsEmpty();
+	ValType Value();
+	int Size();
+	void Empty();
+
 };
 
-#endif
+template <class ValType>
+Stack<ValType>::Stack(int _n) {
+	if (_n <= 0)
+		throw 2;
+	else {
+		stack = new ValType[_n];
+		end = -1;
+		n = _n;
+	}
+
+}
+template <class ValType>
+Stack<ValType>::~Stack()
+{
+	delete[]stack;
+	stack = NULL;
+	end = -1;
+}
+template <class ValType>
+ValType Stack <ValType>::Pop()
+{
+	if ((*this).IsEmpty())
+		throw ("error");
+	else {
+		int temp = end;
+		end--;
+
+		return stack[temp];
+	}
+}
+
+template <class ValType>
+int Stack <ValType>::Size()
+{
+	return (end + 1);
+}
+
+template <class ValType>
+void Stack<ValType>::Push(double elem)
+{
+	if (end + 1 >= n) {
+		ValType *temp;
+		temp = new ValType[2 * n];
+		for (int i = 0; i < n; i++)
+			temp[i] = stack[i];
+		delete[]stack;
+		stack = temp;
+
+		n = 2 * n;
+	}
+	end++;
+	stack[end] = elem;
+}
+template <class ValType>
+void Stack<ValType>::Empty()
+{
+	end = -1;
+	n = 0;
+	delete[]stack;
+	stack = NULL;
+}
+
+template <class ValType>
+bool Stack<ValType>::IsEmpty()
+{
+	if (end == -1)
+		return true;
+	else return false;
+
+}
+
+
+template <class ValType>
+ValType Stack <ValType>::Value()
+{
+	if (IsEmpty())
+		throw 1;
+	else
+		return stack[end];
+}

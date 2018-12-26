@@ -1,31 +1,40 @@
 // объ€вление функций и классов дл€ вычислени€ арифметических выражений
-#ifndef __POSTFIX_H__
-#define __POSTFIX_H__
-#include <iostream>
+#ifndef _ARITHMETIC_H_
+#define _ARITHMETIC_H_
 #include <string>
-#include "stack.h"
+#include <vector>
+#include <set>
 using namespace std;
-class TPostfix
+
+
+class Lexeme
 {
 private:
-	string infix;
-	string postfix;
-	double *value; 
-	TStack<char> stackOperation; 
-	TStack<string> stackArguments; 
-	TStack<double> stackValue; 
-	TStack<double> stackValuePostfix; 
-
+	double number;
+	char op;
+	int flag;
 public:
-	TPostfix(string _infix);
-	string GetInfix();
-	string GetPostfix();
-	void ChangeInfix(string _infix);
-	bool IsCorrect(); 
-	void ToPostfix(); 
-	void ReadArguments(); 
-	double Calculate(); 
+	Lexeme() {};
+	Lexeme(char, int);
+	Lexeme(double, int);
+	void Set(char, int);
+	void Set(double, int);
+	void Print();
+	int Flag() { return flag; };
+	double Number() { return number; };
+	char Op() { return op; };
+	Lexeme& operator=(Lexeme&);
+	~Lexeme() {};
+
 };
 
+Lexeme* Polish(string, int &);
+int prt(char op);
+double result(Lexeme*, int);
 
-#endif
+bool mistake(string);
+
+
+
+
+#endif _ARITHMETIC_H_ 

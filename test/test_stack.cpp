@@ -1,86 +1,90 @@
-// тесты для стека
-
+#include "stack.h"
+#include <gtest.h> 
+#include <gtest.h>
 #include "stack.h"
 #include <gtest.h>
-TEST(TStack, can_create_stack_with_positive_length)
+#include "stack.h"
+#include <gtest.h>
+
+TEST(Stack, can_create_stack)
 {
-	ASSERT_NO_THROW(TStack<int> st(5));
+	ASSERT_NO_THROW(Stack<int> st(10));
 }
-TEST(TStack, can_not_create_stack_with_negative_size)
+TEST(Stack, can_push_elem)
 {
-	ASSERT_ANY_THROW(TStack<int> st(-1));
+	Stack<int> st(10);
+	ASSERT_NO_THROW(st.Push(1));
+}
+TEST(Stack, can_pop_elem)
+{
+	Stack<int> st(10);
+	st.Push(1);
+	ASSERT_NO_THROW(st.Pop());
+}
+TEST(Stack, can_get_size)
+{
+	Stack<int> st(100);
+	for (int i = 0; i < 10; i++)
+		st.Push(i);
+	EXPECT_EQ(10, st.Size());
+}
+TEST(Stack, can_get_top_elem)
+{
+	Stack<int> st(10);
+	st.Push(1);
+	EXPECT_EQ(1, st.Value());
+}
+TEST(Stack, can_resize_stack)
+{
+	Stack<int> st(10);
+
+	for (int i = 0; i < 15; i++)
+	{
+		st.Push(i);
+	}
+	EXPECT_EQ(15, st.Size());
 }
 
-TEST(TStack, can_not_create_stack_with_large_size)
+TEST(Stack, throws_when_pop_empty_stack)
 {
-	ASSERT_ANY_THROW(TStack<int> st(MaxStackSize + 1));
+	Stack<int> st(2);
+	st.Push(1);
+	st.Pop();
+	ASSERT_ANY_THROW(st.Pop());
 }
-TEST(TStack, two_different_stacks_have_different_memories)
+TEST(Stack, throws_when_get_value_from_empty_stack)
 {
-	TStack<int> s1(2), s2(3);
-	EXPECT_NE(&s1, &s2);
+	Stack<int> st(10);
+	int temp;
+	ASSERT_ANY_THROW(temp = st.Value());
 }
-TEST(TStack, check_stack_for_empty)
+TEST(Stack, can_create_stack_with_positive_length)
 {
-	TStack<int> s1(5);
-	EXPECT_EQ(true, s1.IsEmpty());
+	ASSERT_NO_THROW(Stack<int> st(10));
 }
-TEST(TStack, check_stack_for_full)
+TEST(Stack, throws_when_create_stack_with_negative_length)
 {
-	TStack<int> s1(5);
+	ASSERT_ANY_THROW(Stack<int> st(-1));
+}
+
+TEST(Stack, can_get_stack_current_size)
+{
+	Stack<int> st(10);
 	for (int i = 0; i < 5; i++)
-		s1.Push(i);
-	EXPECT_EQ(true, s1.IsFull());
+		st.Push(i);
+	EXPECT_EQ(5, st.Size());
 }
-TEST(TStack, can_clear_stack)
+TEST(Stack, can_check_if_stack_is_empty)
 {
-	TStack<int> s1(5);
+	Stack<int> st(10);
+	EXPECT_EQ(st.IsEmpty(), true);
+}
+
+TEST(Stack, can_delete_all_elements)
+{
+	Stack<int> st(10);
 	for (int i = 0; i < 5; i++)
-		s1.Push(i);
-	s1.Clear();
-	EXPECT_EQ(true, s1.IsEmpty());
-}
-TEST(TStack, can_erase_last_element_in_stack)
-{
-	TStack<int> s1(5);
-	for (int i = 0; i < 5; i++)
-		s1.Push(i);
-	s1.Erase();
-	EXPECT_EQ(false, s1.IsFull());
-}
-TEST(TStack, can_take_element_in_stack_pop_with_corrected_value)
-{
-	TStack<int> s1(5);
-	for (int i = 0; i < 5; i++)
-		s1.Push(i);
-	EXPECT_EQ(4, s1.Pop());
-}
-TEST(TStack, element_is_delete_on_pop)
-{
-	TStack<int> s1(5);
-	for (int i = 0; i < 5; i++)
-		s1.Push(i);
-	int a = s1.Pop();
-	EXPECT_EQ(false, s1.IsFull());
-}
-TEST(TStack, can_view_last_element_in_stack_without_delete_him)
-{
-	TStack<int> s1(5);
-	for (int i = 0; i < 5; i++)
-		s1.Push(i);
-	int a = s1.PopWithoutDelete();
-	EXPECT_EQ(true, s1.IsFull());
-}
-TEST(TStack, method_pop_without_delete_return_correct_value)
-{
-	TStack<int> s1(5);
-	for (int i = 0; i < 5; i++)
-		s1.Push(i);
-	EXPECT_EQ(4, s1.PopWithoutDelete());
-}
-TEST(TStack, can_know_length_now)
-{
-	TStack<int>s1(5);
-	s1.Push(1);
-	EXPECT_EQ(1, s1.Length());
+		st.Push(i);
+	st.Empty();
+	EXPECT_EQ(st.IsEmpty(), true);
 }
