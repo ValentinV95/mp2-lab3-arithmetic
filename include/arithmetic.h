@@ -71,6 +71,7 @@ int TPostfix::FormulaChecker(int bracket[], int &Size)
 				if (!(stack.IsEmpty()))
 				{
 					bracket[Size++] = stack.Get();
+					stack.Pop();
 					bracket[Size++] = index++;
 				}
 				else
@@ -85,6 +86,7 @@ int TPostfix::FormulaChecker(int bracket[], int &Size)
 	{
 		CountError++;
 		bracket[Size++] = stack.Get();
+		stack.Pop();
 		bracket[Size++] = 0;
 	}
 	cout << "Count of error = " << CountError << endl;
