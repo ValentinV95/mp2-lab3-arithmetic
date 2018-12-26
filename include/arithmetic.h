@@ -36,6 +36,14 @@ int TPostfix::FormulaChecker(int bracket[], int &Size) // ѕроверка правильности 
 			cout << "incorrect simbols" << endl;
 			return CountError++;
 		}
+		if(i<infix.length()-1)
+		{
+			if(infix[i] == '.' && (isdigit(infix[i+1]) == 0))
+			{
+				cout << "incorrect simbols" << endl;
+				return CountError++;
+			}
+		}
 	}
 	for (unsigned int i = 0; i < infix.length(); i++)
 	{
@@ -150,7 +158,7 @@ string TPostfix::ToPostfix()
 					}
 					else
 					{
-						while (i < infix.length() && isdigit(infix[i]))
+						while (i < infix.length() && ( isdigit(infix[i]) || infix[i] == '.'))
 						{
 							postfix += infix[i];
 							i++;
@@ -179,6 +187,47 @@ string TPostfix::ToPostfix()
 }
 
 double TPostfix::Calculate(const string& str)
+{
+	TStack<double> st(MaxStackSize);
+	string operand;
+	double left;
+	double right;
+	for (int i = 0; i < str.length(); i++)
+	{
+		if (isdigit(str[i]))
+		{
+			operand = "";
+			while (i < str.length() && str[i] != ' ')
+			{
+				operand += str[i];
+				i++;
+			}
+			st.Put(atof(operand.c_str()));
+		}
+		if (str[i] == '@') // унарный минус
+		{
+			left = st.Get();
+			st.Pop();
+			left = -left;
+			st.Put(left);
+		}
+		if (CheckOp(str[i]) == true)
+		{
+			right = st.Get();
+			st.Pop();
+			left = st.Get();
+			st.Pop();
+			switch (str[i])
+			{
+			case '+':  st.Put(left + right);  break;
+			case '-':  st.Put(left - right);  break;
+			case '*':  st.Put(left * right);  break;
+			case '/':  st.Put(left / right);  break;
+			}
+		}
+	}
+	return st.Get();
+}
 {
 	TStack<double> st(MaxStackSize);
 	string operand;
