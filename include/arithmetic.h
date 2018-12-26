@@ -1,30 +1,24 @@
 // объявление функций и классов для вычисления арифметических выражений
-#ifndef __POSTFIX_H__
-#define __POSTFIX_H__
-
-#include <string>
 #include "stack.h"
-
 using namespace std;
-
-class TPostfix
+class Lexem
 {
-	string infix;
-	string postfix;
-	int Priority(char c);
-	int IsDigit(char c);
-	int CheckOp(char c);
+private:
+	double IsNum;
+	char IsOper;
+	int k;
 public:
-
-	TPostfix(string _infix) // Конструктор
-	{
-		infix = _infix;
-	}
-	string GetInfix() { return infix; }
-	int FormulaChecker(int bracket[], int &Size); // Проверка правильности
-	string GetPostfix() { return postfix; }
-	string ToPostfix();
-	double Calculate(string postfix); // Ввод переменных, вычисление по постфиксной форме
+	Lexem() {};
+	~Lexem() {};
+	Lexem(char, int);
+	Lexem(double, int);
+	void set(char, int);
+	void set(double, int);
+	int sign();
+	double number();
+	char operation();
 };
-
-#endif
+int priority(char operation);
+Lexem* PolishRecord(string, int &);
+double result(Lexem*, int);
+bool errors(string);

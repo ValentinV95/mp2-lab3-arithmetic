@@ -1,27 +1,39 @@
-// реализация пользовательского приложения
-#include <iostream>
-#include <string>
+#include<string>
 #include "arithmetic.h"
-#define MAXSIZE 100
-using namespace std;
-
-int main()
+void main()
 {
-	string expression;
-	double res;
-	int bracket[MAXSIZE];
-	int Size = 0;
-	cout << "Enter expression: ";
-	cin >> expression;
-	cout << expression << endl;
-	TPostfix postfix(expression);
-	int counter = postfix.FormulaChecker(bracket, Size);
-	if (!counter)
+	int k = 0;
+	int tmp;
+	bool f = false;
+	string stroka;
+	cout << endl << "Hi! Welcome to the program. Let's choose the surgery" << endl;
+again:
+	cout << endl << "1.Enter expression" << endl << "2.Exit the program" << endl;
+	cin >> tmp;
+	if (tmp == 1) 
 	{
-		cout << "Expression: " << postfix.GetInfix() << endl;
-		cout << "Postfix form: " << postfix.ToPostfix() << endl;
-		cout << postfix.Calculate(postfix.ToPostfix()) << endl;
+		cout << endl << "Enter a composed expression" << endl;
+		cin >> stroka;
+		cout << endl;
+		while (!f) 
+		{
+			try 
+			{
+				bool a;
+				a = errors(stroka);
+				if (a)
+				{
+					Lexem *c = PolishRecord(stroka, k);
+					double res = result(c, k);
+					cout << endl << "Result of your operation =" << res << endl;
+				}
+				goto again;
+			}
+			catch (int b) 
+			{
+				cout << "ERROR Can not be divided by zero" << endl;
+				goto again;
+			}
+		}
 	}
-	else
-		cout << "Brackets error!" << endl;
 }

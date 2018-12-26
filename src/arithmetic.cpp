@@ -1,57 +1,47 @@
 // реализация функций и классов для вычисления арифметических выражений
-#include <iostream>
 #include "arithmetic.h"
-#include "stack.h"
-using namespace std;
-int TPostfix::FormulaChecker(int bracket[], int &Size) // Проверка правильности скобок
+#include <cstdlib>
+Lexem::Lexem(char operation1, int k1)
 {
-	TStack<char> stack(MaxStackSize);
-	int index = 1, CountError = 0;
-	Size = 0;
-	for (int i = 0; i < infix.length(); i++)
-	{
-		if (infix[i] == '(')
-			stack.Put(index++);
-		else
-			if (infix[i] == ')')
-			{
-				if (!(stack.IsEmpty()))
-				{
-					bracket[Size++] = stack.Get();
-					bracket[Size++] = index++;
-				}
-				else
-				{
-					bracket[Size++] = 0;
-					bracket[Size++] = index++;
-					CountError++;
-				}
-			}
-	}
-	while (!(stack.IsEmpty()))
-	{
-		CountError++;
-		bracket[Size++] = stack.Get();
-		bracket[Size++] = 0;
-	}
-	cout << "Count of error = " << CountError << endl;
-	if (CountError != 0)
-		for (int i = 0; i < Size - 1; i++, i++)
-			cout << bracket[i] << "  " << bracket[i + 1] << endl;
-	return CountError;
+	IsOper = operation1;
+	k = k1;
+}
+Lexem::Lexem(double number1, int k1)
+{
+	IsNum = number1;
+	k = k1;
+}
+void Lexem::set(char operation1, int k1)
+{
+	IsOper = operation1;
+	k = k1;
+}
+void Lexem::set(double number1, int k1)
+{
+	IsNum = number1;
+	k = k1;
 }
 
-int TPostfix::Priority(char c)
+int Lexem::sign() 
+{
+	return k;
+}
+
+double Lexem::number() 
+{
+	return IsNum;
+}
+
+char Lexem::operation() 
+{
+	return IsOper;
+}
+
+int priority(char operation)
 {
 	int res = 0;
-	switch (c)
+	switch (operation)
 	{
-	case  '(':
-		res = 0;
-		break;
-	case ')':
-		res = 1;
-		break;
 	case '+':
 		res = 2;
 		break;
@@ -68,180 +58,222 @@ int TPostfix::Priority(char c)
 	return res;
 }
 
-int TPostfix::IsDigit(char c) //операнда в числовой форме
+Lexem* PolishRecord(string stroka, int & k) 
 {
-	int a = int(c);
-	return ((a >= 48) && (a <= 57));
-}
-
-int TPostfix::CheckOp(char c)
-{
-	int res = 0;
-	switch (c)
-	{
-	case '+':
-	case '-':
-	case '*':
-	case '/':
-	case '(':
-	case ')':
-	{
-		res = 1;
-		break;
-	}
-	}
-	return res;
-}
-
-string TPostfix::ToPostfix() // перевод в постфиксную форму 
-{
-	TStack<char> stack(MaxStackSize);
-	string postfix;
-	int plen = 0; int pr;
-	char temp, tmp;
-	for (int i = 0; i < infix.length(); i++)
-	{
-		if (!(CheckOp(infix[i])))
-		{
-			postfix += infix[i];
+	k = 0;
+	int a = 0;
+	int b = 0;
+	int с = 0;
+	double e;
+	char *tmp;
+	Lexem *x;
+	x = new Lexem[size(stroka)];
+	Stack<char> stc(size(stroka));
+	for (int i = 0; i < size(stroka); i++)
+		if ((stroka[i] != '+') && (stroka[i] != '-') && (stroka[i] != '*') && (stroka[i] != '/') && (stroka[i] != '(') && (stroka[i] != ')')) {
+			b = 0;
+			for (int j = i; (j < size(stroka)) && (stroka[j] != '+') && (stroka[j] != '-') && (stroka[j] != '*') && (stroka[j] != '/') && (stroka[j] != '(') && (stroka[j] != ')'); j++)
+				b++;
+			tmp = new char[b + 1];
+			for (int j = i, n = 0; j < i + b; j++, n++)
+				tmp[n] = stroka[j];
+			tmp[b] = { '\0' };
+			e = atof(tmp);
+			for (int i = 1; i < с; i++)
+				e = -e;
+			с = 0;
+			x[k++].set(e, 2);
+			i += b - 1;
 		}
-		else
-
-			if (stack.IsEmpty())
+		else 
+		{
+			if (a == 0) 
 			{
-				stack.Put(infix[i]);
-				postfix += ' ';
-			}
-			else
-			{
-				pr = Priority(infix[i]);
-				if (!pr)
+				if ((stroka[i] == '-') && (i == 0)) 
 				{
-					stack.Put(infix[i]);
+					с = 2;
 				}
-				else
+
+				else 
 				{
-					tmp = stack.Get();
-					if (pr > Priority(tmp))
+					stc.push(stroka[i]);
+					a++;
+					с++;
+				}
+			}
+			else 
+			{
+				if (stroka[i] == ')') 
+				{
+					while (stc.Front() != '(') 
 					{
-						if ((infix[i] != ')') || (tmp != '('))
-						{
-							postfix += ' ';
-							stack.Put(tmp);
-							stack.Put(infix[i]);
-						}
+						x[k++].set(stc.pop(), 1);
 					}
-					else
+					stc.pop();
+				}
+				else 
+				{
+					if ((stc.IsEmpty() == false) && ((priority(stc.Front()) < priority(stroka[i])) || (stroka[i] == '('))) {
+						if ((с == 0) || (stroka[i] == '('))
+							stc.push(stroka[i]);
+						if (stroka[i] != '(')
+							с++;
+					}
+					else 
 					{
-						if (pr == Priority(tmp))
-						{
-							postfix += ' ';
-							postfix += tmp;
-							stack.Put(infix[i]);
+						if (с == 0) {
+							while ((stc.IsEmpty() == false) && (stc.Front() != '(')) 
+							{
+								x[k++].set(stc.pop(), 1);
+							}
+							stc.push(stroka[i]);
 						}
 						else
-						{
-							postfix += ' ';
-							postfix += tmp;
-							temp = infix[i];
-							if (temp == ')')
-							{
-								do
-								{
-									tmp = stack.Get();
-									if (tmp != '(')
-									{
-										postfix += ' ';
-										postfix += tmp;
-									}
-								} while (tmp != '(');
-							}
-							else
-							{
-								if (!stack.IsEmpty())
-									temp = stack.Get();
-								if (pr <= Priority(temp))
-								{
-									postfix += temp;
-									stack.Put(infix[i]);
-								}
-								else
-									stack.Put(temp);
-							}
-						}
+							с++;
 					}
 				}
 			}
-	}
-	while (!stack.IsEmpty())
-	{
-		postfix += ' ';
-		postfix += stack.Get();
-	}
-	return postfix;
+		}
+		while (stc.IsEmpty() == false)
+			x[k++].set(stc.pop(), 1);
+		return x;
 }
 
-double TPostfix::Calculate(string postfix)
+double result(Lexem *x, int k) 
 {
-	char op;
-	string post;
-	double op1, op2;
-	double res = 0;
-	double rest = 0;
-	TStack <double> Stack(MaxStackSize);
-	for (int i = 0; i < postfix.length(); i++)
+	Stack <double> stc(k);
+	double res;
+	for (int i = 0; i < k; i++) 
 	{
-		if (postfix[i] == ' ')
-			continue;
-		if (CheckOp(postfix[i]) != 1)
+		if (x[i].sign() == 2) 
 		{
-
-			while (postfix[i] != ' ')
-			{
-				post += postfix[i];
-				i++;
-			}
-			res = stof(post);
-			Stack.Put(res);
-			post.clear();
+			stc.push(x[i].number());
 		}
-		else
+		else 
 		{
-			if (!(Stack.IsEmpty()))
-			{
-				op2 = Stack.Get();
-				op1 = Stack.Get();
-			}
-			else throw "Not enough operands";
-			op = postfix[i];
-			switch (op)
+			double a = stc.pop();
+			double b = stc.pop();
+			switch (x[i].operation()) 
 			{
 			case '+':
-			{
-				Stack.Put(op1 + op2);
+				res = b + a;
 				break;
-			}
 			case '-':
-			{
-				Stack.Put(op1 - op2);
+				res = b - a;
 				break;
-			}
 			case '*':
-			{
-				Stack.Put(op1*op2);
+				res = b * a;
+				break;
+			case '/':
+				if (a != 0)
+					res = b / a;
+				else throw 1;
 				break;
 			}
-			case '/':
+			stc.push(res);
+		}
+	}
+	if (k == 1)
+		res = stc.pop();
+	return res;
+}
+
+bool errors(string stroka) 
+{
+	bool a = true;
+	int b = 0;
+	Stack <char> stc(size(stroka));
+	int t = 0;
+	char br;
+	char c[17] = { '0','1','2','3','4','5','6','7','8','9','-','+','*','/','.','(',')' };
+	for (int i = 0; i < size(stroka); i++) 
+	{
+		for (int j = 0; j < 17; j++)
+			if (stroka[i] == c[j]) 
 			{
-				if (op2 == 0)
-					throw "Division by zero";
-				else
-					Stack.Put(op1 / op2);
+				b++;
 			}
+		if (b == 0) 
+		{
+			cout << endl << "The symbol is wrong";
+			a = false;
+		}
+		b = 0;
+	}
+	for (int i = 0; i < size(stroka); i++) 
+	{
+		if (stroka[i] == '(')
+			stc.push('(');
+		else
+			if (stroka[i] == ')') 
+			{
+				if (stc.IsEmpty() == false)
+					br = stc.pop();
+				else
+					t++;
+			}
+	}
+	if (t != 0) 
+	{
+		a = false;
+		cout << endl << "Brackets are wrong";
+	}
+	for (int j = 11; j < 15; j++)
+		if ((stroka[0] == c[j]) || (stroka[0] == ')')) 
+		{
+			a = false;
+			cout << endl << "The expression starts with a wrong symbol";
+		}
+	for (int j = 10; j < 16; j++)
+		if (stroka[size(stroka) - 1] == c[j]) 
+		{
+			a = false;
+			cout << endl << "The expression ends with a wrong symbol";
+		}
+	for (int i = 0; i < size(stroka); i++) 
+	{
+		for (int j = 10; j < 17; j++)
+			if (stroka[i] == c[j])
+				if ((i + 1) < size(stroka)) 
+				{
+					for (int l = 11; l < 15; l++)
+						if (((stroka[i + 1] == c[l]) || ((stroka[i + 1] == '-') && (stroka[i + 2]) == '(')) && (stroka[i] != ')')) {
+							a = false;
+							cout << endl << "Sequence of symbols is wrong";
+						}
+				}
+	}
+	for (int i = 1; i < size(stroka); i++) 
+	{
+		if (stroka[i] == '(') 
+		{
+			for (int j = 10; j < 14; j++)
+				if ((stroka[i - 1] == c[j]) || (stroka[i - 1] == '(')) {
+					b++;
+				}
+			if (b == 0) 
+			{
+				a = false;
+				cout << endl << "Sequence of symbols is wrong";
+			}
+		}b = 0;
+	}
+	for (int i = 0; i < size(stroka) - 1; i++) 
+	{
+		if (stroka[i] == ')') 
+		{
+			for (int j = 10; j < 14; j++)
+				if ((stroka[i + 1] == c[j]) || (stroka[i + 1] == ')')) 
+				{
+					b++;
+				}
+			if (b == 0) 
+			{
+				a = false;
+				cout << endl << "Sequence of symbols is wrong";
 			}
 		}
-
+		b = 0;
 	}
-	res = Stack.Get();
-	return res;
+	return a;
 }
