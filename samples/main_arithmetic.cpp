@@ -1,53 +1,39 @@
-// реализация пользовательского приложения
-
 #include<string>
 #include "arithmetic.h"
-#include "stack.h"
-using namespace std;
-
-
 void main()
 {
-	int l;
-	bool res;
-	do {
-		cout << '\n' << "Choose one of the items:" << '\n';
-		char*d[3] = { "1. Enter the expression ","2. Exit" };
-		for (int i = 0; i < 2; i++)
-			cout << d[i] << '\n';
-		cout << '\n' << "Input a menu number:";
-		cin >> l;
-		if (l == 2) break;
-		int k = 0;
-		string s;
-		getline(cin, s);
-		if (s == "")
+	int k = 0;
+	int tmp;
+	bool f = false;
+	string stroka;
+	cout << endl << "Hi! Welcome to the program. Let's choose the surgery" << endl;
+again:
+	cout << endl << "1.Enter expression" << endl << "2.Exit the program" << endl;
+	cin >> tmp;
+	if (tmp == 1)
+	{
+		cout << endl << "Enter a composed expression" << endl;
+		cin >> stroka;
+		cout << endl;
+		while (!f)
 		{
-			getline(cin, s);
-		}
-
-		bool fl;
-		for (int i = s.length() - 1; i >= 0; --i)
-		{
-			if (s[i] == ' ')
-				s.erase(i, 1);
-		}
-
-		fl = mistake(s);
-		if (fl) {
-
-			Lexeme *c = Polish(s, k);
-			double res;
-			try {
-				res = result(c, k);
-				cout << '\n' << res;
+			try
+			{
+				bool a;
+				a = errors(stroka);
+				if (a)
+				{
+					Lexem *c = PolishRecord(stroka, k);
+					double res = result(c, k);
+					cout << endl << "Result of your operation =" << res << endl;
+				}
+				goto again;
 			}
-			catch (int a) {
-				/*if (a == 1)*/
-				cout << '\n' << "DIV 0";
+			catch (int b)
+			{
+				cout << "ERROR Can not be divided by zero" << endl;
+				goto again;
 			}
 		}
-
-
-	} while (l < 2);
+	}
 }

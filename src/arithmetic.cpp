@@ -1,284 +1,278 @@
-#include "stack.h"
-#include "arithmetic.h"
-#include<string>
-#include <cstdio>
+﻿#include "arithmetic.h"
 #include <cstdlib>
-#include <iostream>
-
-
-using namespace std;
-
-
-Lexeme::Lexeme(char _op, int _f)
+Lexem::Lexem(char operation1, int k1)
 {
-	op = _op;
-	flag = _f;
+	IsOper = operation1;
+	k = k1;
 }
-Lexeme::Lexeme(double _number, int _f)
+Lexem::Lexem(double number1, int k1)
 {
-	number = _number;
-	flag = _f;
+	IsNum = number1;
+	k = k1;
+}
+void Lexem::set(char operation1, int k1)
+{
+	IsOper = operation1;
+	k = k1;
+}
+void Lexem::set(double number1, int k1)
+{
+	IsNum = number1;
+	k = k1;
 }
 
-void Lexeme::Set(char _op, int _f)
+int Lexem::sign()
 {
-	op = _op;
-	flag = _f;
-}
-void Lexeme::Set(double _number, int _f)
-{
-	number = _number;
-	flag = _f;
-}
-void Lexeme::Print()
-{
-	if (flag == 1)
-		cout << '\n' << op;
-	else
-		cout << '\n' << number;
-
+	return k;
 }
 
-Lexeme& Lexeme::operator=(Lexeme & a) {
-	number = a.number;
-	op = a.op;
-	flag = a.flag;
-	return *this;
+double Lexem::number()
+{
+	return IsNum;
 }
 
-int prt(char _op) {
-	int prt;
-	switch (_op) {
-	case'*':
-	case':':
-	case'/': prt = 3; break;
-	case'+':
-	case'-': prt = 2; break;
-	case'=':prt = 1; break;
-	default:prt = -1;
+char Lexem::operation()
+{
+	return IsOper;
+}
+
+int priority(char operation)
+{
+	int res = 0;
+	switch (operation)
+	{
+	case '+':
+		res = 2;
+		break;
+	case '-':
+		res = 2;
+		break;
+	case '*':
+		res = 3;
+		break;
+	case '/':
+		res = 3;
+		break;
 	}
-	return prt;
-}
-
-
-
-
-
-Lexeme* Polish(string s, int & k) {
-	k = 0;
-	int l = 0;
-	int m = 0;
-	int n;
-	int q;
-	int g = 0;
-	Lexeme *c;
-	c = new Lexeme[size(s)];
-	char *d;
-	Stack<char> a(size(s));
-	for (int i = 0; i < size(s); i++)
-		if ((s[i] != '+') && (s[i] != '-') && (s[i] != '*') && (s[i] != '/') && (s[i] != '(') && (s[i] != ')') && (s[i] != ':')) {
-			m = 0;
-			for (int j = i; (j < size(s)) && (s[j] != '+') && (s[j] != '-') && (s[j] != '*') && (s[j] != '/') && (s[j] != '(') && (s[j] != ')'); j++)
-				m++;
-			d = new char[m + 1];
-			for (int j = i, n = 0; j < i + m; j++, n++)
-				d[n] = s[j];
-			d[m] = { '\0' };
-			double f = atof(d);
-			for (int i = 1; i < g; i++)
-				f = -f;
-
-			g = 0;
-			c[k++].Set(f, 2);
-			i += m - 1;
-		}
-		else {
-			if (l == 0) {
-				if ((s[i] == '-') && (i == 0))
-					g = 2;
-				else
-				{
-					a.Push(s[i]);
-					l++;
-					g++;
-				}
-			}
-			else {
-				if (s[i] == ')') {
-					while (a.Value() != '(') {
-						c[k++].Set(a.Pop(), 1);
-
-					}
-					a.Pop();
-				}
-				else {
-
-					if ((!a.IsEmpty()) && ((prt(a.Value()) < prt(s[i])) || (s[i] == '('))) {
-						if ((g == 0) || (s[i] == '('))
-							a.Push(s[i]);
-						if (s[i] != '(')
-							g++;
-					}
-					else {
-						if (g == 0) {
-							while ((!a.IsEmpty()) && (prt(a.Value()) >= prt(s[i])) && (a.Value() != '(')) {
-
-								c[k++].Set(a.Pop(), 1);
-
-							}
-
-							a.Push(s[i]);
-						}
-						else
-							g++;
-					}
-				}
-
-			}
-
-		}
-
-	while (!(a.IsEmpty()))
-		c[k++].Set(a.Pop(), 1);
-
-	return c;
-}
-
-
-double result(Lexeme *c, int k) {
-	double res;
-	Stack<double> a(k);
-	for (int i = 0; i < k; i++) {
-		if (c[i].Flag() == 2) {
-			a.Push(c[i].Number());
-
-		}
-
-		else {
-			double m = a.Pop();
-			double l = a.Pop();
-			switch (c[i].Op())
-			{
-			case '+':
-				res = l + m;
-				break;
-			case '-':
-				res = l - m;
-				break;
-			case '*':
-				res = l * m;
-				break;
-			case ':':
-			case '/':
-				if (m != 0)
-					res = l / m;
-				else throw 1;
-				break;
-
-			}
-
-			a.Push(res);
-		}
-	}
-	if (k == 1)res = a.Pop();
-
 	return res;
 }
 
-
-
-bool mistake(string s) {
-	bool f = true;
-	int g = 0;
-	char b[19] = { '0','1','2','3','4','5','6','7','8','9','-','+','*','/',':','.',',','(',')' };
-	for (int i = 0; i < size(s); i++) {
-		for (int j = 0; j < 19; j++)
-			if (s[i] == b[j]) {
-				g++;
-			}
-		if (g == 0) {
-			cout << '\n' << "The wrong symbol";
-			f = false;
-		}g = 0;
-	}
-	Stack<char> a(size(s));
-
-	int t = 0;
-	char br;
-	for (int i = 0; i < size(s); i++)
-	{
-		if (s[i] == '(')
-			a.Push('(');
+Lexem* PolishRecord(string stroka, int & k)
+{
+	k = 0;
+	int a = 0;
+	int b = 0;
+	int ñ = 0;
+	double e;
+	char *tmp;
+	Lexem *x;
+	x = new Lexem[size(stroka)];
+	Stack<char> stc(size(stroka));
+	for (int i = 0; i < size(stroka); i++)
+		if ((stroka[i] != '+') && (stroka[i] != '-') && (stroka[i] != '*') && (stroka[i] != '/') && (stroka[i] != '(') && (stroka[i] != ')')) {
+			b = 0;
+			for (int j = i; (j < size(stroka)) && (stroka[j] != '+') && (stroka[j] != '-') && (stroka[j] != '*') && (stroka[j] != '/') && (stroka[j] != '(') && (stroka[j] != ')'); j++)
+				b++;
+			tmp = new char[b + 1];
+			for (int j = i, n = 0; j < i + b; j++, n++)
+				tmp[n] = stroka[j];
+			tmp[b] = { '\0' };
+			e = atof(tmp);
+			for (int i = 1; i < ñ; i++)
+				e = -e;
+			ñ = 0;
+			x[k++].set(e, 2);
+			i += b - 1;
+		}
 		else
-			if (s[i] == ')')
+		{
+			if (a == 0)
 			{
-				if (!(a.IsEmpty()))
+				if ((stroka[i] == '-') && (i == 0))
 				{
-					br = a.Pop();
+					ñ = 2;
+				}
 
+				else
+				{
+					stc.push(stroka[i]);
+					a++;
+					ñ++;
+				}
+			}
+			else
+			{
+				if (stroka[i] == ')')
+				{
+					while (stc.Front() != '(')
+					{
+						x[k++].set(stc.pop(), 1);
+					}
+					stc.pop();
 				}
 				else
 				{
-
-					t++;
-				}
-			}
-	}	if (t != 0) {
-		f = false;
-		cout << '\n' << "Wrong sequence of brackets";
-	}
-
-
-
-	for (int j = 11; j < 17; j++)
-		if ((s[0] == b[j]) || (s[0] == ')')) {
-			f = false;
-			cout << '\n' << "A wrong begining of the expression";
-		}
-	for (int j = 10; j < 18; j++)
-		if (s[size(s) - 1] == b[j]) {
-			f = false;
-			cout << '\n' << "A wrong end of the expression";
-		}
-	for (int i = 0; i < size(s); i++) {
-		for (int j = 10; j < 19; j++)
-			if (s[i] == b[j])
-				if ((i + 1) < size(s)) {
-					for (int l = 11; l < 16; l++)
-						if (((s[i + 1] == b[l]) || ((s[i + 1] == '-') && (s[i + 2]) == '(')) && (s[i] != ')')) {
-							f = false;
-							cout << '\n' << "This is not right sequence of symbols in the expression";
+					if ((stc.IsEmpty() == false) && ((priority(stc.Front()) < priority(stroka[i])) || (stroka[i] == '('))) {
+						if ((ñ == 0) || (stroka[i] == '('))
+							stc.push(stroka[i]);
+						if (stroka[i] != '(')
+							ñ++;
+					}
+					else
+					{
+						if (ñ == 0) {
+							while ((stc.IsEmpty() == false) && (stc.Front() != '('))
+							{
+								x[k++].set(stc.pop(), 1);
+							}
+							stc.push(stroka[i]);
 						}
-
+						else
+							ñ++;
+					}
 				}
-	}
-	for (int i = 1; i < size(s); i++) {
-		if (s[i] == '(') {
-			for (int j = 10; j < 15; j++)
-				if ((s[i - 1] == b[j]) || (s[i] == '(')) {
-					g++;
-				}
-
-			if (g == 0) {
-				f = false;
-				cout << '\n' << "This is not right sequence of symbols in the expression";
 			}
-		}g = 0;
-	}
+		}
+	while (stc.IsEmpty() == false)
+		x[k++].set(stc.pop(), 1);
+	return x;
+}
 
-	for (int i = 0; i < size(s) - 1; i++) {
-		if (s[i] == ')') {
-			for (int j = 10; j < 15; j++)
-				if ((s[i + 1] == b[j]) || (s[i + 1] == ')')) {
-					g++;
-				}
-			if (g == 0)
+double result(Lexem *x, int k)
+{
+	Stack <double> stc(k);
+	double res;
+	for (int i = 0; i < k; i++)
+	{
+		if (x[i].sign() == 2)
+		{
+			stc.push(x[i].number());
+		}
+		else
+		{
+			double a = stc.pop();
+			double b = stc.pop();
+			switch (x[i].operation())
 			{
-				f = false;
-				cout << '\n' << "This is not right sequence of symbols in the expression";
+			case '+':
+				res = b + a;
+				break;
+			case '-':
+				res = b - a;
+				break;
+			case '*':
+				res = b * a;
+				break;
+			case '/':
+				if (a != 0)
+					res = b / a;
+				else throw 1;
+				break;
 			}
-		}g = 0;
+			stc.push(res);
+		}
 	}
+	if (k == 1)
+		res = stc.pop();
+	return res;
+}
 
-	return f;
+bool errors(string stroka)
+{
+	bool a = true;
+	int b = 0;
+	Stack <char> stc(size(stroka));
+	int t = 0;
+	char br;
+	char c[17] = { '0','1','2','3','4','5','6','7','8','9','-','+','*','/','.','(',')' };
+	for (int i = 0; i < size(stroka); i++)
+	{
+		for (int j = 0; j < 17; j++)
+			if (stroka[i] == c[j])
+			{
+				b++;
+			}
+		if (b == 0)
+		{
+			cout << endl << "The symbol is wrong";
+			a = false;
+		}
+		b = 0;
+	}
+	for (int i = 0; i < size(stroka); i++)
+	{
+		if (stroka[i] == '(')
+			stc.push('(');
+		else
+			if (stroka[i] == ')')
+			{
+				if (stc.IsEmpty() == false)
+					br = stc.pop();
+				else
+					t++;
+			}
+	}
+	if (t != 0)
+	{
+		a = false;
+		cout << endl << "Brackets are wrong";
+	}
+	for (int j = 11; j < 15; j++)
+		if ((stroka[0] == c[j]) || (stroka[0] == ')'))
+		{
+			a = false;
+			cout << endl << "The expression starts with a wrong symbol";
+		}
+	for (int j = 10; j < 16; j++)
+		if (stroka[size(stroka) - 1] == c[j])
+		{
+			a = false;
+			cout << endl << "The expression ends with a wrong symbol";
+		}
+	for (int i = 0; i < size(stroka); i++)
+	{
+		for (int j = 10; j < 17; j++)
+			if (stroka[i] == c[j])
+				if ((i + 1) < size(stroka))
+				{
+					for (int l = 11; l < 15; l++)
+						if (((stroka[i + 1] == c[l]) || ((stroka[i + 1] == '-') && (stroka[i + 2]) == '(')) && (stroka[i] != ')')) {
+							a = false;
+							cout << endl << "Sequence of symbols is wrong";
+						}
+				}
+	}
+	for (int i = 1; i < size(stroka); i++)
+	{
+		if (stroka[i] == '(')
+		{
+			for (int j = 10; j < 14; j++)
+				if ((stroka[i - 1] == c[j]) || (stroka[i - 1] == '(')) {
+					b++;
+				}
+			if (b == 0)
+			{
+				a = false;
+				cout << endl << "Sequence of symbols is wrong";
+			}
+		}b = 0;
+	}
+	for (int i = 0; i < size(stroka) - 1; i++)
+	{
+		if (stroka[i] == ')')
+		{
+			for (int j = 10; j < 14; j++)
+				if ((stroka[i + 1] == c[j]) || (stroka[i + 1] == ')'))
+				{
+					b++;
+				}
+			if (b == 0)
+			{
+				a = false;
+				cout << endl << "Sequence of symbols is wrong";
+			}
+		}
+		b = 0;
+	}
+	return a;
 }

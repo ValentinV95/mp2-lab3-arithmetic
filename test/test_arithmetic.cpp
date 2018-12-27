@@ -1,129 +1,94 @@
 #include <gtest.h>
 #include "arithmetic.h"
-#include <gtest.h>
 #include <string>
 using namespace std;
-
-
-
-TEST(Lexeme, can_create_double)
+TEST(Lexem, can_create_double_lexem)
 {
-	Lexeme l(10.05, 2);
-	EXPECT_DOUBLE_EQ(l.Number(), 10.05);
+	Lexem a(1.1, 2);
+	EXPECT_DOUBLE_EQ(a.number(), 1.1);
 }
-TEST(Lexeme, can_create_binary_operation)
+
+TEST(priority, can_determine_operation_priority) {
+	EXPECT_EQ(2, priority('+'));
+	EXPECT_EQ(2, priority('-'));
+	EXPECT_EQ(3, priority('*'));
+	EXPECT_EQ(3, priority('/'));
+}
+
+TEST(Lexem, can_create_binary_operation)
 {
-	Lexeme l('+', 1);
-	EXPECT_EQ(l.Op(), '+');
+	Lexem a('+', 1);
+	EXPECT_EQ(a.operation(), '+');
+	Lexem b('*', 1);
+	EXPECT_EQ(b.operation(), '*');
 }
-TEST(Priority, can_determine_priority_of_operation) {
-	EXPECT_EQ(3, prt('*'));
-	EXPECT_EQ(3, prt('/'));
-	EXPECT_EQ(3, prt(':'));
-	EXPECT_EQ(2, prt('+'));
-	EXPECT_EQ(2, prt('-'));
-}
-TEST(Polish_notation, can_create_right_sequence_of_calculations)
+
+TEST(result, can_use_many_brackets)
 {
-	string s = "5+(4*7-8)";
+	string stroka = "(((1+1)*1+1)*1+1)+1+1";
 	int k = 0;
-	Lexeme *c = Polish(s, k);
-
-	int i = 0;
-	EXPECT_EQ(c[i++].Number(), 5);
-	EXPECT_EQ(c[i++].Number(), 4);
-	EXPECT_EQ(c[i++].Number(), 7);
-	EXPECT_EQ(c[i++].Op(), '*');
-	EXPECT_EQ(c[i++].Number(), 8);
-	EXPECT_EQ(c[i++].Op(), '-');
-	EXPECT_EQ(c[i++].Op(), '+');
-
+	Lexem *a = PolishRecord(stroka, k);
+	EXPECT_EQ(result(a, k), 6);
 }
-TEST(Polish_notation, can_create_right_sequence_of_calculations_with_unary_minus)
-{
-	string s = "-5+(4*-7-8)";
-	int k = 0;
-	Lexeme *c = Polish(s, k);
 
-	int i = 0;
-	EXPECT_EQ(c[i++].Number(), -5);
-	EXPECT_EQ(c[i++].Number(), 4);
-	EXPECT_EQ(c[i++].Number(), -7);
-	EXPECT_EQ(c[i++].Op(), '*');
-	EXPECT_EQ(c[i++].Number(), 8);
-	EXPECT_EQ(c[i++].Op(), '-');
-	EXPECT_EQ(c[i++].Op(), '+');
+TEST(result, can_use_unary_minus_with_or_without_brackets)
+{
+	string stroka1 = "10/(-2)";
+	string stroka2 = "10/-2";
+	int k = 0;
+	Lexem *a = PolishRecord(stroka1, k);
+	EXPECT_DOUBLE_EQ(result(a, k), -5);
+	Lexem *b = PolishRecord(stroka2, k);
+	EXPECT_DOUBLE_EQ(result(b, k), -5);
+}
+TEST(result, throw_if_the_first_symbol_is_closing_bracket)
+{
+	string stroka = ")1+1";
+	EXPECT_EQ(errors(stroka), false);
+}
 
-}
-TEST(Polish_notation, can_create_right_sequence_of_calculations_with_double_numbers)
-{
-	string s = "5.7+(4*7-8.5)";
-	int k = 0;
-	Lexeme *c = Polish(s, k);
 
-	int i = 0;
-	EXPECT_DOUBLE_EQ(c[i++].Number(), 5.7);
-	EXPECT_DOUBLE_EQ(c[i++].Number(), 4);
-	EXPECT_DOUBLE_EQ(c[i++].Number(), 7);
-	EXPECT_DOUBLE_EQ(c[i++].Op(), '*');
-	EXPECT_DOUBLE_EQ(c[i++].Number(), 8.5);
-	EXPECT_DOUBLE_EQ(c[i++].Op(), '-');
-	EXPECT_DOUBLE_EQ(c[i++].Op(), '+');
+TEST(result, throw_if_there_are_two_operations)
+{
+	string stroka = "10*/1";
+	EXPECT_EQ(errors(stroka), false);
+}
 
-}
-TEST(Polish_notation, can_not_count_the_wrong_expression)
+TEST(result, throw_if_the_expression_ends_with_a_wrong_symbol)
 {
-	string s = "5.7+-(4*7-8.5)";
-	int k = 0;
+	string stroka = "10-2+1-";
+	EXPECT_EQ(errors(stroka), false);
+}
 
-	EXPECT_EQ(mistake(s), false);
-}
-TEST(Polish_notation, can_not_count_the_expression_with_wrong_symbols)
+TEST(result, can_sum)
 {
-	string s = "5.7!+(4*7-8.5)";
+	string stroka = "1+1";
 	int k = 0;
+	Lexem *a = PolishRecord(stroka, k);
+	EXPECT_EQ(result(a, k), 2);
+}
 
-	EXPECT_EQ(mistake(s), false);
-}
-TEST(Polish_notation, can_not_count_the_expression_with_wrong_symbols_2)
+TEST(result, can_sum_and_sub)
 {
-	string s = "5.7A+(4*7-8.5)";
+	string stroka = "1+1-1";
 	int k = 0;
+	Lexem *a = PolishRecord(stroka, k);
+	EXPECT_EQ(result(a, k), 1);
+}
 
-	EXPECT_EQ(mistake(s), false);
-}
-TEST(Polish_notation, can_not_count_the_expression_with_wrong_symbols_3)
+TEST(result, can_use_brackets)
 {
-	string s = "*5.7+(4*7-8.5)";
+	string stroka = "3.5*(1+1)";
 	int k = 0;
+	Lexem *a = PolishRecord(stroka, k);
+	EXPECT_EQ(result(a, k), 7);
+}
 
-	EXPECT_EQ(mistake(s), false);
-}
-TEST(Polish_notation, can_not_count_the_expression_with_wrong_symbols_4)
-{
-	string s = "5.7+(4*7-8.5)-";
-	int k = 0;
 
-	EXPECT_EQ(mistake(s), false);
-}
-TEST(Result, can_solve_expression)
+TEST(result, can_use_many_unary_minuses)
 {
-	string s = "5+(4*7-8)";
+	string stroka = "1+-------1";
 	int k = 0;
-	Lexeme *c = Polish(s, k);
-	EXPECT_EQ(result(c, k), 25);
-}
-TEST(Result, can_solve_expression_2)
-{
-	string s = "-5+(4*-7-8)";
-	int k = 0;
-	Lexeme *c = Polish(s, k);
-	EXPECT_EQ(result(c, k), -41);
-}
-TEST(Result, can_solve_expression_3)
-{
-	string s = "5.7+(4*7-8.5)";
-	int k = 0;
-	Lexeme *c = Polish(s, k);
-	EXPECT_DOUBLE_EQ(result(c, k), 25.2);
+	Lexem *a = PolishRecord(stroka, k);
+	EXPECT_EQ(result(a, k), 0);
 }

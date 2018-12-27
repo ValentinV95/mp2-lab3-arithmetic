@@ -1,40 +1,23 @@
-// объ€вление функций и классов дл€ вычислени€ арифметических выражений
-#ifndef _ARITHMETIC_H_
-#define _ARITHMETIC_H_
-#include <string>
-#include <vector>
-#include <set>
+#include "stack.h"
 using namespace std;
-
-
-class Lexeme
+class Lexem
 {
 private:
-	double number;
-	char op;
-	int flag;
+	double IsNum;
+	char IsOper;
+	int k;
 public:
-	Lexeme() {};
-	Lexeme(char, int);
-	Lexeme(double, int);
-	void Set(char, int);
-	void Set(double, int);
-	void Print();
-	int Flag() { return flag; };
-	double Number() { return number; };
-	char Op() { return op; };
-	Lexeme& operator=(Lexeme&);
-	~Lexeme() {};
-
+	Lexem() {};
+	~Lexem() {};
+	Lexem(char, int);
+	Lexem(double, int);
+	void set(char, int);
+	void set(double, int);
+	int sign();
+	double number();
+	char operation();
 };
-
-Lexeme* Polish(string, int &);
-int prt(char op);
-double result(Lexeme*, int);
-
-bool mistake(string);
-
-
-
-
-#endif _ARITHMETIC_H_ 
+int priority(char operation);
+Lexem* PolishRecord(string, int &);
+double result(Lexem*, int);
+bool errors(string);
