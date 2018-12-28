@@ -369,13 +369,12 @@ Oper_or_numb* Lexeme::RPN()
 		S1.Set(o1);
 		o[0].Set(S.Get());
 		j++;
-		if(c[1]=='(')
-		s ++;
 		s++;
 		i++;
 	}
 	for (i;i < strlen(c);i++)
 	{
+		
 		switch (Get_kind(i))
 		{
 		case num:
@@ -410,6 +409,7 @@ Oper_or_numb* Lexeme::RPN()
 		case oper:
 		{
 			o1.Set(c[i]);
+			
 			if (S1.IsEmpty())
 			{
 				S1.Set(o1);
@@ -495,6 +495,7 @@ Oper_or_numb* Lexeme::RPN()
 						{
 							o[j].Set(S1.Get().Get_op());
 							j++;
+							s++;
 						}
 						S1.Get();
 
