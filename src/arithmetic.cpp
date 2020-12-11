@@ -332,7 +332,7 @@ void Arithmetic::calculate()
 	double resultOperation = 0;
 	size_t tmp = false;
 
-	for (size_t i = 0; i < term.size(); i++)
+	for (size_t i = 0; i < polishNote.size(); i++)
 	{
 		if (polishNote[i].getTypeLexeme() == 3)
 		{
@@ -425,7 +425,7 @@ void Arithmetic::calculate()
 
 void Arithmetic::PrintVectP()
 {
-	for (size_t i = 0; i < term.size(); i++)
+	for (size_t i = 0; i < polishNote.size(); i++)
 	{
 		polishNote[i].printT();
 	}
