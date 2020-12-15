@@ -21,7 +21,7 @@ public:
 	{
 		data = new T[10];
 		top = 0;
-		size = 15;
+		size = 10;
 	}
 	TStack(int x) 
 	{
