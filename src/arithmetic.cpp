@@ -165,7 +165,7 @@ void Arithmetic::translateStrToTerm(string str)
 			}
 			else
 			{
-				if ((term[i- countSpace -1].getOperation() != ')') && (term[i - countSpace- 1].getTypeLexeme() == 2))
+				if ((term[i- countSpace - 1 - 1].getOperation() != ')') && (term[i - countSpace - 1 - 1].getTypeLexeme() == 2))
 				{
 					Term un_minus('~');
 					term.push_back(un_minus);
@@ -332,20 +332,31 @@ void Arithmetic::calculate()
 	double resultOperation = 0;
 	size_t tmp = false;
 
+	unordered_map<string, double> value;
+
 	for (size_t i = 0; i < polishNote.size(); i++)
 	{
+		
 		if (polishNote[i].getTypeLexeme() == 3)
 		{
-			cout << "term has variable-parametres:" << endl << "Term is: ";
-			for (size_t j = 0; j < term.size(); j++)
+			if (value.count(polishNote[i].getAlternating()) != 0)
 			{
-				term[j].printT();
+				double tmp = 0.0;
+				tmp = value.at(polishNote[i].getAlternating());
+				numbers.Push(tmp);
+				continue;
 			}
-			cout << endl;
-	
-			tmp = true;
-			break;
+			else
+			{
+				cout << "Term has variable " << endl << " Give value " << polishNote[i].getAlternating() << ":";
+				double tmp = 0.0;
+				cin >> tmp;
+				value.insert(unordered_map<string, int>::value_type(polishNote[i].getAlternating(), tmp));
+				numbers.Push(tmp);
+				continue;
+			}
 		}
+		
 
 		if (polishNote[i].getTypeLexeme() == 1)
 		{

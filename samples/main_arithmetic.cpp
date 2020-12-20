@@ -10,7 +10,7 @@ int main()
         cout << "Write your term:" << endl << "Term is:";
         string str;
         getline(cin, str);
-        cout << "Term is after translting str:";
+        cout << "Term is after translting string:";
         a1.translateStrToTerm(str);
          a1.PrintVecT();
          cout << "PolishNote: ";
