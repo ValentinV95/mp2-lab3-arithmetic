@@ -29,7 +29,7 @@ TEST(work, correct_answer4)
 }
 TEST(work, correct_answer5)
 {
-    std::string s = "12----12";
+    std::string s = "12---12";
     EXPECT_EQ(0, work(s));
 }
 TEST(work, correct_answer6)
