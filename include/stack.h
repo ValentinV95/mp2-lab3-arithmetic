@@ -25,9 +25,14 @@ public:
 	}
 	TStack(int x) 
 	{
-		data = new T[x];
-		top = 0;
-		size = x;
+		if (x>0)
+		{
+		  data = new T[x];
+		  top = 0;
+		  size = x;
+		}
+		else
+			throw ("ERORRE");
 	}
 	~TStack() 
 	{
