@@ -101,6 +101,17 @@ Token* translationToRPE(std::string s) {
 	int rBracket = 0;
 	Token tokens[s.length()];
 
+	struct variable{
+		bool avail = false;
+		double val;
+	};
+	struct variable sX;
+	struct variable sY;
+	struct variable sZ;
+	struct variable sK;
+	struct variable sN;
+	struct variable sT;
+
 	if (s[i] == '-')
 	{
 		tokens[j++] = -1;
@@ -170,10 +181,83 @@ Token* translationToRPE(std::string s) {
 			tokens[j++] = "exp";
 			i = i + 3;
 		}
-		else if ((s[i] == 'x') || (s[i] == 'y') || (s[i] == 'z') || (s[i] == 'k') || (s[i] == 'n') || (s[i] == 't')) {
+		else if (s[i] == 'x') {
+			if (sX.avail == true)
+				tokens[j++] = sX.val;
+			else {
+				std::cout << "input " << s[i] << std::endl;
+				double value;
+				std::cin >> value;
+
+				sX.val = value;
+				sX.avail = true;
+				tokens[j++] = value;
+			}
+		}
+		else if(s[i] == 'y') {
+			if (sY.avail == true)
+				tokens[j++] = sY.val;
+			else {
+				std::cout << "input " << s[i] << std::endl;
+				double value;
+				std::cin >> value;
+
+				sY.val = value;
+				sY.avail = true;
+				tokens[j++] = value;
+			}
+		}
+		else if(s[i] == 'z'){
+			if (sZ.avail == true)
+				tokens[j++] = sZ.val;
+			else {
+				std::cout << "input " << s[i] << std::endl;
+				double value;
+				std::cin >> value;
+
+				sZ.val = value;
+				sZ.avail = true;
+				tokens[j++] = value;
+			}
+		}
+		else if (s[i] == 'k') {
+			if (sK.avail == true)
+				tokens[j++] = sK.val;
+			else {
+				std::cout << "input " << s[i] << std::endl;
+				double value;
+				std::cin >> value;
+
+				sK.val = value;
+				sK.avail = true;
+				tokens[j++] = value;
+			}
+		}
+		else if (s[i] == 'n') {
+		if (sN.avail == true)
+			tokens[j++] = sN.val;
+		else {
 			std::cout << "input " << s[i] << std::endl;
-			double var;
-			std::cin >> var;
+			double value;
+			std::cin >> value;
+
+			sN.val = value;
+			sN.avail = true;
+			tokens[j++] = value;
+		}
+		}
+		else if (s[i] == 't') {
+		if (sT.avail == true)
+			tokens[j++] = sT.val;
+		else {
+			std::cout << "input " << s[i] << std::endl;
+			double value;
+			std::cin >> value;
+
+			sT.val = value;
+			sT.avail = true;
+			tokens[j++] = value;
+		}
 		}
 		else  if (s[i] == '+') {
 			tokens[j] = "+";

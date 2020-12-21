@@ -50,7 +50,7 @@ TEST(translationToRPE, correct_answer4)
 TEST(translationToRPE, correct_answer5)
 {
     std::string s = "12----12";
-    EXPECT_EQ(0, translationToRPE(s));
+    EXPECT_EQ(24, translationToRPE(s));
 }
 TEST(translationToRPE, correct_answer6)
 {

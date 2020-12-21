@@ -12,6 +12,8 @@ template <class T>
 class Stack {
 public:
     Stack(int N = 10) {
+        if (N <= 0)
+            throw std::logic_error("invalid stack size");
         data = new T[N];
         head = -1;
         size = N;
