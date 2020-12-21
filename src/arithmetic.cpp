@@ -330,7 +330,6 @@ void Arithmetic::calculate()
 	double leftV = 0;
 	double rightV = 0;
 	double resultOperation = 0;
-	size_t tmp = false;
 
 	unordered_map<string, double> value;
 
@@ -419,8 +418,6 @@ void Arithmetic::calculate()
 		}
 	}
 
-	if (tmp == false)
-	{
 		try
 		{ 
 		Term resultT = numbers.Pop();
@@ -431,7 +428,6 @@ void Arithmetic::calculate()
 		{
 			throw "Error: term was empty";
 		}
-	}	
 }
 
 void Arithmetic::PrintVectP()
