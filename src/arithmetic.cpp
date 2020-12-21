@@ -165,7 +165,7 @@ void Arithmetic::translateStrToTerm(string str)
 			}
 			else
 			{
-				if ((term[i- countSpace - 1 - 1].getOperation() != ')') && (term[i - countSpace - 1 - 1].getTypeLexeme() == 2))
+				if ((term[i - countSpace - 1].getOperation() != ')') && (term[i - countSpace - 1].getTypeLexeme() == 2))
 				{
 					Term un_minus('~');
 					term.push_back(un_minus);
@@ -211,11 +211,13 @@ void Arithmetic::translateStrToTerm(string str)
 				{
 					throw "Error: More then 1 point";
 				}
+				countSpace++;
 			}
 
 			double tmp = stof(numbers);
 			Term _numbers(tmp);
 			term.push_back(tmp);
+			countSpace--;
 			continue;
 		}
 
