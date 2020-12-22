@@ -97,8 +97,8 @@ TEST(PolishNotation, throws_when_operation_is_the_last_symbol)
 
 TEST(PolishNotation, can_add)
 {
-	double a, b = 8.65;
-	std::string s = "5.77+2.88";
+	double a, b = 7.88;
+	std::string s = "5.0+2.88";
 	PolishNotation v(s);
 	v.TranslationToPolishNotation();
 	a = v.PolishNotationCalculate();
@@ -108,8 +108,8 @@ TEST(PolishNotation, can_add)
 
 TEST(PolishNotation, can_subtract)
 {
-	double a, b = 2.89;
-	std::string s = "5.77-2.88";
+	double a, b = 2.12;
+	std::string s = "5.0-2.88";
 	PolishNotation v(s);
 	v.TranslationToPolishNotation();
 	a = v.PolishNotationCalculate();
@@ -141,8 +141,8 @@ TEST(PolishNotation, can_divide)
 
 TEST(PolishNotation, can_work_with_unary_minus)
 {
-	double a, b = -2.0;
-	std::string s = "-2.0";
+	double a, b = -2.5;
+	std::string s = "-2.5";
 	PolishNotation v(s);
 	v.TranslationToPolishNotation();
 	a = v.PolishNotationCalculate();
@@ -150,13 +150,13 @@ TEST(PolishNotation, can_work_with_unary_minus)
 	EXPECT_EQ(a, b);
 }
 
-TEST(PolishNotation, can_calculate_hard_expressions)
+TEST(PolishNotation, can_work_with_seveal_unary_minuses)
 {
-	double a, b = -9.826;
-	std::string s = "(-5.77+2.88)*6.8/2.0";
+	double a, b = 2.5;
+	std::string s = "--2.5";
 	PolishNotation v(s);
 	v.TranslationToPolishNotation();
 	a = v.PolishNotationCalculate();
 
-	EXPECT_EQ(b, a);
+	EXPECT_EQ(a, b);
 }
