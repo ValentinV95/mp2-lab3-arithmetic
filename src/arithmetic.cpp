@@ -85,6 +85,46 @@ void PolishNotation::TranslationToPolishNotation()
 	int i = 0; 
 	int j = 0; 
 	int k = 0;
+	int xi = 0, yi = 0, zi = 0;
+	string xstr, ystr, zstr;
+
+	for (i; i < formula.length(); i++)
+	{
+		if (formula[i] == 'x')
+		{
+			xi++;
+		}
+
+		if (formula[i] == 'y')
+		{
+			yi++;
+		}
+
+		if (formula[i] == 'z')
+		{
+			zi++;
+		}
+	}
+
+	if (xi > 0)
+	{
+		cout << "Enter x variable" << endl;
+		getline(cin,xstr);
+	}
+
+	if (yi > 0)
+	{
+		cout << "Enter y variable" << endl;
+		getline(cin, ystr);
+	}
+
+	if (zi > 0)
+	{
+		cout << "Enter z variable" << endl;
+		getline(cin, zstr);
+	}
+
+	i = 0;
 
 	while (i < formula.length())
 	{
@@ -103,7 +143,7 @@ void PolishNotation::TranslationToPolishNotation()
 			l[j].type = "operand";
 			l[j].priority = 0;
 
-			i = k;
+			i = k-1;
 		}
 
 		if ((formula[i] == '-') && (i == 0))
@@ -158,10 +198,24 @@ void PolishNotation::TranslationToPolishNotation()
 			}
 		}
 
-		if ((formula[i] == 'x') || (formula[i] == 'y') || (formula[i] == 'z'))
+		if (formula[i] == 'x')
 		{
-			l[j].lexm.push_back(formula[i]);
-			l[j].type = "variable";
+			l[j].lexm = xstr;
+			l[j].type = "operand";
+			l[j].priority = 0;
+		}
+
+		if (formula[i] == 'y')
+		{
+			l[j].lexm = ystr;
+			l[j].type = "operand";
+			l[j].priority = 0;
+		}
+
+		if (formula[i] == 'z')
+		{
+			l[j].lexm = zstr;
+			l[j].type = "operand";
 			l[j].priority = 0;
 		}
 
@@ -197,7 +251,7 @@ void PolishNotation::TranslationToPolishNotation()
 		}
 	}
 
-	TStack <Lexem> st(l.size());
+	TStack <Lexem> st(l.size()+1);
 	i = 0;
 	j = 0;
 
@@ -205,7 +259,7 @@ void PolishNotation::TranslationToPolishNotation()
 	{
 		polish.push_back(Lexem());
 
-		if ((l[i].type == "operand")||(l[i].type == "variable"))
+		if (l[i].type == "operand")
 		{
 			polish[j++] = l[i];
 		}
@@ -242,7 +296,30 @@ void PolishNotation::TranslationToPolishNotation()
 			}
 		}
 
+		if (l[i].lexm == "-")
+		{
+			if (st.IsEmpty())
+			{
+				st.Push(l[i]);
+			}
+			else
+			{
+				while ((!st.IsEmpty()) && ((l[i].priority < st.GetHeadElement().priority) || (st.GetHeadElement().lexm =="+")))
+				{
+					polish[j++] = st.GetHeadElement();
+					st.Pop();
+				}
+				st.Push(l[i]);
+			}
+		}
+
 		i++;
+	}
+
+	while (!st.IsEmpty())
+	{
+		polish[j++] = st.GetHeadElement();
+		st.Pop();
 	}
 }
 
@@ -252,7 +329,8 @@ void PolishNotation::PrintPolishNotation()
 
 	while (i < polish.size())
 	{
-		cout << polish[i].lexm << "\t";
+		cout << polish[i].lexm << " ";
+		i++;
 	}
 }
 
@@ -270,14 +348,6 @@ double PolishNotation::PolishNotationCalculate()
 			stringstream ss(polish[i].lexm);
 			ss >> k;
 			st.Push(k);
-		}
-
-		if (polish[i].type == "variable")
-		{
-			double s;
-			cout << "Enter variable value " << polish[i].lexm << endl;
-			cin >> s;
-			st.Push(s);
 		}
 
 		if ((polish[i].lexm == "-") && (polish[i].priority == 4))

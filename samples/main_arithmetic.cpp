@@ -11,7 +11,7 @@ using namespace std;
 int main()
 {
 	setlocale(LC_ALL, "Rus");
-	cout << "Введите выражение которое хотите перевести в польскую запись и вычислить. Ввод осуществляйте без пробелов. Доступные символы: цифры от 0 до 9, +, -, *, /, точка, символы для обозначения переменных: x, y, z." << endl;
+	cout << "Enter your expression, no spaces. Allowed symbols: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ., x, y, z, /, *, -, +" << endl;
 	
 	try
 	{
@@ -20,16 +20,17 @@ int main()
 		getline(cin, s);
 		PolishNotation v(s);
 		v.TranslationToPolishNotation();
+		cout << "Polish notation:" << endl;
 		v.PrintPolishNotation();
 		res = v.PolishNotationCalculate();
-		cout << res << endl;
+		cout << endl << "Result:" << endl << res << endl;
 	}
 	catch (const char *ex)
 	{
-		cout << ex << endl;
+		cout << endl << ex << endl;
 	}
 	catch (const int ex)
 	{
-		cout << "ERROR! THE PARENTHESIS ON POSITION " << ex << " HAS NO MATCHING PARENTHESIS!";
+		cout << endl << "ERROR! THE PARENTHESIS ON POSITION " << ex << " HAS NO MATCHING PARENTHESIS!";
 	}
 }
