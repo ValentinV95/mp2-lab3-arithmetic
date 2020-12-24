@@ -365,7 +365,7 @@ int cheking(Lexem* mas, int n)
 	for (int i = 0; i < n; i++) {
 		if (mas[i].is_num()) {
 			if (i != n - 1) {
-				if ((mas[i + 1].getop() == "+") && (mas[i + 1].getop() == "-") && (mas[i + 1].getop() == "*") && (mas[i + 1].getop() == "/") && (mas[i + 1].getop() == ")")) { return 1; }
+				if ((mas[i + 1].getop() != "+") && (mas[i + 1].getop() != "-") && (mas[i + 1].getop() != "*") && (mas[i + 1].getop() != "/") && (mas[i + 1].getop() != ")")) { return 1; }
 			}
 		}
 		else {
