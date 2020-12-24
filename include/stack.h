@@ -53,6 +53,7 @@ public:
 			{
 				data[i] = tmp[i];
 			}
+			delete []tmp;
 			size = size * 2;
 		}
 		data[top] = x;
