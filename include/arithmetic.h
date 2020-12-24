@@ -269,37 +269,37 @@ double work(std::string s)
 	  }
 	  case 2: 
 	  {
-		  throw ("ERRORE");
+		  throw ("ERROR");
 		  std::cout << std::endl << "wrong symbol";
 	  }
 	  case 3: 
 	  {
-		  throw ("ERRORE");
+		  throw ("ERROR");
 		  std::cout << std::endl << "wrong symbol";
 	  }
 	  case 4: 
 	  {
-		  throw ("ERRORE");
+		  throw ("ERROR");
 		  std::cout << std::endl << "wrong symbol";
 	  }
 	  case 5: 
 	  {
-		  throw ("ERRORE");
+		  throw ("ERROR");
 		  std::cout << std::endl << "wrong symbol";
 	  }
 	  case 6: 
 	  {
-		  throw ("ERRORE");
+		  throw ("ERROR");
 		  std::cout << std::endl << "wrong symbol";
 	  }
 	  case 7: 
 	  {
-		throw("ERRORE");
+		throw("ERROR");
 		std::cout << std::endl << "wrong symbol";
 	  }
 	  case 8: 
 	  {
-		  throw ("ERRORE");
+		  throw ("ERROR");
 		  std::cout << std::endl << "wrong symbol";
 	  }
 
