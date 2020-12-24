@@ -32,7 +32,7 @@ public:
 		  size = x;
 		}
 		else
-			throw ("ERORRE");
+			throw ("ERROR");
 	}
 	~TStack() 
 	{
@@ -67,7 +67,7 @@ public:
 		}
 		else 
 		{
-			throw (0);
+			throw ("ERROR");;
 		}
 	}
 	T show() 
