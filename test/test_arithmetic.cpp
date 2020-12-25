@@ -2,11 +2,7 @@
 
 #include <gtest.h>
 #include "arithmetic.h"
-TEST(translationToRPE, correct_with_an_empty_string)
-{
-    std::string s = " ";
-    ASSERT_NO_THROW(translationToRPE(s));
-}
+
 TEST(translationToRPE, correct_with_one_value)
 {
     std::string s = "4";
@@ -15,11 +11,6 @@ TEST(translationToRPE, correct_with_one_value)
 TEST(translationToRPE, correct_with_one_value2)
 {
     std::string s = "4";
-    EXPECT_EQ(4, translationToRPE(s));
-}
-TEST(translationToRPE, correct_with_one_value2_with_whitespaces)
-{
-    std::string s = " 4 ";
     EXPECT_EQ(4, translationToRPE(s));
 }
 TEST(translationToRPE, correct_answer0)
@@ -70,7 +61,12 @@ TEST(translationToRPE, correct_answer8)
 TEST(translationToRPE, correct_answer9)
 {
     std::string s = "cos(ln(1))";
-    EXPECT_NEQ(1, translationToRPE(s));
+    EXPECT_EQ(1, translationToRPE(s));
+}
+TEST(translationToRPE, correct_answer10)
+{
+    std::string s = "sin(0)";
+    EXPECT_EQ(0, translationToRPE(s));
 }
 TEST(translationToRPE, throws_if_not_correct0)
 {
@@ -84,7 +80,7 @@ TEST(translationToRPE, throws_if_not_correct1)
 }
 TEST(translationToRPE, throws_if_not_correct2)
 {
-    std::string s = "tg";
+    std::string s = "ctg";
     ASSERT_ANY_THROW(translationToRPE(s));
 }
 TEST(translationToRPE, throws_if_not_correct3)
@@ -110,5 +106,15 @@ TEST(translationToRPE, throws_if_not_correct6)
 TEST(translationToRPE, throws_if_not_correct7)
 {
     std::string s = "12!11";
+    ASSERT_ANY_THROW(translationToRPE(s));
+}
+TEST(translationToRPE, throws_if_not_correct8)
+{
+    std::string s = "cos(10)sin(2)";
+    ASSERT_ANY_THROW(translationToRPE(s));
+}
+TEST(translationToRPE, throws_if_not_correct9)
+{
+    std::string s = ":(((";
     ASSERT_ANY_THROW(translationToRPE(s));
 }

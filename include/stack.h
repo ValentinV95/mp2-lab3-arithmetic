@@ -8,55 +8,83 @@
 // - очистка стека
 // при вставке в полный стек должна перевыделяться память
 
-template <class T>
-class Stack {
+template <typename T>
+class Stack
+{
+	T* data;
+	int head, n;
 public:
-    Stack(int N = 10) {
-        if (N <= 0)
-            throw std::logic_error("invalid stack size");
-        data = new T[N];
-        head = -1;
-        size = N;
-    }
+	Stack(int _n = 10)
+	{
+		if (_n > 0)
+		{
+			data = new T[_n];
+			head = 0;
+			n = _n;
+		}
+		else
+			throw("invalid stack size");
+	}
+	~Stack()
+	{
 
-    void push(T& A) {
-        if (!IsFull()) {
-            data[++head] = A;
-        }
-        else throw std::logic_error("The stack is full");
-    }
-
-    T pop() {
-        if (!IsEmpty()) {
-            T res = data[head--];
-            return res;
-        }
-        else throw std::logic_error("Stack is empty");
-    }
-
-    bool IsEmpty() {
-        if (head == -1) return true;
-        else return false;
-    }
-
-    bool IsFull() {
-        if (head == size - 1) return true;
-        else return false;
-    }
-
-    T show() {
-        if (!(this->isempty())) {
-            int temp;
-            temp = top - 1;
-            return data[temp];
-        }
-        else {
-            throw (0);
-        }
-    }
-
-private:
-    T* data;
-    int head;
-    int size;
-}
+	}
+	void push(T x)
+	{
+		if (head == n)
+		{
+			T* tmp = new T[n];
+			for (int i = 0; i < n; ++i)
+			{
+				tmp[i] = data[i];
+			}
+			delete[] data;
+			data = tmp;
+			delete[] tmp;
+			n = n * 2;
+		}
+		data[head] = x;
+		head++;
+	}
+	T pop()
+	{
+		if (!(this->IsEmpty()))
+		{
+			head--;
+			return data[head];
+		}
+		else
+		{
+			throw ("stack is full!");;
+		}
+	}
+	T value()
+	{
+		if (!(this->IsEmpty()))
+		{
+			int temp;
+			temp = head - 1;
+			return data[temp];
+		}
+		else
+		{
+			throw (0);
+		}
+	}
+	bool IsEmpty()
+	{
+		if (head == 0)
+		{
+			return true;
+		}
+		return false;
+	}	
+	bool IsFull()
+	{
+		if (head == 0)
+		{
+			return false;
+		}
+		return true;
+	}
+};
