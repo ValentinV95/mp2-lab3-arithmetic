@@ -18,11 +18,6 @@ private:
 	T* a;
 	int _size;
 	int top;
-	bool is_full()
-	{
-		return top == (_size - 1);
-	}
-public:
 public:
 	TStack(int size = DEFAULT_SIZE)
 	{
@@ -45,8 +40,6 @@ public:
 				b[i] = a[i];
 			}
 			delete[] a;
-			a = b;
-
 		}
 		a[++top] = number;
 	}
@@ -75,6 +68,10 @@ public:
 	bool is_empty()
 	{
 		return top == -1;
+	}
+	bool is_full()
+	{
+		return top == (_size - 1);
 	}
 	int size()
 	{

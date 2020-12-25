@@ -91,12 +91,3 @@ TEST(TStack, can_get_stack_current_size)
 	a.push(4);
 	EXPECT_EQ(a.size(), 2);
 }
-
-TEST(TStack, can_clear_stack)
-{
-	TStack <int> a;
-	a.push(32);
-	a.push(4);
-	a.clear();
-	EXPECT_EQ(a.is_empty, true);
-}

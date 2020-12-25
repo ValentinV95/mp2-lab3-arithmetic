@@ -1,5 +1,5 @@
 // объ€вление функций и классов дл€ вычислени€ арифметических выражений
-
+#pragma once
 #include "stack.h"
 #include <iostream>
 #include <string>
@@ -19,9 +19,9 @@ private:
 	int check;
 	int amount_of_arg;
 public:
-	Lexeme()
+	Lexeme() noexcept
 	{}
-	Lexeme(double num)
+	Lexeme(double num) noexcept
 	{
 		number = num;
 		check = 1;
