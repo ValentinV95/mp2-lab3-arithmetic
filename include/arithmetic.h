@@ -417,6 +417,7 @@ public:
 				}
 			}
 		}
+		d.clear();
 		return b.pop().get_number();
 	}
 };

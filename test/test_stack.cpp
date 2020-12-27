@@ -38,24 +38,6 @@ TEST(TStack, can_push)
 	EXPECT_EQ(a.size(), 1);
 }
 
-TEST(TStack, can_push_to_full_stack_with_memory_realloc)
-{
-	TStack <int> a(2);
-	a.push(4);
-	a.push(1);
-	ASSERT_NO_THROW(a.push(89));
-	EXPECT_EQ(a.size(), 3);
-}
-
-TEST(TStack, push_to_full_stack_has_right_element_on_top)
-{
-	TStack <int> a(2);
-	a.push(4);
-	a.push(1);
-	a.push(45);
-	EXPECT_EQ(a.front(), 45);
-}
-
 TEST(TStack, pop_from_empty_stack_throw_error)
 {
 	TStack <int> a;
