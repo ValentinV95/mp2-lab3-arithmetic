@@ -118,3 +118,18 @@ TEST(translationToRPE, throws_if_not_correct9)
     std::string s = ":(((";
     ASSERT_ANY_THROW(translationToRPE(s));
 }
+TEST(translationToRPE, throws_if_not_correct10)
+{
+    std::string s = "sin5+1(2+3)";
+    ASSERT_ANY_THROW(translationToRPE(s));
+}
+TEST(translationToRPE, throws_if_not_correct11)
+{
+    std::string s = "sin(*4+5)";
+    ASSERT_ANY_THROW(translationToRPE(s));
+}
+TEST(translationToRPE, throws_if_not_correct12)
+{
+    std::string s = "exp(*)";
+    ASSERT_ANY_THROW(translationToRPE(s));
+}
