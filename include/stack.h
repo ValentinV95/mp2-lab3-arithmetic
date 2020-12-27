@@ -1,9 +1,88 @@
-// объявление и реализация шаблонного стека
-// стек поддерживает операции: 
-// - вставка элемента, 
-// - извлечение элемента, 
-// - просмотр верхнего элемента (без удаления)
-// - проверка на пустоту, 
-// - получение количества элементов в стеке
-// - очистка стека
-// при вставке в полный стек должна перевыделяться память
+#ifndef __STACK_H__
+#define __STACK_H__ 
+
+const int MAX_SIZE_STACK = 100;
+
+template <class ValType>
+class TStack
+{
+    ValType *pMem;
+    int count;
+    int size;
+public:
+    TStack(int len);
+    ~TStack();
+    int GetSize() { return size; }
+    bool IsEmpty();
+    bool IsFull();
+    void Push(ValType val);
+    ValType Pop();
+    ValType Top(); 
+};
+
+template <class ValType>
+TStack<ValType>::TStack(int len)
+{
+    if((len<1) || (len>MAX_SIZE_STACK)) throw (len);
+    size = len;
+    count = 0;
+    pMem=new ValType[size];
+}
+
+template<class ValType>
+TStack<ValType>::~TStack()
+{
+    delete[] pMem;
+}
+
+template <class ValType>
+bool TStack<ValType>::IsEmpty()
+{
+    if (count == -1)
+    {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+template<class ValType>
+bool TStack<ValType>::IsFull()
+{
+    if (count == size-1)
+    {
+        return true;}
+    else
+    {
+        return false;
+    }
+}
+
+template<class ValType>
+void TStack<ValType>::Push(ValType val)
+{
+    if (IsFull()) throw("stack");
+    pMem[count++]=val;
+}
+
+template <class ValType>
+ValType TStack<ValType> ::Pop()
+{
+    if (IsEmpty() == 1)
+    {
+        throw ("Stack");
+    }
+    else
+    {
+        return pMem[(count--) - 1];
+    }
+}
+    template <class ValType>
+    ValType TStack<ValType>::Top()
+    {
+        if(IsEmpty()) throw("Stack");
+            return pMem[(count)-1];
+    }
+
+#endif
