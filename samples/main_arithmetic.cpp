@@ -1,6 +1,11 @@
 // реализация пользовательского приложения
+#include "arithmetic.h"
+#include <iostream>
 
 int main()
 {
-  return 0;
+	std::string s;
+	std::cout << "Enter an expression" << std::endl;
+	std::cin >> s;
+	std::cout << translationToRPE(s) << std::endl;
 }
