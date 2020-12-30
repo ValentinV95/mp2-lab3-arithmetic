@@ -455,3 +455,4 @@ double find_des(Data* datas, int count)
 	}
 	return (stack.pop()).getn();
 }
+#endif _ARITHMETIC_H_
