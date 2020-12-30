@@ -154,7 +154,7 @@ double translationToRPE(std::string s)
 	int i = 0, j = 0;
 	int lBrackets = 0;
 	int rBrackets = 0;
-	Token* tokens = new Token[s.length()];
+	Token* tokens = new Token[s.length()+1];
 	double tmp, x, d;
 
 	struct variable {
@@ -232,6 +232,7 @@ double translationToRPE(std::string s)
 		else if (s[i] == 'x') {
 			if (sX.avail == true)
 				tokens[j++] = sX.val;
+
 			else {
 				std::cout << "input " << s[i] << std::endl;
 				double value;
@@ -241,6 +242,7 @@ double translationToRPE(std::string s)
 				sX.avail = true;
 				tokens[j++] = value;
 			}
+			i++;
 		}
 		else if (s[i] == 'y') {
 			if (sY.avail == true)
@@ -254,6 +256,7 @@ double translationToRPE(std::string s)
 				sY.avail = true;
 				tokens[j++] = value;
 			}
+			i++;
 		}
 		else if (s[i] == 'z') {
 			if (sZ.avail == true)
@@ -267,6 +270,7 @@ double translationToRPE(std::string s)
 				sZ.avail = true;
 				tokens[j++] = value;
 			}
+			i++;
 		}
 		else if (s[i] == 'k') {
 			if (sK.avail == true)
@@ -280,6 +284,7 @@ double translationToRPE(std::string s)
 				sK.avail = true;
 				tokens[j++] = value;
 			}
+			i++;
 		}
 		else if (s[i] == 'n') {
 			if (sN.avail == true)
@@ -293,6 +298,7 @@ double translationToRPE(std::string s)
 				sN.avail = true;
 				tokens[j++] = value;
 			}
+			i++;
 		}
 		else if (s[i] == 't') {
 			if (sT.avail == true)
@@ -306,6 +312,7 @@ double translationToRPE(std::string s)
 				sT.avail = true;
 				tokens[j++] = value;
 			}
+			i++;
 		}
 		else if (s[i] == '+')
 		{
