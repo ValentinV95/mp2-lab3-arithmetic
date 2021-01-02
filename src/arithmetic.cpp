@@ -34,6 +34,11 @@ string TPostfix::ToPostfix()
         }
         if (infix[i] == '+' || infix[i] == '-' || infix[i] == '*' || infix[i] == '/')
         {
+            if (infix[i] == '-' && (i == 0 || i > 0 && (infix[i - 1] < '0' || infix[i - 1] > '9'))) {
+                result[count++] = '-';
+                i++;
+                continue;
+            }
             if (stack.IsEmpty() || stack.Top() == '(') stack.Push(infix[i]);
             else if (Priort(infix[i]) > Priort(stack.Top())) stack.Push(infix[i]);
             else
@@ -47,7 +52,7 @@ string TPostfix::ToPostfix()
     }
     while (stack.IsEmpty() != true)
         result[count++] = stack.Pop();
-    result[count] = '\0';
+    result[--count] = '\0';
     postfix = result;
     return postfix;
 }
@@ -69,7 +74,7 @@ double TPostfix::Calculate()
 
     while(i<len)
     {
-        if (postfix[i] != '+' && postfix[i] != '-' && postfix[i] != '*' && postfix[i] != '/')
+        if (postfix[i] != '+' && postfix[i] != '*' && postfix[i] != '/' && postfix[i] != '-')
         {
             if ((postfix[i] >= 'a' && postfix[i] <= 'z') || (postfix[i] >= 'A' && postfix[i] <= 'Z'))
             {
@@ -94,8 +99,11 @@ double TPostfix::Calculate()
             }
             else
             {
-                int tmp = 0;
-                while (postfix[i] != ' ')
+                bool isNeg = false;;
+                if (i > 0 && (postfix[i - 1] == '-'))
+                    isNeg = true;
+                double tmp = 0;
+                while (postfix[i] != ' ' && postfix[i] != '.')
                 {
                     while (postfix[i] >= 0x30 && postfix[i] <= 0x39)
                     {
@@ -104,8 +112,19 @@ double TPostfix::Calculate()
                         i++;
                     }
                 }
-                tmp = tmp / 10;
-                
+                if (postfix[i] == '.') {
+                    //int exp1 = 1;
+                    i++;
+                    while (postfix[i] >= 0x30 && postfix[i] <= 0x39)
+                    {
+                        tmp = tmp + (postfix[i] & 0x0F);
+                        tmp = tmp / 10;
+                        i++;
+                    }
+                }
+                else
+                    tmp = tmp / 10;
+                tmp *= isNeg ? -1 : 1;
                 stack.Push(tmp);
             }
         }
@@ -119,6 +138,10 @@ double TPostfix::Calculate()
             }
             if (postfix[i] == '-')
             {
+                if (i < postfix.length() - 1 && (postfix[i + 1] >= '0' && postfix[i + 1] <= '9')) {
+                    i++;
+                    continue;
+                }
                 c = stack.Pop();
                 c1 = stack.Pop();
                 stack.Push(c1 - c);
