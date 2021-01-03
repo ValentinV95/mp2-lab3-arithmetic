@@ -5,7 +5,7 @@
 using namespace std;
 TEST(work, test_arifmetic_1)
 {
-   string s = "sin(15/5*(5-2)-9)+0.25*8+(-5)";
+   string s = "-5+10+(-10)+cos((10-10)*5)-16/(4*4)+0.5*10";
     EXPECT_EQ(-2, work(s));
 }
 TEST(work, test_arifmetic_2)
@@ -31,7 +31,7 @@ TEST(work, test_arifmetic_5)
 TEST(work, test_arifmetic_6)
 {
     string s = "cos(ln(1))";
-    EXPECT_EQ(-1, work(s));
+    EXPECT_EQ(1, work(s));
 }
 TEST(work,  test_arifmetic_7)
 {
