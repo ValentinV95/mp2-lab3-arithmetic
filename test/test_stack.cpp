@@ -31,5 +31,5 @@ TEST(TStack, change_size_stack)
     {
         s.push(i);
     }
-    EXPECT_EQ(7, s.pop());
+    EXPECT_EQ(9, s.pop());
 }
