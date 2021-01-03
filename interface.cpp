@@ -1,5 +1,3 @@
-#include "interface.h"
-
 void menu() {
     std::cout << "----------------------------------------------------------------------" << std::endl;
     std::cout << "Enter 'c' for checking expression." << std::endl;
@@ -7,6 +5,7 @@ void menu() {
     std::cout << "Enter 'e' for exit." << std::endl;
 }
 
+//Û·Ë‡ÂÏ ÎË¯ÌËÂ ÒËÏ‚ÓÎ˚
 void clearBuffer() {
     while (true) {
         if (std::cin.peek() == EOF)
@@ -26,7 +25,7 @@ char choose() {
     while (true) {
         std::cout << "Choose option: ";
         std::cin >> c;
-        clearBuffer();
+        clearBuffer();                                        //Û·Ë‡ÂÏ ÎË¯ÌËÂ ÒËÏ‚ÓÎ˚
         std::cout << std::endl;
         switch (c) {
         case 'c':
@@ -46,7 +45,7 @@ char choose2() {
         std::cout << "If you want use new expression type 'n'." << std::endl;
         std::cout << "Choose option: ";
         std::cin >> c;
-        clearBuffer();
+        clearBuffer();                                        //Û·Ë‡ÂÏ ÎË¯ÌËÂ ÒËÏ‚ÓÎ˚
         std::cout << std::endl;
 
         switch (c) {

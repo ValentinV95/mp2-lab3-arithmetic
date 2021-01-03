@@ -1,5 +1,3 @@
-// реализация функций и классов для вычисления арифметических выражений
-
 #include "arithmetic.h"
 
 std::string deleteSpaces(std::string str) {
@@ -9,8 +7,16 @@ std::string deleteSpaces(std::string str) {
     return str;
 }
 
-ssize_t leftCharacter(std::string str, size_t index) {
-    ssize_t i;
+short priority(char operation) {
+    if (operation == '+' || operation == '-')
+        return 1;
+    else if (operation == '*' || operation == '/')
+        return 2;
+    return 0;
+}
+
+Ssize_t leftCharacter(std::string str, size_t index) {
+    Ssize_t i;
     for (i = index - 1; i >= 0 && str[i] == ' '; i--);
     return i;
 }
@@ -36,7 +42,7 @@ bool isSymbolsCorrect(std::string str) {
     return true;
 }
 
-void printPointer(std::string str, size_t index) {
+void printPointer(std::string str, size_t index) { //печать места ошибки
     index--;
     size_t n = str.size();
 
@@ -49,14 +55,6 @@ void printPointer(std::string str, size_t index) {
     for (i++; i < n; i++)
         std::cout << ' ';
     std::cout << std::endl;
-}
-
-short arithmetic::priority(char operation) {
-    if (operation == '+' || operation == '-')
-        return 1;
-    else if (operation == '*' || operation == '/')
-        return 2;
-    return 0;
 }
 
 void arithmetic::transform(std::string str) {
@@ -152,8 +150,8 @@ bool arithmetic::isCorrect(std::string str) {
             }
             stack.pop();
         }
-        else if (str[i] == '.' || str[i] >= '0' && str[i] <= '9') {
-            ssize_t ind = leftCharacter(str, i);
+        else if (str[i] == '.' || str[i] >= '0' && str[i] <= '9') { //начало числа
+            Ssize_t ind = leftCharacter(str, i);
             if (ind != -1)
                 if (str[ind] == ')') {
                     std::cout << "Missed operator in position " << ind + 2 << "." << std::endl;
@@ -166,7 +164,8 @@ bool arithmetic::isCorrect(std::string str) {
                     return false;
                 }
             if (str[i] >= '0' && str[i] <= '9')
-                for (i += 1; i < n && str[i] >= '0' && str[i] <= '9'; i++);
+                for (i += 1; i < n && str[i] >= '0' && str[i] <= '9'; i++); //нужно перебрать число до точки или пробела
+
             if (i != n && str[i] == '.') {
                 size_t ind2 = rightCharacter(str, i);
                 if (ind2 != n && str[ind2] == '.') {
@@ -174,20 +173,21 @@ bool arithmetic::isCorrect(std::string str) {
                     printPointer(str, ind2 + 1);
                     return false;
                 }
-                i++;
-                for (; i < n && str[i] >= '0' && str[i] <= '9'; i++);
+                i++;   //уходим от точки
+                for (; i < n && str[i] >= '0' && str[i] <= '9'; i++); //нужно перебрать число после точки
             }
-            size_t ind2 = (i == n ? n : rightCharacter(str, i - 1));
+            size_t ind2 = (i == n ? n : rightCharacter(str, i - 1)); //берём последнюю цифру/точку и убираем пробелы от неё вправо
+
             if (ind2 != n && str[ind2] == '(') {
-                std::cout << "Missed operator in position " << i + 1 << "." << std::endl;
+                std::cout << "Missed operator in position " << i + 1 << "." << std::endl;  //лишний элемент проверится выше (проверка влево)
                 printPointer(str, i + 1);
                 return false;
             }
             else
-                i--;
+                i--;        //необрабатываемый символ, возвращаем курсор на него
         }
         else if (str[i] == '+' || str[i] == '*' || str[i] == '/' || str[i] == '-') {
-            ssize_t ind = leftCharacter(str, i);
+            Ssize_t ind = leftCharacter(str, i);
 
             if (ind == -1)
                 if (str[i] == '-')
@@ -198,9 +198,9 @@ bool arithmetic::isCorrect(std::string str) {
                     return false;
                 }
 
-            if (!(str[ind] == '.' || str[ind] >= '0' && str[ind] <= '9' ||
-                str[ind] == ')' ||
-                (str[i] == '-' && str[ind] == '('))) {
+            if (!(str[ind] == '.' || str[ind] >= '0' && str[ind] <= '9' || //если до знака стоит точка или цифра
+                str[ind] == ')' ||                                            //или если скобка до знака закрывающая
+                (str[i] == '-' && str[ind] == '('))) {                        //или если знак - минус и до него стоит открывающая скобка
                 std::cout << "Missed operand in position " << i + 2 << "." << std::endl;
                 printPointer(str, i + 2);
                 return false;
