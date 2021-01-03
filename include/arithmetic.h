@@ -1,6 +1,7 @@
 // объ€вление функций и классов дл€ вычислени€ арифметических выражений
 #pragma once
 #include <string>
+#include <cmath>
 #include "Stack.h"
 using namespace std;
 
@@ -22,6 +23,11 @@ class Arithmetic
 		case  '*': return 3;
 		case  '/': return 3;
 		case  '^': return 4;
+		case  'un-': return 4;
+		case  'sin': return 4;
+		case  'cos': return 4;
+		case  'ln': return 4;
+		case  'exp': return 4;
 		}
 	}
 public:
@@ -127,7 +133,7 @@ public:
 		st_c.Clear();
 		while (i < scr.size())
 		{
-			if (scr[i] == '+' || scr[i] == '-' || scr[i] == '*' || scr[i] == '/' || scr[i] == '^')
+			if (scr[i] == '+' || scr[i] == '-' || scr[i] == '*' || scr[i] == '/' || scr[i] == '^' || scr[i] == 'un-' || scr[i] == 'sin' || scr[i] == 'cos' || scr[i] == 'ln' || scr[i] == 'exp')
 			{
 				postfix += " ";
 				elem = st_c.Pop();
@@ -166,6 +172,9 @@ public:
 			throw 0;
 		}
 	}
+
+
+
 	double  Arithmetic::CalcPostfix()
 	{
 		if (!CheckBrackets())
@@ -207,6 +216,16 @@ public:
 						res = op1 / op2; break;
 					case '^':
 						res = pow(op1, op2); break;
+					case'un-':
+						res = -1*op2; break;
+					case'sin':
+						res = sin(op2); break;
+					case'cos':
+						res = cos(op2); break;
+					case'ln':
+						res = log(op2); break;
+					case'exp':
+						res = exp(op2); break;
 					default: if (formula[i] != ' ')
 						st_d.Push(formula[i] - '0');
 						break;
@@ -225,7 +244,5 @@ public:
 			res = st_d.Pop();
 			return res;
 		}
-
-
 	}
 };
