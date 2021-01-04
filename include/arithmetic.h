@@ -70,7 +70,7 @@ public:
 			}
 			else
 			{
-				return !a[i + 1].is_cl_br();
+				return a[i + 1].is_op_br() || a[i + 1].is_number() || a[i + 1].is_unary();
 			}
 		}
 
@@ -136,7 +136,10 @@ public:
 				{
 					if (s[i] == '.' && dot)
 					{
-						throw "1";
+						string err;
+						err = "Number has two or more dots in it";
+						d.clear();
+						throw err;
 					}
 					if (s[i] == '.')
 					{
@@ -243,7 +246,10 @@ public:
 						{
 							if (s[i] == '.' && dot)
 							{
-								throw "1";
+								string err;
+								err = "Number has two or more dots in it";
+								d.clear();
+								throw err;
 							}
 							if (s[i] == '.')
 							{
@@ -259,7 +265,10 @@ public:
 					}
 					else
 					{
-						throw "1";
+						string err;
+						err = "Wrong operation order after minus (no number or bracket)";
+						d.clear();
+						throw err;
 					}
 				}
 				else
@@ -272,7 +281,10 @@ public:
 			}
 			else
 			{
-				throw "Incorrect symbol";
+				string err;
+				err = "Incorrect symbol";
+				d.clear();
+				throw err;
 			}
 		}
 	}
@@ -292,17 +304,56 @@ public:
 		}
 		if (count != 0)
 		{
-			throw "Wrong amount of brackets";
+			string err;
+			err = "Wrong amount of brackets";
+			d.clear();
+			throw err;
 		}
-		if (d[0].is_op() && !d[0].is_op_br())
+		if (d[0].is_op() && !d[0].is_op_br() && !d[0].is_unary())
 		{
-			throw "Expression can not start with operations such as '+','*','/',')'";
+			string err;
+			err = "Expression can not start with operations such as '+','*','/',')'";
+			d.clear();
+			throw err;
+		}
+		if (d.back().is_op())
+		{
+			if (!d.back().is_cl_br())
+			{
+				string err;
+				err = "Binary operation in the end of the expression";
+				d.clear();
+				throw err;
+			}
 		}
 		for (int i = 0; i < d.size() - 1; i++)
 		{
 			if (!d[i].can_go_next(d, i))
 			{
-				throw "Wrong syntax";
+				string err = "";
+				if (d[i].is_number())
+				{
+					err += d[i].get_number();
+					err += " can't go before ";
+					err += d[i + 1].get_oper();
+					d.clear();
+					throw err;
+				}
+				else if (d[i].is_op())
+				{
+					err += d[i].get_oper();
+					err += " can't go before ";
+					if (d[i + 1].is_number())
+					{
+						err += d[i + 1].get_number();
+					}
+					else if (d[i + 1].is_op())
+					{
+						err += d[i + 1].get_oper();
+					}
+					d.clear();
+					throw err;
+				}
 			}
 		}
 
@@ -329,7 +380,8 @@ public:
 					}
 					b.pop();
 				}
-				if (b.is_empty() || b.front().get_prior() < d[i].get_prior())
+			gh:
+				if (b.is_empty() || b.front().get_prior() < d[i].get_prior() || d[i].is_unary())
 				{
 					if (!d[i].is_cl_br())
 					{
@@ -342,6 +394,7 @@ public:
 					{
 						input.push_back(b.pop());
 					}
+					goto gh;
 				}
 			}
 		}
@@ -403,9 +456,12 @@ public:
 				}
 				case '/':
 				{
-					if (a.get_number() == 0.0) // compare with eps. probably??
+					if (a.get_number() == 0.0)
 					{
-						throw "Division by zero";
+						string err;
+						err = "Division by zero";
+						d.clear();
+						throw err;
 					}
 					else
 					{
