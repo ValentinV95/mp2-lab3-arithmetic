@@ -12,22 +12,22 @@ class Arithmetic
 	Stack <double> st_d;
 	string infix;
 	string postfix;
-	int Arithmetic::Priority(char elem)
+	int Arithmetic::Priority(char ñ)
 	{
-		switch (elem)
+		switch (ñ)
 		{
-		case  '(': return 0;
-		case  ')': return 1;
-		case  '+': return 2;
-		case  '-': return 2;
-		case  '*': return 3;
-		case  '/': return 3;
-		case  '^': return 4;
-		case  'un-': return 4;
-		case  'sin': return 4;
-		case  'cos': return 4;
-		case  'ln': return 4;
-		case  'exp': return 4;
+		case'+': return 2;
+		case'-': return 2;
+		case'*': return 3;
+		case'/': return 3;
+		case'(':return 1;
+		case')':return 1;
+		case'^':return 4;
+		case'sin':return 1;
+		case'cos':return 1;
+		case'log':return 1;
+		case'e':return 1;
+		default: return 0;
 		}
 	}
 public:
@@ -50,16 +50,9 @@ public:
 		st_d.Clear();
 		for (int i = 0; i < infix.size(); i++)
 		{
-			if (infix[i] == '(')
+			if (infix[i] == '(' || infix[i] == 'sin' || infix[i] == 'cos' || infix[i] == 'e' || infix[i] == 'log')
 			{
-				if (st_c.Full())
-				{
-					return false;
-				}
-				else
-				{
-					st_c.Push('(');
-				}
+				st_c.Push(infix[i]);
 			}
 			if (infix[i] == ')')
 			{
@@ -67,10 +60,7 @@ public:
 				{
 					return false;
 				}
-				else
-				{
-					st_c.Pop();
-				}
+				st_c.Pop();
 			}
 		}
 		return st_c.Empty();
@@ -78,22 +68,35 @@ public:
 
 	void Arithmetic::SetFormula(string str)
 	{
-		infix = "";
+		infix = " ";
 		for (unsigned int i = 0; i < str.size(); i++)
 		{
-			if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/' || str[i] == '^')
+			if (str[i] == 'sin' || str[i] == 'cos' || str[i] == 'e' || str[i] == 'log')
 			{
 				infix += " ";
+				infix += str[i];
+				i += 3;
+				if (i >= str.size() - 2)
+					throw 0;
 			}
-			infix += str[i];
+			else
+			{
+				if (Priority(str[i]) != 0)
+				{
+					infix += " ";
+				}
+				infix += str[i];
+			}
+
 		}
+		infix += ' ';
 		if (CheckBrackets() != true)
 		{
 			throw 0;
 		}
-		Stack<char> s(infix.size());
+		Stack<char> c(infix.size());
 		Stack<double> d(infix.size());
-		st_c = s;
+		st_c = c;
 		st_d = d;
 	}
 
@@ -107,65 +110,55 @@ public:
 		return postfix;
 	}
 
-
-	void Arithmetic::SetExpression(string expr)
-	{
-		infix = expr;
-		if (CheckBrackets())
-		{
-			ToPostfix();
-		}
-	}
-
-
 	void  Arithmetic::ToPostfix()
 	{
-		if (!CheckBrackets())
-		{
-			throw "Wrong number of brackets";
-		}
 		st_c.Clear();
 		st_d.Clear();
-		postfix = " ";
-		string scr = "( " + infix + " )";
-		char elem = ' ! ';
-		unsigned int i = 0;
-		st_c.Clear();
-		while (i < scr.size())
+		postfix = "";
+		std::string tmp = "(" + infix + ")";
+		for (unsigned int i = 0; i < tmp.size(); i++)
 		{
-			if (scr[i] == '+' || scr[i] == '-' || scr[i] == '*' || scr[i] == '/' || scr[i] == '^' || scr[i] == 'un-' || scr[i] == 'sin' || scr[i] == 'cos' || scr[i] == 'ln' || scr[i] == 'exp')
+			if (Priority(tmp[i]) == 0)
 			{
-				postfix += " ";
-				elem = st_c.Pop();
-				while (Priority(elem) >= Priority(scr[i]))
-				{
-					postfix += elem;
-					elem = st_c.Pop();
-				}
-				st_c.Push(elem);
-				st_c.Push(scr[i]);
+				postfix += tmp[i];
 			}
 			else
-				if (scr[i] == '(')
+			{
+				if (tmp[i] == '(' || tmp[i] == 'sin' || tmp[i] == 'cos' || tmp[i] == 'log' || tmp[i] == 'e')
 				{
-					st_c.Push(scr[i]);
+					st_c.Push(tmp[i]);
 				}
 				else
-					if (scr[i] == ')')
+				{
+					if (tmp[i] == ')')
 					{
-						elem = st_c.Pop();
-						while (elem != '(')
+						while (st_c.Top() != '(' && st_c.Top() != 'sin' && st_c.Top() != 'cos' && st_c.Top() != 'log' && st_c.Top() != 'e')
 						{
-							postfix += elem;
-							elem = st_c.Pop();
+							char a = st_c.Pop();
+							postfix += ' ';
+							postfix += a;
+						}
+						if (st_c.Top() == '(')
+							st_c.Pop();
+						else
+						{
+							char a = st_c.Pop();
+							postfix += ' ';
+							postfix += a;
 						}
 					}
 					else
-						if (scr[i] >= '0' && scr[i] <= '9')
+					{
+						while (Priority(st_c.Top()) >= Priority(tmp[i]))
 						{
-							postfix += scr[i];
+							char a = st_c.Pop();
+							postfix += ' ';
+							postfix += a;
 						}
-			i++;
+						st_c.Push(tmp[i]);
+					}
+				}
+			}
 		}
 		if (!st_c.Empty())
 		{
@@ -175,74 +168,83 @@ public:
 
 
 
-	double  Arithmetic::CalcPostfix()
+	double res()
 	{
-		if (!CheckBrackets())
-		{
-			throw "Wrong number of brackets";
-		}
+		ToPostfix();
+		st_c.Clear();
 		st_d.Clear();
-		char* tmp;
-		unsigned int i = 0;
-		double res = 0;
-		while (i < postfix.size())
+		for (int i = 0; i < postfix.size(); i++)
 		{
-			if (postfix[i] >= '0' && postfix[i] <= '9')
+			double a, b;
+			switch (postfix[i])
 			{
-				double d = strtod(&postfix[i], &tmp);
-				int j = tmp - &postfix[i];
-				i += j - 1;
-				st_d.Push(d);
-			}
-			if (postfix[i] == '+' || postfix[i] == '-' || postfix[i] == '*' || postfix[i] == '/' || postfix[i] == '^')
-			{
-				if (st_d.Empty())
+			case'+': a = st_d.Pop(); b = st_d.Pop();
+				st_d.Push(a + b);
+				break;
+			case'-': a = st_d.Pop(); b = st_d.Pop();
+				st_d.Push(b - a);
+				break;
+			case'*': a = st_d.Pop(); b = st_d.Pop();
+				st_d.Push(b * a);
+				break;
+			case'/': a = st_d.Pop(); b = st_d.Pop();
+				st_d.Push(b / a);
+				break;
+			case'^': a = st_d.Pop(); b = st_d.Pop();
+				st_d.Push(pow(b, a));
+				break;
+			case'sin': a = st_d.Pop(); st_d.Push(sin(a));
+				break;
+			case'cos': a = st_d.Pop(); st_d.Push(cos(a));
+				break;
+			case'e': a = st_d.Pop(); st_d.Push(exp(a));
+				break;
+			case'log': a = st_d.Pop(); st_d.Push(log(a));
+				break;
+			default:
+				if (postfix[i] != ' ')
 				{
-					throw "Wrong";
-				}
-				else
-				{
-					double op1, op2;
-					op2 = st_d.Pop();
-					op1 = st_d.Pop();
-					switch (postfix[i]) {
-					case '+':
-						res = op1 + op2; break;
-					case '-':
-						res = op1 - op2; break;
-					case '*':
-						res = op1 * op2; break;
-					case '/':
-						res = op1 / op2; break;
-					case '^':
-						res = pow(op1, op2); break;
-					case'un-':
-						res = -1*op2; break;
-					case'sin':
-						res = sin(op2); break;
-					case'cos':
-						res = cos(op2); break;
-					case'ln':
-						res = log(op2); break;
-					case'exp':
-						res = exp(op2); break;
-					default: if (formula[i] != ' ')
-						st_d.Push(formula[i] - '0');
-						break;
+					unsigned int k = i, point = 0, flag = 0;;
+					while (postfix[k] != ' ' && k != postfix.size())
+					{
+						if (postfix[k] == '.')
+						{
+							point = k;
+							flag = 1;
+						}
+						k++;
 					}
-					st_d.Push(res);
+					unsigned int delta = k - i - flag;
+					if (flag == 1)
+					{
+						point = k - point - flag;
+					}
+					k = i;
+					double z = 0;
+					while (postfix[k] != ' ' && k != postfix.size())
+					{
+						if (postfix[k] != '.')
+						{
+							delta--;
+							z += (postfix[k] - '0') * pow(10, delta);
+						}
+						k++;
+					}
+					if (flag == 1)
+					{
+						z /= pow(10, point);
+					}
+					st_d.Push(z);
+					i = k;
 				}
+				break;
 			}
-			i++;
 		}
-		if (st_d.Empty())
+		if (st_d.Size() != 1)
 		{
-			throw "Wrong";
+			throw 0;
 		}
-		else
-		{
-			res = st_d.Pop();
-			return res;
-		}
+		return st_d.Pop();
 	}
 };
+

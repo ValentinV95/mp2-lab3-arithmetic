@@ -18,7 +18,7 @@ int main()
 	{
 		cout << "Ishodnoe vyrazenie: " << calc.GetInfix() << endl;
 		calc.ToPostfix();
-		cout << "Rezult: " << calc.CalcPostfix() << endl;
+		cout << "Rezult: " << calc.res() << endl;
 	}
 	catch (const char* n) { std::cout << n << std::endl; }
 
