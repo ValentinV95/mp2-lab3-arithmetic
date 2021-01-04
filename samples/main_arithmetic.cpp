@@ -1,4 +1,5 @@
 // реализация пользовательского приложения
+#include "arithmetic.h"
  using namespace std;
 
 int main()
