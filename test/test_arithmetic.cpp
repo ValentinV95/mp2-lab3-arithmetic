@@ -6,7 +6,7 @@ using namespace std;
 TEST(work, test_arifmetic_1)
 {
    string s = "-5+10+(-10)+cos((10-10)*5)-16/(4*4)+0.5*10";
-    EXPECT_EQ(-2, work(s));
+    EXPECT_EQ(0, work(s));
 }
 TEST(work, test_arifmetic_2)
 {
