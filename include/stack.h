@@ -10,51 +10,47 @@
 
 #pragma once
 #include <iostream>
-#include <cstdlib>
 
 template <class T>
-class TStack
+class Stack
 {
 private:
 
-	int size; 
-	int head; 
-	int count; 
-	T* data;
+	T* stack;
+	int end; //top elem
+	int size; //stack size
 
 public:
 
-	TStack(int size = 10) 
-	{
-		if (size <= 0)
+	Stack(int n) {
+		if (n <= 0)
 		{
-			throw "negative or zero size";
+			throw "Wrong length";
 		}
-		else
-		{
-			data = new T[size];
-			this->size = size;
-			count = 0;
-			head = -1;
+		else {
+			stack = new T[n];
+			size = n;
+			end = -1;
 		}
 	}
 
-	~TStack() 
-	{
-		delete[] data;
+	~Stack() {
+		delete[] stack;
+		stack = 0;
+		end = -1;
 	}
 
-	bool IsEmpty() 
-	{
-		if (head == -1)
+	bool IsEmpty() {
+		if (end == -1) {
 			return true;
+		}
 		else
 			return false;
 	}
 
 	bool IsFull() 
 	{
-		if (head == (size - 1))
+		if (end == (size - 1))
 			return true;
 		else
 			return false;
@@ -62,37 +58,43 @@ public:
 
 	void Push(T& Elem) 
 	{
-		if (IsFull())
-		{
-			data = (T*)realloc(data, (size + 1) * sizeof(T));
+		if (end + 1 < size) {
+			end++;
+			stack[end] = Elem;
 		}
-		data[++head] = Elem;
-		count++;
+		else {
+			T* temp;
+			temp = new T[2 * size];
+			for (int i = 0; i < size; i++)
+				temp[i] = stack[i];
+			delete[] stack;
+			stack = temp;
+			size = 2 * size;
+		}
 	}
 
 	T Pop() 
 	{
-		if (IsEmpty())
+		if ((*this).IsEmpty() == true) 
 		{
-			throw "Can't pop out of empty stack";
+			throw "Stack is empty";
 		}
-		else
-		{
-			T result = data[head--];
-			count--;
-			return result;
+		else {
+			int temp = end;
+			end--;
+			return stack[temp];
 		}
 	}
 
 	T GetHeadElement() 
 	{
-		if (IsEmpty())
+		if ((*this).IsEmpty() == true)
 		{
-			throw "stack is empty";
+			throw "Stack is empty";
 		}
 		else
 		{
-			return data[head];
+			return stack[end];
 		}
 	}
 
@@ -103,8 +105,9 @@ public:
 
 	void Clear() 
 	{
-		head = -1;
-		delete[] data;
-		data = new T[size];
+		end = -1;
+		size = 0;
+		delete[] stack;
+		stack = NULL;
 	}
 };
