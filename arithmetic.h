@@ -1,9 +1,7 @@
 // объ€вление функций и классов дл€ вычислени€ арифметических выражений
 #include < string>
-#include< iostream>
 #include"stack.h"
 using namespace std;
-
 class Split
 {
 private:
@@ -23,14 +21,10 @@ public:
 	string GetLex()
 	{
 		string Lex = "";
-		if (s[index] >= '0' && s[index] <= '9' || s[index]=='.' || 
-			s[index] >= 'a' && s[index] <= 'z' ||
-			s[index]=='-' &&(index==0 || s[index-1]>'9' || s[index-1]<'0'))// это число
+		if (s[index] >= '0' && s[index] <= '9' || s[index]=='.')// это число
 		{
 			int i = index;
-			while (s[i] >= '0' && s[i] <= '9' || s[i] == '.'|| 
-				   s[i] >= 'a' && s[i] <= 'z' ||
-				   s[i]=='-'&&(i == 0 || s[i - 1] > '9' || s[i - 1] < '0'))
+			while (s[i] >= '0' && s[i] <= '9' || s[i] == '.')
 				i++;
 			Lex = s.substr(index, i - index);
 			index = i;
@@ -38,8 +32,6 @@ public:
 		else if (index < s.length())
 		{
 			Lex = string(1, s[index]);
-
-
 			index++;
 		}
 		return Lex;
@@ -47,14 +39,10 @@ public:
 	string GetLex(char k)
 	{
 		string Lex = "";
-		if (s[index] >= '0' && s[index] <= '9' || s[index] == '.' ||
-			s[index] >= 'a' && s[index] <= 'z' ||
-			s[index] == '-' && (index == 0 || s[index - 1] > '9'|| s[index - 1] < '0'))// это число
+		if (s[index] >= '0' && s[index] <= '9' || s[index] == '.')// это число
 		{
 			int i = index;
-			while (s[i] >= '0' && s[i] <= '9' || s[i] == '.'|| 
-				   s[i] >= 'a' && s[i] <= 'z' ||
-				   s[i] == '-' && (i == 0 || s[i - 1] > '9' || s[i - 1] < '0'))
+			while (s[i] >= '0' && s[i] <= '9' || s[i] == '.')
 				i++;
 			Lex = s.substr(index, i - index);
 			index = i;
@@ -74,14 +62,13 @@ public:
 	{
 		return index;
 	}
-};
 
+};
 class arithmetic 
 {
 	string input;
 	string output; 
 	double result;
-
 public:
 	arithmetic(string s)
 	{
@@ -99,8 +86,7 @@ public:
 		string lexsema = str.GetLex();
 		while (lexsema != "")
 		{
-			if (lexsema[0] >= '0' && lexsema[0] <= '9'|| lexsema[0]=='-' && lexsema.length() > 1 
-				|| lexsema[0]>='a'&& lexsema[0]<='z')// лежит число
+			if (lexsema[0] >= '0' && lexsema[0] <= '9')// лежит число
 			{
 				output += lexsema;
 				output += " ";
@@ -119,7 +105,6 @@ public:
 					{
 						std::cout << " not correct operation";
 						std::cout << " position " << str.Getposition() << endl;
-						throw "not correct operation";
 						return "";
 					}
 					st.Put(lexsema[0]);
@@ -135,8 +120,8 @@ public:
 						{
 							std::cout << " not found ( ";
 							std::cout << " position " << str.Getposition() << endl;
-							throw "( not found";
 							return "";
+
 						}
 
 						while (c != '(')
@@ -149,8 +134,8 @@ public:
 							{
 								std::cout << " not found ( ";
 								std::cout << " position " << str.Getposition() << endl;
-								throw "( not found";
 								return "";
+
 							}
 
 						}
@@ -164,7 +149,6 @@ public:
 						{
 							std::cout << " not correct operation";
 							std::cout << " position " << str.Getposition() << endl;
-							throw "not correct operation";
 							return"";
 						}
 
@@ -183,6 +167,7 @@ public:
 						}
 					}
 				}
+
 			}
 			lexsema = str.GetLex();
 		}
@@ -193,18 +178,17 @@ public:
 			if (c == '(')
 			{
 				std::cout << " found ( with out )" << endl;
-				throw ") not found";
 				return "";
 			}
 			output += c;
 			output += " ";
 		}
+
 		return output;
 	}
-
 	double calculat()
 	{
-		result = 0;
+		 result = 0;
 		TStack<double>  st;
 		Split str(output);
 
@@ -212,24 +196,16 @@ public:
 
 		while (lexsema != "")
 		{
-			int k = lexsema.length();
-			if (lexsema[0] >= '0' && lexsema[0] <= '9'|| lexsema[0]=='-'&& lexsema.length()>1
-				|| lexsema[0] >= 'a' && lexsema[0] <= 'z')
-			{ 
-				double r;
-				if (lexsema[0] >= 'a' && lexsema[0] <= 'z')
-				{
-					cout << lexsema << " = ";
-					cin >> r;
-				}
-				else
-				{
-					r = atof(lexsema.c_str());
-				}
+			if (lexsema[0] >= '0' && lexsema[0] <= '9')
+			{
+				double r = atof(lexsema.c_str());
 				st.Put(r);
 			}
+
 			else
 			{
+
+
 				double a = st.Get();
 				double b = st.Get();
 
@@ -243,12 +219,10 @@ public:
 		result = st.Get();
 		return result;
 	}
-
 	double GetResult()
 	{
 		return result;
 	}
-
 	double oper(double a, double b, char code)
 	{
 		switch (code)
@@ -263,7 +237,6 @@ public:
 			if (a == 0)
 			{
 				std::cout << " not devision 0" << endl;
-				throw "devision by 0";
 				return 0;
 			}
 
@@ -272,7 +245,6 @@ public:
 			return 0;
 		}
 	}
-
 	int Prioritet(char op)
 	{
 		switch (op)
@@ -289,8 +261,8 @@ public:
 			return 3;
 
 		default:
-			throw "unknown operation";
 			return -1;
 		}
 	}
+
 };

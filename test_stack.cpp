@@ -2,7 +2,6 @@
 
 #include "stack.h"
 #include <gtest.h>
-
 TEST(TStack, can_create_stack_with_positive_length)
 {
     ASSERT_NO_THROW(TStack<int> st(1));
@@ -123,7 +122,8 @@ TEST(TStack, can_pop_from_stack_with_size2__with_1th_el_without_2th_el)
 {
     TStack<int> st(2);
 
-    st.Put(5);
+    int a = 5;
+    st.Put(a);
 
     ASSERT_NO_THROW(st.Get());
 }
@@ -133,7 +133,8 @@ TEST(TStack, compare_pop_from_stack_with_size2__with_1th_el_without_2th_el)
 {
     TStack<int> st(2);
 
-    st.Put(5);
+    int a = 5;
+    st.Put(a);
 
     EXPECT_EQ(st.Get(), 5);
 }
@@ -143,8 +144,10 @@ TEST(TStack, can_pop_from_stack_with_size2__with_1th_el_with_2th_el)
 {
     TStack<int> st(2);
 
-    st.Put(5);
-    st.Put(6);
+    int a = 5;
+    int b = 6;
+    st.Put(a);
+    st.Put(b);
 
     ASSERT_NO_THROW(st.Get());
 }
@@ -313,7 +316,7 @@ TEST(TStack, can_push_to_stack_size1_empty)
 }
 
 //30
-TEST(TStack, check_size_when_push_to_stack_size2_full)
+TEST(TStack, check_size_when_push_to_stack_size1_full)
 {
     TStack<int> st(2);
 
@@ -342,16 +345,15 @@ TEST(TStack, can_push_to_stack_size2_with_1th_el_without_2th)
 }
 
 //33
-TEST(TStack, cannot_push_to_stack_size2_with_1th_el_with_2th)
+TEST(TStack, can_push_to_stack_size2_with_1th_el_with_2th)
 {
     TStack<int> st(2);
 
     st.Put(1);
     st.Put(2);
 
-    ASSERT_ANY_THROW(st.Put(3));
+    ASSERT_NO_THROW(st.Put(3));
 }
-
 //34
 TEST(TStack, can_clear_empty_stack_with_size1)
 {

@@ -3,7 +3,7 @@
 #include <gtest.h>
 #include "arithmetic.h"
 
-TEST(Split, can_create_positive_number)
+TEST( Split, can_create_positive_number)
 {
 	string a = "1.0";
 
@@ -139,7 +139,7 @@ TEST(Split, can_create_alternating)
 	ASSERT_NO_THROW(Split("xyz"));
 }
 
-TEST(Split, compare_type_Lexem_when_create_alternating)
+TEST(Term, compare_type_Lexem_when_create_alternating)
 {
 	Split alternating("xyz");
 
@@ -169,12 +169,20 @@ TEST(arithmetic, throw_when_transle_str_to_term_when_str_had_close_bracket_and_a
 	ASSERT_ANY_THROW(a.Process());
 }
 
+
+
+
+
 TEST(arithmetic, can_translate_str_without_spaces_to_term)
 {
 	arithmetic a("5+3");
 
 	ASSERT_NO_THROW(a.Process());
 }
+
+
+
+
 
 TEST(arithmetic, throw_when_str_has_not_allowing_symbols_on_translating_to_term)
 {
@@ -183,26 +191,41 @@ TEST(arithmetic, throw_when_str_has_not_allowing_symbols_on_translating_to_term)
 	ASSERT_ANY_THROW(a.Process());
 }
 
+
+
+
+
 TEST(arithmetic, throw_when_calculate_polishNote_with_only_space)
 {
 	arithmetic a(" ");
 
-	ASSERT_ANY_THROW(a.Process());
-	//ASSERT_ANY_THROW(a.calculat());
+	a.Process();
+	
+
+	ASSERT_ANY_THROW(a.calculat());
 }
 
 TEST(arithmetic, can_calculate_polishNote_without_spaces)
 {
 	arithmetic a("5+3");
+
 	a.Process();
+	
+
 	ASSERT_NO_THROW(a.calculat());
 }
+
+
 
 TEST(arithmetic, compare_calculate_polishNote_without_spaces)
 {
 	arithmetic a("5+3");
+	
+
 	a.Process();
+	
 	a.calculat();
+
 	EXPECT_EQ(a.GetResult(), 8);
 }
 
