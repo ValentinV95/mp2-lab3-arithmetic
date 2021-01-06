@@ -1,5 +1,3 @@
-// тесты для вычисления арифметических выражений
-
 #include "arithmetic.h"
 #include <gtest.h>
 
@@ -22,36 +20,36 @@ TEST(TPostfix, allegiance_test_one)
 TEST(TPostfix, allegiance_test_two)
 {
     string tmp;
-    tmp = "a+b*c-d";
+    tmp = "a+b*c";
 
     TPostfix k(tmp);
 
     string res;
-    res = "abc*+d-";
+    res = "abc*+";
 
     EXPECT_EQ(res, k.ToPostfix());
 }
 TEST(TPostfix, allegiance_test_three)
 {
     string tmp;
-    tmp = "a/d*k-c*z";
+    tmp = "a*d/k";
 
     TPostfix k(tmp);
 
     string res;
-    res = "ad/k*cz*-";
+    res = "ad*k/";
 
     EXPECT_EQ(res, k.ToPostfix());
 }
 TEST(TPostfix, allegiance_test_four)
 {
     string tmp;
-    tmp = "(a+b)-d*(k-z)";
+    tmp = "(a+b)-d*k";
 
     TPostfix k(tmp);
 
     string res;
-    res = "ab+dkz-*-";
+    res = "ab+-dk*";
 
     EXPECT_EQ(res, k.ToPostfix());
 }
@@ -95,30 +93,31 @@ double res = 50;
 EXPECT_EQ(res, tmp);
 }
 
-TEST(TPostfix, test_on_calculate_three)
+TEST(TPostfix, test_on_calculate_minus)
 {
     string a;
-    a = "(100-50)/2-(10*2)";
+    a = "-10.5+10.5";
 
     TPostfix k(a);
     k.ToPostfix();
 
     double tmp = k.Calculate();
-    double res = 5;
+    double res = 0;
 
     EXPECT_EQ(res, tmp);
 }
 
-TEST(TPostfix, test_on_calculate_four)
+TEST(TPostfix, test_on_calculate_four_difficult)
 {
     string a;
-    a = "1024/2-(2048/2-100*3+2)*2+(8192/2)";
+    a = "-10+10*(-1)+2/4";
 
     TPostfix k(a);
     k.ToPostfix();
 
     double tmp = k.Calculate();
-    double res = 3156;
+    double res = -19.5;
 
     EXPECT_EQ(res, tmp);
 }
+

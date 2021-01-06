@@ -9,6 +9,7 @@ class TStack
     ValType *pMem;
     int count;
     int size;
+    int head;
 public:
     TStack(int len);
     ~TStack();
@@ -16,8 +17,10 @@ public:
     bool IsEmpty();
     bool IsFull();
     void Push(ValType val);
+    void Clear();
     ValType Pop();
-    ValType Top(); 
+    ValType Top();
+    
 };
 
 template <class ValType>
@@ -52,7 +55,8 @@ bool TStack<ValType>::IsFull()
 {
     if (count == size-1)
     {
-        return true;}
+        return true;
+    }
     else
     {
         return false;
@@ -64,6 +68,14 @@ void TStack<ValType>::Push(ValType val)
 {
     if (IsFull()) throw("stack");
     pMem[count++]=val;
+}
+
+template<class ValType>
+void TStack<ValType>::Clear()
+{
+    head = -1;
+    delete[] pMem;
+    pMem = new TStack(size);
 }
 
 template <class ValType>
@@ -84,5 +96,7 @@ ValType TStack<ValType> ::Pop()
         if(IsEmpty()) throw("Stack");
             return pMem[(count)-1];
     }
+    
+
 
 #endif

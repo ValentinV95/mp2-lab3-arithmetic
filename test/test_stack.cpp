@@ -1,6 +1,3 @@
-// тесты для стека
-
-
 #include "stack.h"
 #include <gtest.h>
 
@@ -28,31 +25,6 @@ TEST(TStack, can_set_and_get_element)
     EXPECT_EQ(s.Pop(), 2);
 }
 
-TEST(TStack, check_on_empty_stack)
-{
-    TStack<int> s(4);
-
-    EXPECT_EQ(true, s.IsEmpty());
-}
-
-TEST(TStack, check_on_full_stack)
-{
-    TStack<int> s(5);
-
-    for (int i = 0; i < 5; i++)
-        s.Push(i + 1);
-
-    EXPECT_EQ(true, s.IsFull());
-}
-
-TEST(TStack, throw_to_the_excess_size)
-{
-    TStack<int> s(5);
-    for (int i = 0; i < 5; i++)
-        s.Push(i + 1);
-
-    ASSERT_ANY_THROW(s.Push(5));
-}
 
 TEST(TStack, can_get_size)
 {
@@ -70,19 +42,6 @@ TEST(TStack, can_show_elem_of_stack)
     EXPECT_EQ(4, s.Top());
 }
 
-TEST(TStack, throw_on_an_opportunity_to_get_elem_from_an_empty_stack)
-{
-    TStack<int> s(5);
-
-    ASSERT_ANY_THROW(s.Pop());
-}
-
-TEST(TStack, throw_on_an_opportunity_to_show_elem_from_an_empty_stack)
-{
-    TStack<int> s(5);
-
-    ASSERT_ANY_THROW(s.Top());
-}
 
 TEST(TStack, check_on_not_empty_stack)
 {
@@ -101,16 +60,22 @@ TEST(TStack, check_on_not_full_stack)
     EXPECT_NE(true, s.IsFull());
 }
 
-TEST(TStack, can_push_and_pop_elem)
+
+
+TEST(TStack, pop)
 {
     TStack<int> s(5);
-
-    s.Push(3);
-
-    s.Pop();
-
-    EXPECT_EQ(true, s.IsEmpty());
+    s.Push(5);
+    ASSERT_NO_THROW(s.Pop());
 }
+
+TEST(TStack, push)
+{
+    TStack<int> s(5);
+    ASSERT_NO_THROW(s.Push(5));
+}
+
+
 
 TEST(TStack, can_push)
 {

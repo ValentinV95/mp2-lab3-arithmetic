@@ -98,12 +98,12 @@ double TPostfix::Calculate()
                 }
             }
             else
-            {
-                bool isNeg = false;;
-                if (i > 0 && (postfix[i - 1] == '-'))
-                    isNeg = true;
-                double tmp = 0;
-                while (postfix[i] != ' ' && postfix[i] != '.')
+             {
+                           bool isNeg = false;;
+                           if (i > 0 && (postfix[i - 1] == '-'))
+                               isNeg = true;
+                           double tmp = 0;
+                           while (postfix[i] != ' ' && postfix[i] != '.')
                 {
                     while (postfix[i] >= 0x30 && postfix[i] <= 0x39)
                     {
