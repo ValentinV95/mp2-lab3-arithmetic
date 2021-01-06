@@ -34,7 +34,7 @@ string TPostfix::ToPostfix()
         }
         if (infix[i] == '+' || infix[i] == '-' || infix[i] == '*' || infix[i] == '/')
         {
-            if (infix[i] == '-' && (i == 0 || i > 0 && (infix[i - 1] < '0' || infix[i - 1] > '9'))) {
+            if (infix[i] == '-' && (i == 0 || i > 0 && (( (infix[i - 1] < '0' || infix[i - 1] > '9') && (infix[i - 1] < 'a' || infix[i - 1] > 'z') && (infix[i - 1] < 'A' || infix[i - 1] > 'Z')) && infix[i-1] != ')'))) {
                 result[count++] = '-';
                 i++;
                 continue;
@@ -98,12 +98,12 @@ double TPostfix::Calculate()
                 }
             }
             else
-             {
-                           bool isNeg = false;;
-                           if (i > 0 && (postfix[i - 1] == '-'))
-                               isNeg = true;
-                           double tmp = 0;
-                           while (postfix[i] != ' ' && postfix[i] != '.')
+            {
+                bool isNeg = false;;
+                if (i > 0 && (postfix[i - 1] == '-'))
+                    isNeg = true;
+                double tmp = 0;
+                while (postfix[i] != ' ' && postfix[i] != '.')
                 {
                     while (postfix[i] >= 0x30 && postfix[i] <= 0x39)
                     {

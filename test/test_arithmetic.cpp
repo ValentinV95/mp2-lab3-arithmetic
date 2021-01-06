@@ -49,7 +49,7 @@ TEST(TPostfix, allegiance_test_four)
     TPostfix k(tmp);
 
     string res;
-    res = "ab+-dk*";
+    res = "ab+dk*-";
 
     EXPECT_EQ(res, k.ToPostfix());
 }
