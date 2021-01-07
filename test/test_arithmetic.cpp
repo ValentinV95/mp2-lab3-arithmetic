@@ -1,164 +1,96 @@
 // тесты для вычисления арифметических выражений
 
 #include <gtest.h>
-
-#include <gtest.h>
 #include "arithmetic.h"
 #include <string>
-
-TEST(PolishNotation, throws_when_has_more_closing_parenthesis_then_opening)
+using namespace std;
+TEST(Lexem, can_create_double_lexem)
 {
-	std::string s = "()5.0+2.0)*5";
-	PolishNotation v(s);
-
-	ASSERT_ANY_THROW(v.TranslationToPolishNotation());
+	Lexem a(1.1, 2);
+	EXPECT_DOUBLE_EQ(a.number(), 1.1);
 }
 
-TEST(PolishNotation, throws_when_amounts_of_closing_parenthesis_and_opening_parenthesis_are_equal_but_they_were_set_wrong)
-{
-	std::string s = "5.0+2.0)(*5";
-	PolishNotation v(s);
-
-	ASSERT_ANY_THROW(v.TranslationToPolishNotation());
+TEST(priority, can_determine_operation_priority) {
+	EXPECT_EQ(2, priority('+'));
+	EXPECT_EQ(2, priority('-'));
+	EXPECT_EQ(3, priority('*'));
+	EXPECT_EQ(3, priority('/'));
 }
 
-TEST(PolishNotation, throws_when_has_more_opening_parenthesis_then_closing)
+TEST(Lexem, can_create_binary_operation)
 {
-	std::string s = "((5.0+2.0)*5";
-	PolishNotation v(s);
-
-	ASSERT_ANY_THROW(v.TranslationToPolishNotation());
+	Lexem a('+', 1);
+	EXPECT_EQ(a.operation(), '+');
+	Lexem b('*', 1);
+	EXPECT_EQ(b.operation(), '*');
 }
 
-TEST(PolishNotation, throws_when_missed_operand_before_parenthesis)
+TEST(result, can_use_many_brackets)
 {
-	double a;
-	std::string s = "7(5.0+2.0)*5";
-	PolishNotation v(s);
-
-	ASSERT_ANY_THROW(a = v.PolishNotationCalculate());
+	string stroka = "(((1+1)*1+1)*1+1)+1+1";
+	int k = 0;
+	Lexem* a = PolishRecord(stroka, k);
+	EXPECT_EQ(result(a, k), 6);
 }
 
-TEST(PolishNotation, throws_when_missed_operand_after_parenthesis)
+TEST(result, can_use_unary_minus_with_or_without_brackets)
 {
-	double a;
-	std::string s = "7*(5.0+2.0)5";
-	PolishNotation v(s);
-	ASSERT_ANY_THROW(a = v.PolishNotationCalculate());
+	string stroka1 = "10/(-2)";
+	string stroka2 = "10/-2";
+	int k = 0;
+	Lexem* a = PolishRecord(stroka1, k);
+	EXPECT_DOUBLE_EQ(result(a, k), -5);
+	Lexem* b = PolishRecord(stroka2, k);
+	EXPECT_DOUBLE_EQ(result(b, k), -5);
+}
+TEST(result, throw_if_the_first_symbol_is_closing_bracket)
+{
+	string stroka = ")1+1";
+	EXPECT_EQ(errors(stroka), false);
 }
 
-TEST(PolishNotation, throws_when_too_many_dots_in_one_operand)
-{
-	std::string s = "5.0.5+2.0*5";
-	PolishNotation v(s);
 
-	ASSERT_ANY_THROW(v.TranslationToPolishNotation());
+TEST(result, throw_if_there_are_two_operations)
+{
+	string stroka = "10*/1";
+	EXPECT_EQ(errors(stroka), false);
 }
 
-TEST(PolishNotation, throws_when_dot_is_the_last_symbol_of_operand)
+TEST(result, throw_if_the_expression_ends_with_a_wrong_symbol)
 {
-	std::string s = "5.0.+2.0*5";
-	PolishNotation v(s);
-
-	ASSERT_ANY_THROW(v.TranslationToPolishNotation());
+	string stroka = "10-2+1-";
+	EXPECT_EQ(errors(stroka), false);
 }
 
-TEST(PolishNotation, throws_when_dot_is_the_first_symbol_of_operand)
+TEST(result, can_sum)
 {
-	std::string s = "5.0+.2.0*5";
-	PolishNotation v(s);
-
-	ASSERT_ANY_THROW(v.TranslationToPolishNotation());
+	string stroka = "1+1";
+	int k = 0;
+	Lexem* a = PolishRecord(stroka, k);
+	EXPECT_EQ(result(a, k), 2);
 }
 
-TEST(PolishNotation, throws_when_expression_has_invalid_symbol)
+TEST(result, can_sum_and_sub)
 {
-	std::string s = "5.0+2.0!5";
-	PolishNotation v(s);
-
-	ASSERT_ANY_THROW(v.TranslationToPolishNotation());
+	string stroka = "1+1-1";
+	int k = 0;
+	Lexem* a = PolishRecord(stroka, k);
+	EXPECT_EQ(result(a, k), 1);
 }
 
-TEST(PolishNotation, throws_when_binary_operation_is_the_first_symbol)
+TEST(result, can_use_brackets)
 {
-	double a;
-	std::string s = "+5.0+2.0";
-	PolishNotation v(s);
-
-	ASSERT_ANY_THROW(a = v.PolishNotationCalculate());
+	string stroka = "3.5*(1+1)";
+	int k = 0;
+	Lexem* a = PolishRecord(stroka, k);
+	EXPECT_EQ(result(a, k), 7);
 }
 
-TEST(PolishNotation, throws_when_operation_is_the_last_symbol)
+
+TEST(result, can_use_many_unary_minuses)
 {
-	double a;
-	std::string s = "5.0+2.0-";
-	PolishNotation v(s);
-
-	ASSERT_ANY_THROW(a = v.PolishNotationCalculate());
-}
-
-TEST(PolishNotation, can_add)
-{
-	double a, b = 7.88;
-	std::string s = "5.0+2.88";
-	PolishNotation v(s);
-	v.TranslationToPolishNotation();
-	a = v.PolishNotationCalculate();
-
-	EXPECT_EQ(a, b);
-}
-
-TEST(PolishNotation, can_subtract)
-{
-	double a, b = 2.12;
-	std::string s = "5.0-2.88";
-	PolishNotation v(s);
-	v.TranslationToPolishNotation();
-	a = v.PolishNotationCalculate();
-
-	EXPECT_EQ(a, b);
-}
-
-TEST(PolishNotation, can_multiply)
-{
-	double z, y = 14.0;
-	std::string s = "5.0*2.8";
-	PolishNotation v(s);
-	v.TranslationToPolishNotation();
-	z = v.PolishNotationCalculate();
-
-	EXPECT_EQ(z, y);
-}
-
-TEST(PolishNotation, can_divide)
-{
-	double a, b = 2.0;
-	std::string s = "6.2/3.1";
-	PolishNotation v(s);
-	v.TranslationToPolishNotation();
-	a = v.PolishNotationCalculate();
-
-	EXPECT_EQ(a, b);
-}
-
-TEST(PolishNotation, can_work_with_unary_minus)
-{
-	double a, b = -2.5;
-	std::string s = "-2.5";
-	PolishNotation v(s);
-	v.TranslationToPolishNotation();
-	a = v.PolishNotationCalculate();
-
-	EXPECT_EQ(a, b);
-}
-
-TEST(PolishNotation, can_work_with_seveal_unary_minuses)
-{
-	double a, b = 2.5;
-	std::string s = "--2.5";
-	PolishNotation v(s);
-	v.TranslationToPolishNotation();
-	a = v.PolishNotationCalculate();
-
-	EXPECT_EQ(a, b);
+	string stroka = "1+-------1";
+	int k = 0;
+	Lexem* a = PolishRecord(stroka, k);
+	EXPECT_EQ(result(a, k), 0);
 }

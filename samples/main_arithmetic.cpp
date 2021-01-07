@@ -22,6 +22,6 @@ int main()
 	}
 	else
 	{
-		cout << "Error detected"
+		cout << "Error detected";
 	}
 }

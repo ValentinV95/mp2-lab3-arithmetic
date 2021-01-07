@@ -1,0 +1,11 @@
+﻿cl : командная строка warning D9035: использование параметра "Gm" нежелательно, он будет удален в следующих выпусках
+  arithmetic.cpp
+C:\Users\kisel\mp2-lab3-arithmetic\src\arithmetic.cpp(77,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\kisel\mp2-lab3-arithmetic\src\arithmetic.cpp(80,23): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\kisel\mp2-lab3-arithmetic\src\arithmetic.cpp(194,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\kisel\mp2-lab3-arithmetic\src\arithmetic.cpp(208,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\kisel\mp2-lab3-arithmetic\src\arithmetic.cpp(238,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\kisel\mp2-lab3-arithmetic\src\arithmetic.cpp(242,17): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\kisel\mp2-lab3-arithmetic\src\arithmetic.cpp(251,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\kisel\mp2-lab3-arithmetic\src\arithmetic.cpp(266,20): warning C4018: <: несоответствие типов со знаком и без знака
+  arithmetic.vcxproj -> C:\Users\kisel\mp2-lab3-arithmetic\sln\vc10\Debug\arithmetic.lib

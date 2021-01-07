@@ -1,6 +1,6 @@
 ﻿// реализация функций и классов для вычисления арифметических выражений
 
-#include "arithmetic.h"
+#include "../include/arithmetic.h"
 #include <cstdlib>
 
 Lexem::Lexem(char operation1, int k1)
