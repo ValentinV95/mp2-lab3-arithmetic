@@ -18,10 +18,10 @@ int main()
 	{
 		Lexem* c = PolishRecord(stroka, k);
 		double res = result(c, k);
-		cout << "Result of your operation =" << res << endl;
+		cout << "Result of your operation = " << res << endl;
 	}
 	else
 	{
-		cout << "Error detected";
+		cout << "\nError detected";
 	}
 }

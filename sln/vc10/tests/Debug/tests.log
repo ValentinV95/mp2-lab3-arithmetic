@@ -1,5 +1,5 @@
 ﻿cl : командная строка warning D9035: использование параметра "Gm" нежелательно, он будет удален в следующих выпусках
-  test_stack.cpp
+  test_arithmetic.cpp
 C:\Users\kisel\mp2-lab3-arithmetic\gtest\gtest.h(9690,46): warning C4996: 'std::tr1': warning STL4002: The non-Standard std::tr1 namespace and TR1-only machinery are deprecated and will be REMOVED. You can define _SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING to acknowledge that you have received this warning.
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\tuple(989): message : см. объявление "std::tr1"
 C:\Users\kisel\mp2-lab3-arithmetic\gtest\gtest.h(9695,1): warning C4996: 'std::tr1': warning STL4002: The non-Standard std::tr1 namespace and TR1-only machinery are deprecated and will be REMOVED. You can define _SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING to acknowledge that you have received this warning.
@@ -101,7 +101,9 @@ C:\Users\kisel\mp2-lab3-arithmetic\gtest\gtest.h(9691): message : выполня
           [
               T=std::tuple<>
           ]
-  test_arithmetic.cpp
+  Создание кода...
+  Компиляция...
+  test_stack.cpp
 C:\Users\kisel\mp2-lab3-arithmetic\gtest\gtest.h(9690,46): warning C4996: 'std::tr1': warning STL4002: The non-Standard std::tr1 namespace and TR1-only machinery are deprecated and will be REMOVED. You can define _SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING to acknowledge that you have received this warning.
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\tuple(989): message : см. объявление "std::tr1"
 C:\Users\kisel\mp2-lab3-arithmetic\gtest\gtest.h(9695,1): warning C4996: 'std::tr1': warning STL4002: The non-Standard std::tr1 namespace and TR1-only machinery are deprecated and will be REMOVED. You can define _SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING to acknowledge that you have received this warning.
