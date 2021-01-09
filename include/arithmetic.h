@@ -27,7 +27,6 @@ class Arithmetic
 		case'cos':return 1;
 		case'log':return 1;
 		case'e':return 1;
-		case '-un':return 1;
 		default: return 0;
 		}
 	}
@@ -51,7 +50,7 @@ public:
 		st_d.Clear();
 		for (int i = 0; i < infix.size(); i++)
 		{
-			if (infix[i] == '(' || infix[i] == 'sin' || infix[i] == 'cos' || infix[i] == 'e' || infix[i] == 'log' || infix[i] == '-un')
+			if (infix[i] == '(' || infix[i] == 'sin' || infix[i] == 'cos' || infix[i] == 'e' || infix[i] == 'log')
 			{
 				st_c.Push(infix[i]);
 			}
@@ -72,7 +71,7 @@ public:
 		infix = " ";
 		for (unsigned int i = 0; i < str.size(); i++)
 		{
-			if (str[i] == 'sin' || str[i] == 'cos' || str[i] == 'e' || str[i] == 'log' || infix[i] == '-un')
+			if (str[i] == 'sin' || str[i] == 'cos' || str[i] == 'e' || str[i] == 'log')
 			{
 				infix += " ";
 				infix += str[i];
@@ -125,7 +124,7 @@ public:
 			}
 			else
 			{
-				if (tmp[i] == '(' || tmp[i] == 'sin' || tmp[i] == 'cos' || tmp[i] == 'log' || tmp[i] == 'e' || infix[i] == '-un')
+				if (tmp[i] == '(' || tmp[i] == 'sin' || tmp[i] == 'cos' || tmp[i] == 'log' || tmp[i] == 'e')
 				{
 					st_c.Push(tmp[i]);
 				}
@@ -133,7 +132,7 @@ public:
 				{
 					if (tmp[i] == ')')
 					{
-						while (st_c.Top() != '(' && st_c.Top() != 'sin' && st_c.Top() != 'cos' && st_c.Top() != 'log' && st_c.Top() != 'e' && st_c.Top() != '-un')
+						while (st_c.Top() != '(' && st_c.Top() != 'sin' && st_c.Top() != 'cos' && st_c.Top() != 'log' && st_c.Top() != 'e')
 						{
 							char a = st_c.Pop();
 							postfix += ' ';
@@ -201,8 +200,6 @@ public:
 			case'e': a = st_d.Pop(); st_d.Push(exp(a));
 				break;
 			case'log': a = st_d.Pop(); st_d.Push(log(a));
-				break;
-			case'-un': a = st_d.Pop(); st_d.Push(-1 * a);
 				break;
 			default:
 				if (postfix[i] != ' ')
