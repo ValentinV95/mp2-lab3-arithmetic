@@ -134,23 +134,43 @@ double work(std::string s)
 		}
 		else if ((s[i] == 's') && (s[i + 1] == 'i') && (s[i + 2] == 'n'))
 		{
-			mas[j++] = "sin";
-			i = i + 3;
+			if ((s[i + 3] == '('))
+			{
+				mas[j++] = "sin";
+				i = i + 3;
+			}
+			else
+				throw('missing or invalid argument')
 		}
 		else if ((s[i] == 'c') && (s[i + 1] == 'o') && (s[i + 2] == 's'))
 		{
-			mas[j++] = "cos";
-			i = i + 3;
+			if ((s[i + 3] == '('))
+			{
+				mas[j++] = "cos";
+				i = i + 3;
+			}
+			else
+				throw('missing or invalid argument')
 		}
 		else  if ((s[i] == 'l') && (s[i + 1] == 'n'))
 		{
-			mas[j++] = "ln";
-			i = i + 2;
+			if ((s[i + 2] == '('))
+			{
+				mas[j++] = "ln";
+				i = i + 2;
+			}
+			else 
+				throw('missing or invalid argument')
 		}
 		else  if ((s[i] == 'e') && (s[i + 1] == 'x') && (s[i + 2] == 'p'))
 		{
-			mas[j++] = "exp";
-			i = i + 3;
+			if (s[i + 3] == '(')
+			{
+				mas[j++] = "exp";
+				i = i + 3;
+			}
+			else
+				throw('missing or invalid argument')
 		}
 		else if (s[i] == 'x' && (s[i + 1] == '0'))
 		{
@@ -256,6 +276,23 @@ double work(std::string s)
 			throw ("ERROR");
 		}
 	}
+
+	if (cheking == 0)
+	{
+		std::cout << "GOOD" << std::endl;
+		break;
+	}
+	else if ((cheking > 0) && (cheking < 9))
+	{
+		throw ("ERROR");
+		std::cout << std::endl << "wrong symbol";
+	}
+	else
+	{
+		throw ("ERROR");
+		std::cout << std::endl << "Unknown error";
+	}
+	
 	switch (cheking(mas, j))
 	{
 	case 0:

@@ -65,12 +65,30 @@ TEST(work, test_arifm9)
 
 TEST(work, test_arifm10)
 {
-	std::string s = "5*6(";
+	std::string s = "cos*6";
 	ASSERT_ANY_THROW(work(s));
 }
 
 TEST(work, test_arifm11)
 {
+	std::string s = "5*6(";
+	ASSERT_ANY_THROW(work(s));
+}
+
+TEST(work, test_arifm12)
+{
 	std::string s = "5*6test";
+	ASSERT_ANY_THROW(work(s));
+}
+
+TEST(work, test_arifm13)
+{
+	std::string s = "2*(cos(0)-2))";
+	ASSERT_ANY_THROW(work(s));
+}
+
+TEST(work, test_arifm14)
+{
+	std::string s = "ln(!)";
 	ASSERT_ANY_THROW(work(s));
 }
