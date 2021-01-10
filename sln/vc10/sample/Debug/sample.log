@@ -1,0 +1,13 @@
+﻿cl : командная строка warning D9035: использование параметра "Gm" нежелательно, он будет удален в следующих выпусках
+  main_arithmetic.cpp
+C:\Users\user\Desktop\mp2-lab3-arithmetic-lab_3\include\arithmetic.h(415,21): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\user\Desktop\mp2-lab3-arithmetic-lab_3\include\arithmetic.h(431,21): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\user\Desktop\mp2-lab3-arithmetic-lab_3\include\arithmetic.h(509,21): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\user\Desktop\mp2-lab3-arithmetic-lab_3\include\arithmetic.h(565,21): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\user\Desktop\mp2-lab3-arithmetic-lab_3\include\arithmetic.h(576,21): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\user\Desktop\mp2-lab3-arithmetic-lab_3\include\arithmetic.h(587,21): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\user\Desktop\mp2-lab3-arithmetic-lab_3\include\arithmetic.h(598,21): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\user\Desktop\mp2-lab3-arithmetic-lab_3\include\arithmetic.h(609,21): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\user\Desktop\mp2-lab3-arithmetic-lab_3\include\arithmetic.h(404): warning C4715: Arithmetic::priority: значение возвращается не при всех путях выполнения
+main_arithmetic.obj : warning LNK4075: не учитывается "/EDITANDCONTINUE" из-за спецификации "/SAFESEH"
+  sample.vcxproj -> C:\Users\user\Desktop\mp2-lab3-arithmetic-lab_3\sln\vc10\Debug\sample.exe

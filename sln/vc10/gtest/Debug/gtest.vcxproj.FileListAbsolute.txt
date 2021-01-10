@@ -1,0 +1,2 @@
+C:\Users\user\Desktop\mp2-lab3-arithmetic-lab_3\sln\vc10\Debug\gtest.pdb
+C:\Users\user\Desktop\mp2-lab3-arithmetic-lab_3\sln\vc10\gtest\Debug\gtest.pdb
