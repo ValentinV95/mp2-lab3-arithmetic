@@ -47,5 +47,5 @@ TEST(Arithmetic, can_calculate_expression)
 TEST(Arithmetic, can_get_right_priority_of_the_operations)
 {
 	Arithmetic x("1+2*3");
-	EXPECT_TRUE(x.priority('*') == 1);
+	EXPECT_TRUE(x.Priority('*') == 1);
 }
