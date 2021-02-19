@@ -8,94 +8,153 @@
 // - очистка стека
 // при вставке в полный стек должна перевыделяться память
 
-template <typename T>
-class TStack
-{
-	T* data;
-	int top, size;
-public:
-	TStack()
-	{
-		data = new T[10];
-		top = 0;
-		size = 10;
-	}
-	TStack(int x)
-	{
-		if (x > 0)
-		{
-			data = new T[x];
-			top = 0;
-			size = x;
-		}
-		else
-			throw ("ERROR");
-	}
-	~TStack()
-	{
+#ifndef __STACK_H__
+#define __STACK_H__
 
-	}
-	void push(T x)
-	{
-		if (top == size)
-		{
-			T* tmp = new T[size];
-			for (int i = 0; i < size; ++i)
-			{
-				tmp[i] = data[i];
-			}
-			delete[] data;
-			data = new T[size * 2];
-			for (int i = 0; i < size; ++i)
-			{
-				data[i] = tmp[i];
-			}
-			delete[]tmp;
-			size = size * 2;
-		}
-		data[top] = x;
-		top++;
-	}
-	T pop()
-	{
-		if (!(this->isempty()))
-		{
-			top--;
-			return data[top];
-		}
-		else
-		{
-			throw ("ERROR");;
-		}
-	}
-	T show()
-	{
-		if (!(this->isempty()))
-		{
-			int temp;
-			temp = top - 1;
-			return data[temp];
-		}
-		else
-		{
-			throw (0);
-		}
-	}
-	bool isempty()
-	{
-		if (top == 0)
-		{
-			return true;
-		}
-		return false;
-	}
-	int number()
-	{
-		return top;
-	}
-	void clrst()
-	{
-		top = 0;
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Exception
+{
+private:
+	string msg_;
+public:
+	Exception(string msg) {
+		msg_ = msg;
+		cerr << "ERROR: " << msg_ << endl;
 	}
 };
-#endif _STACK_H_
+
+template <class ValType>
+class TStack
+{
+private:
+
+	ValType* data;
+	int top_;
+	int maxSize_;
+
+public:
+
+	TStack(int maxSize);
+	TStack();
+	TStack(const TStack& s);
+	~TStack();
+
+	bool isFull();
+	bool isEmpty();
+
+	void push(const ValType& v);
+	ValType pop();
+	ValType getTop();
+};
+
+template <class ValType>
+TStack<ValType>::TStack(int maxSize)
+{
+	if (maxSize <= 0) 
+	{
+		throw Exception("cant create stack with null size");
+	}
+
+	maxSize_ = maxSize;
+	data = new ValType[maxSize_];
+	top_ = -1;
+}
+
+template <class ValType>
+TStack<ValType>::TStack()
+{
+	maxSize_ = 100;
+	data = new ValType[maxSize_];
+	top_ = -1;
+}
+
+template <class ValType>
+TStack<ValType>::TStack(const TStack& s)
+{
+	maxSize_ = s.maxSize_;
+	top_ = s.top_;
+	data = new ValType[maxSize_];
+
+	for (int i = 0; i < top_; i++) 
+	{
+		data[i] = s.data[i];
+	}
+}
+
+template <class ValType>
+TStack<ValType>::~TStack()
+{
+	delete[] data;
+}
+
+template <class ValType>
+bool TStack<ValType>::isFull()
+{
+	if (top_ == maxSize_ - 1) 
+	{
+		return true;
+	}
+
+	return false;
+}
+
+template <class ValType>
+bool TStack<ValType>::isEmpty()
+{
+	if (top_ == -1) 
+	{
+		return true;
+	}
+
+	return false;
+}
+
+template <class ValType>
+void TStack<ValType>::push(const ValType& val)
+{
+	if (isFull()) 
+	{
+
+		maxSize_ = (maxSize_ + 1) * 2;
+		ValType* tmp = new ValType[maxSize_];
+
+		for (int i = 0; i < top_; i++) 
+		{
+			tmp[i] = data[i];
+		}
+
+		delete[] data;
+		data = tmp;
+
+	}
+
+	top_++;
+	data[top_] = val;
+}
+
+template <class ValType>
+ValType TStack<ValType>::pop()
+{
+	if (isEmpty()) 
+	{
+		throw Exception("stack is Empty");
+	}
+	return data[top_--];
+}
+
+template <class ValType>
+ValType TStack<ValType>::getTop()
+{
+	if (isEmpty()) 
+	{
+		throw Exception("stack is Empty");
+	}
+
+	return data[top_];
+}
+
+#endif

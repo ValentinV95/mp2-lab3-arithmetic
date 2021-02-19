@@ -1,94 +1,242 @@
 // тесты для вычисления арифметических выражений
 
 #include <gtest.h>
-#include "arithmetic.h"
+#include "Arithmetic.h"
 
-TEST(work, test_arifm0)
+TEST(ConvertToArrayLexems, can_convert_string_with_number_to_array_lexems)
 {
-	std::string s = "2+2";
-	EXPECT_EQ(4, work(s));
+	string str = "1 2 8 79";
+	Lexems exp;
+
+	exp.tokens.push_back(NUMBER);
+	exp.values.push(1.0);
+	exp.tokens.push_back(NUMBER);
+	exp.values.push(2.0);
+	exp.tokens.push_back(NUMBER);
+	exp.values.push(8.0);
+	exp.tokens.push_back(NUMBER);
+	exp.values.push(79.0);
+
+	EXPECT_EQ(exp, convertToArrayLexem(str));
 }
 
-TEST(work, test_arifm1)
+TEST(ConvertToArrayLexems, can_convert_string_with_double_number_to_array_lexems)
 {
-	std::string s = "-2+2";
-	EXPECT_EQ(0, work(s));
+	string str = "1.03 .1";
+	Lexems exp;
+
+	exp.tokens.push_back(NUMBER);
+	exp.values.push(1.03);
+	exp.tokens.push_back(NUMBER);
+	exp.values.push(0.1);
+
+	EXPECT_EQ(exp, convertToArrayLexem(str));
 }
 
-TEST(work, test_arifm2)
+TEST(ConvertToArrayLexems, can_convert_string_with_bracket_to_array_lexems)
 {
-	std::string s = "-2+2*2";
-	EXPECT_EQ(2, work(s));
+	string str = "(8)()";
+	Lexems exp;
+
+	exp.tokens.push_back(LP);
+	exp.tokens.push_back(NUMBER);
+	exp.values.push(8.0);
+	exp.tokens.push_back(RP);
+	exp.tokens.push_back(LP);
+	exp.tokens.push_back(RP);
+
+	EXPECT_EQ(exp, convertToArrayLexem(str));
 }
 
-TEST(work, test_arifm3)
+TEST(ConvertToArrayLexems, can_convert_srting_with_function_to_array_lexems)
 {
-	std::string s = "1/5*cos(9*0)";
-	EXPECT_EQ(0.2, work(s));
+	string str = "sin(exp log)cos";
+	Lexems exp;
+
+	exp.tokens.push_back(SIN);
+	exp.tokens.push_back(LP);
+	exp.tokens.push_back(EXP);
+	exp.tokens.push_back(LOG);
+	exp.tokens.push_back(RP);
+	exp.tokens.push_back(COS);
+
+	EXPECT_EQ(exp, convertToArrayLexem(str));
 }
 
-TEST(work, test_arifm4)
+TEST(ConvertToArrayLexems, can_convert_string_with_unary_minus_array_lexems)
 {
-	std::string s = "1/-10";
-	EXPECT_EQ(-0.1, work(s));
+	string str = "-(-";
+	Lexems exp;
+
+	exp.tokens.push_back(UNARY_MINUS);
+	exp.tokens.push_back(LP);
+	exp.tokens.push_back(UNARY_MINUS);
+
+	EXPECT_EQ(exp, convertToArrayLexem(str));
 }
 
-TEST(work, test_arifm5)
+TEST(IsCorrect, throw_when_first_character_is_closing_bracket)
 {
-	std::string s = "5--5";
-	EXPECT_EQ(10, work(s));
+	string str = ")2*2";
+	Lexems expression = convertToArrayLexem(str);
+
+	ASSERT_ANY_THROW(isCorrect(expression));
 }
 
-TEST(work, test_arifm6)
+TEST(IsCorrect, throw_when_first_character_is_operation)
 {
-	std::string s = "5---5+sin(8*1/8)";
-	EXPECT_EQ(0, work(s));
+	string str = "+7*sin(4)";
+	Lexems expression = convertToArrayLexem(str);
+
+	ASSERT_ANY_THROW(isCorrect(expression));
 }
 
-TEST(work, test_arifm7)
+TEST(IsCorrect, throw_when_number_is_after_number)
 {
-	std::string s = "ln(1) ";
-	EXPECT_EQ(0, work(s));
+	string str = "1 1 1 + 1";
+	Lexems expression = convertToArrayLexem(str);
+
+	ASSERT_ANY_THROW(isCorrect(expression));
 }
 
-TEST(work, test_arifm8)
+TEST(IsCorrect, throw_when_function_is_after_number)
 {
-	std::string s = "5*/6";
-	ASSERT_ANY_THROW(work(s));
+	string str = "1+2cos(1)";
+	Lexems expression = convertToArrayLexem(str);
+
+	ASSERT_ANY_THROW(isCorrect(expression));
 }
 
-TEST(work, test_arifm9)
+TEST(IsCorrect, throw_when_after_function_is_not_opening_bracket)
 {
-	std::string s = "ln()";
-	ASSERT_ANY_THROW(work(s));
+	string str = "sin4";
+	Lexems expression = convertToArrayLexem(str);
+
+	ASSERT_ANY_THROW(isCorrect(expression));
 }
 
-TEST(work, test_arifm10)
+TEST(IsCorrect, throw_when_unary_minus_is_after_unary_minus)
 {
-	std::string s = "cos*6";
-	ASSERT_ANY_THROW(work(s));
+	string str = "(--7)";
+	Lexems expression = convertToArrayLexem(str);
+
+	ASSERT_ANY_THROW(isCorrect(expression));
 }
 
-TEST(work, test_arifm11)
+TEST(IsCorrect, throw_when_operation_is_after_unary_minus)
 {
-	std::string s = "5*6(";
-	ASSERT_ANY_THROW(work(s));
+	string str = "-+8.1";
+	Lexems expression = convertToArrayLexem(str);
+
+	ASSERT_ANY_THROW(isCorrect(expression));
 }
 
-TEST(work, test_arifm12)
+TEST(IsCorrect, throw_when_closing_bracket_is_after_unary_minus)
 {
-	std::string s = "5*6test";
-	ASSERT_ANY_THROW(work(s));
+	string str = "(-)";
+	Lexems expression = convertToArrayLexem(str);
+
+	ASSERT_ANY_THROW(isCorrect(expression));
 }
 
-TEST(work, test_arifm13)
+TEST(IsCorrect, throw_when_operation_is_after_operation)
 {
-	std::string s = "2*(cos(0)-2))";
-	ASSERT_ANY_THROW(work(s));
+	string str = "8*/9";
+	Lexems expression = convertToArrayLexem(str);
+
+	ASSERT_ANY_THROW(isCorrect(expression));
 }
 
-TEST(work, test_arifm14)
+TEST(IsCorrect, throw_when_closing_bracket_is_after_operation)
 {
-	std::string s = "ln(!)";
-	ASSERT_ANY_THROW(work(s));
+	string str = "(2+2*)";
+	Lexems expression = convertToArrayLexem(str);
+
+	ASSERT_ANY_THROW(isCorrect(expression));
+}
+
+TEST(IsCorrect, throw_when_number_is_after_closing_bracket)
+{
+	string str = "(2*2)9";
+	Lexems expression = convertToArrayLexem(str);
+
+	ASSERT_ANY_THROW(isCorrect(expression));
+}
+
+TEST(IsCorrect, throw_when_function_is_after_closing_bracket)
+{
+	string str = "(3+5)exp(1)";
+	Lexems expression = convertToArrayLexem(str);
+
+	ASSERT_ANY_THROW(isCorrect(expression));
+}
+
+TEST(IsCorrect, throw_when_opening_bracket_is_after_closing_bracket)
+{
+	string str = "(7*8)(2+2)";
+	Lexems expression = convertToArrayLexem(str);
+
+	ASSERT_ANY_THROW(isCorrect(expression));
+}
+
+TEST(IsCorrect, throw_when_closing_bracket_is_after_opening_bracket)
+{
+	string str = "2+4*()";
+	Lexems expression = convertToArrayLexem(str);
+
+	ASSERT_ANY_THROW(isCorrect(expression));
+}
+
+TEST(IsCorrect, throw_when_closing_bracket_more_than_opening_bracket)
+{
+	string str = "(2*2/(7*8*(7-4))))";
+	Lexems expression = convertToArrayLexem(str);
+
+	ASSERT_ANY_THROW(isCorrect(expression));
+}
+
+TEST(IsCorrect, throw_when_opening_bracket_more_than_closing_bracket)
+{
+	string str = "sin(exp(4)";
+	Lexems expression = convertToArrayLexem(str);
+
+	ASSERT_ANY_THROW(isCorrect(expression));
+}
+
+TEST(IsCorrect, throw_when_last_character_is_unary_minus)
+{
+	string str = "8*9(-";
+	Lexems expression = convertToArrayLexem(str);
+
+	ASSERT_ANY_THROW(isCorrect(expression));
+}
+
+TEST(IsCorrect, throw_whem_last_is_character_is_opening_bracket)
+{
+	string str = "9+6(";
+	Lexems expression = convertToArrayLexem(str);
+
+	ASSERT_ANY_THROW(isCorrect(expression));
+}
+
+TEST(ComputeResult, can_compute_result_of_expression)
+{
+	string str = "21 + (3* 8+6 )/2 -1";
+	Lexems rpn = convertToRpn(convertToArrayLexem(str));
+	double res = computeResult(rpn);
+	double exp = 35.0;
+	double eps = 0.000001;
+
+	EXPECT_GE(eps, exp - res);
+}
+
+TEST(ComputeResult, can_compute_result_of_expression_with_function)
+{
+	string str = "log(exp(21)) + (8+ sin(37/5) )/2";
+	Lexems rpn = convertToRpn(convertToArrayLexem(str));
+	double res = computeResult(rpn);
+	double exp = 25.4493540;
+	double eps = 0.000001;
+
+	EXPECT_GE(eps, exp - res);
 }
