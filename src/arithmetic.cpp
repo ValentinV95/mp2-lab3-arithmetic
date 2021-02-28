@@ -1,5 +1,5 @@
 // реализация функций и классов для вычисления арифметических выражений
-#include "arithmetic.h"
+#include "../include/arithmetic.h"
 
 map<string, double> variables;
 

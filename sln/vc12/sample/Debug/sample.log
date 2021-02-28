@@ -1,3 +1,4 @@
 ﻿cl : командная строка warning D9035: использование параметра "Gm" нежелательно, он будет удален в следующих выпусках
   main_arithmetic.cpp
-  sample.vcxproj -> B:\Repo\Lab3_test4\sln\vc12\Debug\sample.exe
+main_arithmetic.obj : warning LNK4075: не учитывается "/EDITANDCONTINUE" из-за спецификации "/SAFESEH"
+  sample.vcxproj -> B:\Repo\Laba 3\sln\vc12\Debug\sample.exe
