@@ -1,0 +1,3 @@
+﻿cl : командная строка warning D9035: использование параметра "Gm" нежелательно, он будет удален в следующих выпусках
+  arithmetic.cpp
+  arithmetic.vcxproj -> B:\Repo\Laba 3\sln\vc10\Debug\arithmetic.lib
