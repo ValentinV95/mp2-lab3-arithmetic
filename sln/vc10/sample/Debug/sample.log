@@ -1,0 +1,14 @@
+﻿cl : командная строка warning D9035: использование параметра "Gm" нежелательно, он будет удален в следующих выпусках
+  main_arithmetic.cpp
+C:\Users\nikgu\Documents\GitHub\mp2-lab3-arithmetic\include\arithmetic.h(60,21): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\nikgu\Documents\GitHub\mp2-lab3-arithmetic\include\arithmetic.h(77,21): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\nikgu\Documents\GitHub\mp2-lab3-arithmetic\include\arithmetic.h(79,22): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\nikgu\Documents\GitHub\mp2-lab3-arithmetic\include\arithmetic.h(167,21): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\nikgu\Documents\GitHub\mp2-lab3-arithmetic\include\arithmetic.h(228,22): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\nikgu\Documents\GitHub\mp2-lab3-arithmetic\include\arithmetic.h(240,22): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\nikgu\Documents\GitHub\mp2-lab3-arithmetic\include\arithmetic.h(253,22): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\nikgu\Documents\GitHub\mp2-lab3-arithmetic\include\arithmetic.h(265,22): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\nikgu\Documents\GitHub\mp2-lab3-arithmetic\include\arithmetic.h(275,23): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\nikgu\Documents\GitHub\mp2-lab3-arithmetic\include\arithmetic.h(142): warning C4715: Arithmetic::ToPostfix: значение возвращается не при всех путях выполнения
+C:\Users\nikgu\Documents\GitHub\mp2-lab3-arithmetic\include\arithmetic.h(46): warning C4715: Arithmetic::Priority: значение возвращается не при всех путях выполнения
+  sample.vcxproj -> C:\Users\nikgu\Documents\GitHub\mp2-lab3-arithmetic\sln\vc10\Debug\sample.exe
